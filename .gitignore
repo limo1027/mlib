@@ -14,8 +14,7 @@ env/
 # 打包相关（忽略构建产物）
 dist/
 build/
-*.egg-info/
-*.egg
+gaskill.egg-info/
 
 # IDE 和系统文件
 .vscode/
@@ -25,3 +24,4 @@ Thumbs.db
 
 # 日志
 *.log
+*.txt

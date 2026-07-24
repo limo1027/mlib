@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a6a8a"/>
+      <stop offset="100%" stop-color="#2a4a6a"/>
+    </linearGradient>
+    <linearGradient id="handle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9a9aba"/>
+      <stop offset="100%" stop-color="#7a7a9a"/>
+    </linearGradient>
+    <linearGradient id="lid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5a7a9a"/>
+      <stop offset="100%" stop-color="#3a5a7a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 工具箱主体 -->
+  <rect x="60" y="160" width="392" height="240" rx="16" fill="url(#body)" stroke="#8aaa ca" stroke-width="4"/>
+
+  <!-- 箱盖 -->
+  <rect x="60" y="100" width="392" height="68" rx="16" fill="url(#lid)" stroke="#8aaa ca" stroke-width="4"/>
+
+  <!-- 箱盖和主体的分割线 -->
+  <line x1="60" y1="168" x2="452" y2="168" stroke="#8aaa ca" stroke-width="3"/>
+
+  <!-- 宽提手 -->
+  <path d="M150,100 L150,65 Q150,30 185,30 L327,30 Q362,30 362,65 L362,100" fill="none" stroke="url(#handle)" stroke-width="26" stroke-linecap="round"/>
+
+  <!-- 提手高光 -->
+  <path d="M150,100 L150,65 Q150,30 185,30 L327,30 Q362,30 362,65 L362,100" fill="none" stroke="#dd ddef" stroke-width="6" stroke-linecap="round" opacity="0.2"/>
+
+  <!-- 大搭扣 -->
+  <rect x="216" y="90" width="80" height="20" rx="5" fill="#8a8aaa" stroke="#aaaacc" stroke-width="2"/>
+
+  <!-- 内部暗区 -->
+  <rect x="80" y="186" width="352" height="194" rx="8" fill="#1a2a3a" opacity="0.5"/>
+</svg>
