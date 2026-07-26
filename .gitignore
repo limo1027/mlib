@@ -1,7 +1,6 @@
 # Python 缓存
 __pycache__/
 *.pyc
-*.pyo
 
 # 虚拟环境
 venv/
@@ -14,13 +13,15 @@ env/
 # 打包相关（忽略构建产物）
 dist/
 build/
-gaskill.egg-info/
+*.egg-info/
 
 # IDE 和系统文件
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+SOURCES.txt
+PKG-INFO
 
 # 日志
 *.log

@@ -43,5 +43,4 @@ gaskill/plus/poly.py
 gaskill/plus/radical.py
 gaskill/plus/re.py
 gaskill/plus/tester.py
-gaskill/plus/tree.py
 gaskill/plus/zip.py

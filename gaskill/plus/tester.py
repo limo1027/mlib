@@ -1,4 +1,5 @@
 # ==================== 装饰器定义 ====================
+
 def test(func):
     """标记测试方法，并自动注入当前测试名"""
     def wrapper(self, *args, **kwargs):
@@ -10,6 +11,7 @@ def test(func):
     wrapper.__name__ = func.__name__
     return wrapper
 
+
 def skip(reason="跳过"):
     """跳过测试"""
     def decorator(func):
@@ -18,8 +20,36 @@ def skip(reason="跳过"):
         return func
     return decorator
 
+
+# ==================== assert_raises 上下文管理器 ====================
+
+class _AssertRaisesContext:
+    """assert_raises 的上下文管理器，支持 with 风格"""
+    
+    def __init__(self, test_name, exc_class):
+        self.test_name = test_name
+        self.exc_class = exc_class
+        self.exception = None
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            # 没有抛出异常
+            raise AssertionError(
+                f"AssertionError in {self.test_name}: 期望 {self.exc_class.__name__}, 但没有抛出异常"
+            )
+        if issubclass(exc_type, self.exc_class):
+            # 抛出了期望的异常（或其子类），吞噬它
+            self.exception = exc_val
+            return True  # 表示已处理
+        # 抛出了其他异常，不吞噬
+        return False
+
+
 # ==================== TestCase 基类 ====================
-# ==================== TestCase 基类（完整版） ====================
+
 class TestCase:
     def __init__(self):
         self._current_test = None
@@ -37,7 +67,7 @@ class TestCase:
         """获取当前测试名称"""
         return self._current_test or "未知测试"
     
-    # ==================== 断言方法（完整版） ====================
+    # ==================== 断言方法 ====================
     
     # ---- 相等性断言 ----
     
@@ -209,7 +239,7 @@ class TestCase:
                 f"AssertionError in {test_name}: 期望 {repr(a)} 不是 {expected} 的实例，实际是 {actual}"
             )
     
-    # ---- 子类断言（Python 3.14+ 新增） ----
+    # ---- 子类断言 ----
     
     def assert_issubclass(self, a, b):
         """断言 issubclass(a, b)（a 是 b 的子类）"""
@@ -265,7 +295,6 @@ class TestCase:
                 )
         except TypeError:
             # 如果元素不可排序（如包含字典），用计数方式
-            # 简单起见，先复制列表再逐个移除
             remaining = list(b)
             for item in a:
                 found = False
@@ -283,7 +312,7 @@ class TestCase:
                     f"AssertionError in {test_name}: {repr(remaining[0])} 在 b 中但不在 a 中"
                 )
     
-    # ---- 字符串前缀/后缀断言（Python 3.14+ 新增） ----
+    # ---- 字符串前缀/后缀断言 ----
     
     def assert_starts_with(self, a, b):
         """断言 a.startswith(b)（字符串以 b 开头）"""
@@ -317,7 +346,7 @@ class TestCase:
                 f"AssertionError in {test_name}: {repr(a)} 以 {repr(b)} 结尾"
             )
     
-    # ---- 属性断言（Python 3.14+ 新增） ----
+    # ---- 属性断言 ----
     
     def assert_has_attr(self, a, b):
         """断言 hasattr(a, b)（对象有指定属性）"""
@@ -335,25 +364,16 @@ class TestCase:
                 f"AssertionError in {test_name}: {repr(a)} 有属性 {repr(b)}"
             )
     
-    # ---- 异常断言 ----
+    # ---- 异常断言（支持 with 风格和函数风格） ----
     
-    def assert_raises(self, exc_class, func, *args, **kwargs):
-        """断言函数抛出指定异常"""
+    def assert_raises(self, exc_class, func=None, *args, **kwargs):
+        """断言抛出指定异常"""
         test_name = self._get_test_name()
-        try:
-            func(*args, **kwargs)
-        except exc_class:
-            return
-        except Exception as e:
-            raise AssertionError(
-                f"AssertionError in {test_name}: 期望 {exc_class.__name__}, 实际 {type(e).__name__}"
-            )
-        else:
-            raise AssertionError(
-                f"AssertionError in {test_name}: 期望 {exc_class.__name__}, 但没有抛出异常"
-            )
+        return _AssertRaisesContext(test_name, exc_class)
+    
     
     # ====== 生命周期钩子 ======
+    
     def setup(self):
         """每个测试方法执行前调用"""
         pass
@@ -371,7 +391,10 @@ class TestCase:
     def teardown_class(cls):
         """整个测试类执行后调用"""
         pass
+
+
 # ==================== 测试运行器 ====================
+
 class TestRunner:
     def run_single_test(self, test_instance, method):
         """执行单个测试方法，method 是绑定方法"""

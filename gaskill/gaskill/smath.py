@@ -88,11 +88,11 @@ class Complex:
         return Complex(self.real * other.real - self.imag * other.imag,
                        self.imag * other.real + self.real * other.imag)
 
-    def __neg__(self):
-        return Complex(-self.real, -self.imag)
-
     def __rmul__(self, other):
         return self * other
+
+    def __neg__(self):
+        return Complex(-self.real, -self.imag)
 
     def __mod__(self, other):
         if isinstance(other, (Complex, complex)):
@@ -123,6 +123,9 @@ class Complex:
         log_z = log(self)
         return exp(other * log_z)
 
+    def __rpow__(self, other):
+        other = self._to_Complex(other)
+        return other ** self
     def __abs__(self):
         return (self.real ** 2 + self.imag ** 2) ** 0.5
 
