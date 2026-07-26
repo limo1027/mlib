@@ -42,11 +42,6 @@ class Decimal:
                 v1 *= 10
                 f1 += 1
 
-        if abs(v1) > abs(v2):
-            v1 = v1 // 10
-        elif abs(v1) < abs(v2):
-            v2 = v2 // 10
-
         return Decimal(v1 + v2, f1)
 
     def __radd__(self, other):

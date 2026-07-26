@@ -4,7 +4,7 @@ import subprocess
 import sys
 import os
 long_description = ""
-VERSION = eval(os.getenv('VERSION', '"2.9.1"'))
+VERSION = eval(os.getenv('VERSION', '"2.9.1.post1"'))
 
 
 def run(cmd, check=True):
