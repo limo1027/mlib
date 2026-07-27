@@ -1,3 +1,7 @@
+def _to_hashble(key):
+    return str(key)+":"+type(key).__name__
+
+
 class LFUCache:
     """最少使用缓存(Least Frequently Used Cache)"""
 
@@ -10,20 +14,19 @@ class LFUCache:
         if key not in self:
             return default
 
-        self._cache[str(key)+":"+type(key).__name__][1] += 1
-        return self._cache[str(key)+":"+type(key).__name__][0]
+        self._cache[_to_hashble(key)][1] += 1
+        return self._cache[_to_hashble(key)][0]
 
     def set(self, key, value):
         """设置缓存"""
         if key in self:
-            self._cache[str(key)+type(key).__name__][1] += 1
+            self._cache[_to_hashble(key)][1] += 1
 
         elif len(self._cache) >= self._max_size:
             oldest = sorted(self._cache.values(), key=lambda x: x[1])[0][-1]
             del self._cache[oldest]
 
-        self._cache[str(key)+":"+type(key).__name__] = [value,
-                                                        1, str(key)+":"+type(key).__name__]
+        self._cache[_to_hashble(key)] = [value, 1, _to_hashble(key)]
 
     def __setitem__(self, key, value):
         self.set(key, value)
@@ -35,7 +38,7 @@ class LFUCache:
         return value
 
     def __contains__(self, key):
-        return str(key)+":"+type(key).__name__ in self._cache
+        return _to_hashble(key) in self._cache
 
     def pop(self, key, default=None):
         """移除并返回缓存"""
@@ -97,7 +100,7 @@ class LRUCache:
         try:
             return self._cache[key]
         except TypeError:
-            return self._cache[str(key)+type(key).__name__]
+            return self._cache[_to_hashble(key)]
 
     def set(self, key, value):
         """设置缓存"""
@@ -110,7 +113,7 @@ class LRUCache:
         try:
             self._cache[key] = value
         except TypeError:
-            self._cache[str(key)+type(key).__name__] = value
+            self._cache[_to_hashble(key)] = value
         self._order.append(key)
 
     def __setitem__(self, key, value):
@@ -126,7 +129,7 @@ class LRUCache:
         try:
             return key in self._cache
         except TypeError:
-            return str(key)+type(key).__name__ in self._cache
+            return _to_hashble(key) in self._cache
 
     def pop(self, key, default=None):
         """移除并返回缓存"""

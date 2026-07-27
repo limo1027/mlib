@@ -105,11 +105,11 @@ class SsaverTester(TestCase):
         s1 = ssaver.SGTsaver()
         s1.set_value(name="mlib", version="1.0", score=100)
         s1.add("tags", ["math", "geometry", "crypto"])
+        s1["data"] = {'server': '127.0.0.1, 3000', 'port': 3306, "users": {"Alice": "password123", "Bob": "password12"}}
         
         # 保存到模拟文件
         mock = MockFile()
         s1.save(mock, use_hash=True)
-        
         # 加载回来
         s2 = ssaver.SGTsaver()
         s2.load(mock, require_hash=True)
@@ -118,6 +118,7 @@ class SsaverTester(TestCase):
         self.assert_equal(s2.get("version"), "1.0")
         self.assert_equal(s2.get("score"), 100)
         self.assert_equal(s2.get("tags"), ["math", "geometry", "crypto"])
+        self.assert_equal(s2["data"], {'server': '127.0.0.1, 3000', 'port': 3306, "users": {"Alice": "password123", "Bob": "password12"}})
 
     
     @test

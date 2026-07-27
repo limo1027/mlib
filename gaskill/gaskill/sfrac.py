@@ -249,20 +249,10 @@ class Frac:
         spec = spec.strip()
 
         if spec.endswith('%'):
-            return self.as_percent(int(spec[:-1]) if spec[:-1] else 0)
+            length = spec[:-1].replace(".", "")
+            length = int(length) if length else 0
+            return self.as_percent(length)
 
-        if spec.startswith('.'):
-            parts = spec[1:].split('f')
-            if len(parts) == 2 and parts[1] == '':
-                precision = int(parts[0]) if parts[0] else 6
-
-                def fmt_num(x):
-                    s = f"{round(x, precision)}"
-                    return s
-
-                n_str = fmt_num(self.n)
-                d_str = fmt_num(self.d)
-                return f"({n_str}/{d_str})"
 
         if spec == 'l' or spec == 'latex':
             if self.d == 1:
@@ -283,7 +273,8 @@ class Frac:
             return f"{self.n}/{self.d}"
 
         if spec.endswith('f'):
-            precision = int(spec[:-1]) if spec[:-1] else 6
+            length = spec[:-1].replace(".", "")
+            precision = int(length) if length else 6
             return f"{self.n / self.d:.{precision}f}"
 
         if spec.endswith('e') or spec.endswith('E'):

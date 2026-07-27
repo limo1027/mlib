@@ -28,40 +28,197 @@ class SGTsaver:
         elif isinstance(value, (int, float)):
             return str(value)
         elif isinstance(value, (list, tuple)):
-            return "[" + ",".join(("\""+str(v))+"\"" for v in value) + "]"
+            return "[" + ",".join(f'"{v}"' for v in value) + "]"
         elif hasattr(value, 'x') and hasattr(value, 'y') and hasattr(value, 'z'):
             return f"({value.x},{value.y},{value.z})"
         elif hasattr(value, 'x') and hasattr(value, 'y'):
             return f"({value.x},{value.y})"
+        elif isinstance(value, dict):
+            # 递归处理嵌套字典
+            items = []
+            for k, v in value.items():
+                k_str = self._value_to_str(k) if isinstance(k, str) else str(k)
+                v_str = self._value_to_str(v)
+                items.append(f"{k_str}: {v_str}")
+            return "{" + ", ".join(items) + "}"
         else:
             return str(value)
 
-    def _str_to_value(self, s):
-        """字符串转值"""
+    def _parse_value(self, s, pos):
+        """从位置 pos 开始解析一个值，返回 (value, new_pos)"""
         s = s.strip()
-        if s.startswith('"') and s.endswith('"'):
-            return s[1:-1]
-        elif s == "true":
-            return True
-        elif s == "false":
-            return False
-        elif s.startswith('[') and s.endswith(']'):
-            items = s[1:-1].split(',')
-            return [self._str_to_value(item) for item in items if item]
-        elif s.startswith('(') and s.endswith(')'):
-            items = s[1:-1].split(',')
-            if len(items) == 2:
-                return (float(items[0]), float(items[1]))
-            elif len(items) == 3:
-                return (float(items[0]), float(items[1]), float(items[2]))
+        if pos >= len(s):
+            return None, pos
+
+        # 跳过空格
+        while pos < len(s) and s[pos] == ' ':
+            pos += 1
+
+        if pos >= len(s):
+            return None, pos
+
+        ch = s[pos]
+
+        # 字符串（单引号或双引号）
+        if ch in ("'", '"'):
+            quote = ch
+            pos += 1
+            start = pos
+            while pos < len(s) and s[pos] != quote:
+                pos += 1
+            value = s[start:pos]
+            pos += 1  # 跳过结束引号
+            return value, pos
+
+        # 字典
+        if ch == '{':
+            return self._parse_dict_from_pos(s, pos)
+
+        # 列表
+        if ch == '[':
+            return self._parse_list_from_pos(s, pos)
+
+        # 元组
+        if ch == '(':
+            return self._parse_tuple_from_pos(s, pos)
+
+        # 数字、布尔、None 等
+        start = pos
+        while pos < len(s) and s[pos] not in (',', '}', ']', ')'):
+            pos += 1
+        token = s[start:pos].strip()
+
+        # 尝试解析
+        if token == "true":
+            return True, pos
+        elif token == "false":
+            return False, pos
+        elif token == "None" or token == "null":
+            return None, pos
         else:
             try:
-                return int(s)
+                return int(token), pos
             except ValueError:
                 try:
-                    return float(s)
+                    return float(token), pos
                 except ValueError:
-                    return s
+                    return token, pos
+
+    def _parse_dict_from_pos(self, s, pos):
+        """从位置 pos 开始解析字典，返回 (dict, new_pos)"""
+        if pos >= len(s) or s[pos] != '{':
+            return None, pos
+
+        pos += 1  # 跳过 '{'
+        result = {}
+
+        while pos < len(s):
+            # 跳过空格
+            while pos < len(s) and s[pos] == ' ':
+                pos += 1
+
+            if pos >= len(s):
+                break
+
+            # 遇到 '}' 结束
+            if s[pos] == '}':
+                pos += 1
+                break
+
+            # 解析 key
+            key, pos = self._parse_value(s, pos)
+            if key is None:
+                break
+
+            # 跳过 ':'
+            while pos < len(s) and s[pos] == ' ':
+                pos += 1
+            if pos < len(s) and s[pos] == ':':
+                pos += 1
+
+            # 解析 value
+            val, pos = self._parse_value(s, pos)
+
+            result[key] = val
+
+            # 跳过逗号
+            while pos < len(s) and s[pos] == ' ':
+                pos += 1
+            if pos < len(s) and s[pos] == ',':
+                pos += 1
+
+        return result, pos
+
+    def _parse_list_from_pos(self, s, pos):
+        """从位置 pos 开始解析列表，返回 (list, new_pos)"""
+        if pos >= len(s) or s[pos] != '[':
+            return None, pos
+
+        pos += 1
+        result = []
+
+        while pos < len(s):
+            while pos < len(s) and s[pos] == ' ':
+                pos += 1
+
+            if pos >= len(s):
+                break
+
+            if s[pos] == ']':
+                pos += 1
+                break
+
+            val, pos = self._parse_value(s, pos)
+            result.append(val)
+
+            while pos < len(s) and s[pos] == ' ':
+                pos += 1
+            if pos < len(s) and s[pos] == ',':
+                pos += 1
+
+        return result, pos
+
+    def _parse_tuple_from_pos(self, s, pos):
+        """从位置 pos 开始解析元组，返回 (tuple, new_pos)"""
+        if pos >= len(s) or s[pos] != '(':
+            return None, pos
+
+        pos += 1
+        result = []
+
+        while pos < len(s):
+            while pos < len(s) and s[pos] == ' ':
+                pos += 1
+
+            if pos >= len(s):
+                break
+
+            if s[pos] == ')':
+                pos += 1
+                break
+
+            val, pos = self._parse_value(s, pos)
+            result.append(val)
+
+            while pos < len(s) and s[pos] == ' ':
+                pos += 1
+            if pos < len(s) and s[pos] == ',':
+                pos += 1
+
+        return tuple(result), pos
+
+    def _str_to_value(self, s):
+        """字符串转值（入口函数）"""
+        if not isinstance(s, str):
+            return s
+
+        s = s.strip()
+        if not s:
+            return s
+
+        # 尝试解析
+        result, _ = self._parse_value(s, 0)
+        return result if result is not None else s
 
     def save(self, filename, use_hash=True):
         """保存到文件"""
@@ -72,7 +229,8 @@ class SGTsaver:
             lines.append(f"#{key}={value_str}")
 
         if use_hash:
-            content = "\n".join([line for line in lines if line.startswith('#')])
+            content = "\n".join(
+                [line for line in lines if line.startswith('#')])
             hash_value = self.hasher.hash(content)
             if hasattr(hash_value, '__iter__') and not isinstance(hash_value, (str, int)):
                 hash_value = ''.join(str(h) for h in hash_value)
@@ -95,6 +253,7 @@ class SGTsaver:
                 lines = f.readlines()
         else:
             lines = filename.read().split("\n")
+
         hash_lines = []
         saved_hash = None
 
@@ -106,7 +265,6 @@ class SGTsaver:
                 continue
 
             hash_lines.append(line)
-
             line = line[1:]
 
             if '=' not in line:
