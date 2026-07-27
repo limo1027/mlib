@@ -12,16 +12,17 @@ class Random:
                 Random._seed_counter = 0
             else:
                 Random._seed_counter = Random._seed_counter + 1
-            seed = id(object()) ^ id([]) ^ id({}) ^ id(()) ^ Random._seed_counter
+            seed = id(object()) ^ id([]) ^ id(
+                {}) ^ id(()) ^ Random._seed_counter
 
-        self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h, self.i = self.hash(
-            seed)
+        self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h, self.i = \
+            self.hash(seed)
         self.i = self.i / 1000
-        for i in range(20):
+        for _ in range(20):
             self.next()
 
-    def sum_until_one(self, n):
-        """把一个数不断加各位直到剩一位"""
+    def hash_digit(self, n):
+        """数字哈希：数根 x 原数 的后三位"""
         m = n
         while n >= 10:
             n = sum(int(d) for d in str(n))
@@ -30,7 +31,7 @@ class Random:
     def hash(self, seed, moduli=None):
         """自定义哈希函数"""
         if moduli is None:
-            moduli = [5, 7, 89, 97, 997, 991, 9963, 9971, 9973]
+            moduli = [5, 7, 11, 13, 89, 97, 997, 991, 9971]
 
         s = str(seed) + type(seed).__name__
         parts = [str(ord(c) * place) for place, c in enumerate(s, start=1)]
@@ -43,10 +44,10 @@ class Random:
             for i in range(0, len(big_str), k):
                 group = big_str[i:i+k]
                 group_num = int(group)
-                r = group_num % m
+                r = group_num % m ^ 0x3FF9E3779B97F4A8
                 remainders.append(r)
             total = sum(remainders)
-            digit = self.sum_until_one(total)
+            digit = self.hash_digit(total)
             result.append(digit)
 
         return tuple(int(d) for d in result)
@@ -56,7 +57,7 @@ class Random:
         self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h, self.i = self.hash(
             seed)
         self.i = self.i / 1000
-        for i in range(20):
+        for _ in range(20):
             self.next()
 
     def next(self, a=0, b=9):
@@ -180,7 +181,7 @@ class Random:
         z = u1 * (-2 * log_r2) ** 0.5 / r2 ** 0.5
         return mu + sigma * z
 
-    def sample_by_y(self, func, x_min, x_max, step=0.01, y_max=None):
+    def random_from_func(self, func, x_min, x_max, step=0.01, y_max=None):
         """按函数分布采样"""
         if y_max is None:
             y_max = max(func(x_min + i * step)

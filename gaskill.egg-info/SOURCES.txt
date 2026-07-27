@@ -44,3 +44,10 @@ gaskill/plus/radical.py
 gaskill/plus/re.py
 gaskill/plus/tester.py
 gaskill/plus/zip.py
+gaskill/test/__init__.py
+gaskill/test/test_all.py
+gaskill/test/test_decimal.py
+gaskill/test/test_frac.py
+gaskill/test/test_radical.py
+gaskill/test/test_saver.py
+gaskill/test/test_smath.py

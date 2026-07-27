@@ -1,4 +1,4 @@
-class UltraFastDB:
+class DiskKV:
     """极致优化 - 最小化对象分配"""
 
     def __init__(self, filepath, initial_capacity=131072):
