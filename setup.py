@@ -4,7 +4,7 @@ import subprocess
 import sys
 import os
 long_description = ""
-VERSION = eval(os.getenv('VERSION', '"2.11.0"'))
+VERSION = eval(os.getenv('VERSION', '"2.12.1"'))
 
 
 def run(cmd, check=True):
@@ -34,11 +34,6 @@ class PublishCommand(Command):
         # 上传
         run(["python", "-m", "twine", "upload", "--verbose", "--disable-progress-bar",
             "--repository", "testpypi", "--skip-existing", "dist/*", ])
-
-        # git 提交
-        run(["git", "add", "-A", "."])
-        run(["git", "commit", "-m", f"v{VERSION}"])
-        run(["git", "push", "https://github.com/limo1027/mlib.git"])
 
 
 setup(

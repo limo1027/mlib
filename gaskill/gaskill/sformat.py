@@ -1,4 +1,3 @@
-__package__ = "gaskill.gaskill"
 from .srandom import Random
 
 
@@ -590,15 +589,3 @@ def file_size(size_bytes, mode='auto', decimal=False):
         return sign + val_str + " " + unit
     else:
         return sign + val_str + " " + units[unit_index]
-
-
-# 生成 10000 个 UUID，看有没有重复
-uuids = set()
-collisions = 0
-for i in range(100000):
-    uid = uuid4(str(i))
-    if uid in uuids:
-        collisions += 1
-        print(i)
-    uuids.add(uid)
-print(f"碰撞次数: {collisions}")

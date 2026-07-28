@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 ECDSA 签名 - 用户自定义临时私钥 k
 用户提供：私钥、消息、临时私钥 k
@@ -159,4 +158,3 @@ def ecdsa_verify(public_key, message, signature):
 
     P = G * u1 + public_key * u2
     return P.x % n == r
-
