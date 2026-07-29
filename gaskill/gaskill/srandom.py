@@ -225,6 +225,20 @@ class Random:
         """均匀分布随机浮点数"""
         return self.random_float(a, b)
 
+    def random_ascii(self, length=16, charset='ascii'):
+        """生成随机 ASCII 字符串"""
+        charsets = {
+            'ascii': "".join(chr(i) for i in range(33, 127)),
+            'alnum': "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+            'alpha': "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+            'digit': "0123456789",
+            'hex': "0123456789abcdef",
+            'base64': "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+            'all': "".join(chr(i) for i in range(256))
+        }
+        chars = charsets.get(charset, charsets['ascii'])
+        return ''.join(self.choice(chars) for _ in range(length))
+
 
 def random(rng=None):
     """生成 0-1 随机数"""
@@ -259,3 +273,9 @@ def sample(seq, k, rng=None):
     if rng is None:
         rng = Random()
     return rng.sample(seq, k)
+
+
+def random_ascii(length=16, charset='ascii', rng=None):
+    if rng is None:
+        rng = Random()
+    return rng.random_ascii(length, charset)

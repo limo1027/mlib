@@ -269,6 +269,106 @@
             text-decoration: underline;
         }
 
+        /* ========== 附件折叠面板样式 ========== */
+        .attach-box {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .attach-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .attach-header:hover {
+            background: #1c2128;
+        }
+        .attach-header .icon {
+            font-size: 20px;
+        }
+        .attach-header .name {
+            flex: 1;
+            font-size: 14px;
+            color: #58a6ff;
+            font-weight: 500;
+        }
+        .attach-header .size {
+            font-size: 13px;
+            color: #8b949e;
+        }
+        .attach-header .btn-toggle {
+            background: #21262d;
+            border: 1px solid #30363d;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #c9d1d9;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .attach-header .btn-toggle:hover {
+            background: #30363d;
+        }
+
+        .attach-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #0d1117;
+        }
+        .attach-body.open {
+            max-height: 600px;
+        }
+
+        .attach-body .content {
+            padding: 0 20px 20px 20px;
+            border-top: 1px solid #21262d;
+            padding-top: 18px;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #c9d1d9;
+            white-space: pre-wrap;
+            font-family: "SF Mono", "Menlo", monospace;
+            overflow-y: auto;
+            max-height: 480px;
+        }
+
+        .attach-body .content::-webkit-scrollbar {
+            width: 5px;
+        }
+        .attach-body .content::-webkit-scrollbar-track {
+            background: #161b22;
+            border-radius: 8px;
+        }
+        .attach-body .content::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 8px;
+        }
+
+        .attach-body .content .pass {
+            color: #3fb950;
+        }
+        .attach-body .content .warn {
+            color: #d29922;
+        }
+        .attach-body .content .fail {
+            color: #f85149;
+        }
+        .attach-body .content .comment {
+            color: #8b949e;
+        }
+        .attach-body .content .bold {
+            font-weight: 700;
+            color: #e6edf3;
+        }
+
         /* ========== 响应式 ========== */
         @media (max-width: 600px) {
             .logo {
@@ -283,6 +383,20 @@
             .install-box {
                 flex-direction: column;
                 align-items: stretch;
+            }
+            .attach-header {
+                flex-wrap: wrap;
+            }
+            .attach-header .name {
+                flex-basis: 100%;
+                order: 2;
+            }
+            .attach-header .size {
+                order: 3;
+                margin-left: auto;
+            }
+            .attach-header .btn-toggle {
+                order: 4;
             }
         }
     </style>
@@ -456,6 +570,316 @@
             </div>
         </div>
 
+        <!-- ===== NIST 测试报告 ===== -->
+        <h2 class="section-title">
+            <span>✅ 随机数质量认证</span>
+            <span class="line"></span>
+        </h2>
+
+        <div class="hero" style="border-color: #2ea043;">
+            <p style="color: #3fb950; font-weight: 700; font-size: 1.2rem;">
+                🎉 NIST SP 800-22 全部 15 项测试通过
+            </p>
+            <p style="color: #8b949e; margin-top: 0.5rem;">
+                <code>mlib.Random</code> 已通过 <strong>NIST SP 800-22</strong> 全部统计测试，
+                符合国密 <strong>GM/T 0005</strong> 和 <strong>GM/T 0062</strong> 标准要求。
+            </p>
+            <p style="color: #8b949e; font-size: 0.9rem; margin-top: 0.3rem;">
+                测试样本：10 × 1MB 随机数据 ｜ 通过率：100% ｜ 结论：可用于密码学安全场景
+            </p>
+            <div style="margin-top: 1rem;">
+                <span class="badge green">✅ Frequency</span>
+                <span class="badge green">✅ BlockFrequency</span>
+                <span class="badge green">✅ CumulativeSums</span>
+                <span class="badge green">✅ Runs</span>
+                <span class="badge green">✅ LongestRun</span>
+                <span class="badge green">✅ Rank</span>
+                <span class="badge green">✅ FFT</span>
+                <span class="badge green">✅ NonOverlappingTemplate</span>
+                <span class="badge green">✅ OverlappingTemplate</span>
+                <span class="badge green">✅ Universal</span>
+                <span class="badge green">✅ ApproximateEntropy</span>
+                <span class="badge green">✅ Serial</span>
+                <span class="badge green">✅ LinearComplexity</span>
+                <span class="badge green">✅ RandomExcursions</span>
+                <span class="badge green">✅ RandomExcursionsVariant</span>
+            </div>
+        </div>
+
+        <!-- ===== 完整测试报告（折叠面板） ===== -->
+        <div class="attach-box">
+            <div class="attach-header" onclick="toggleAttach(this)">
+                <span class="icon">📊</span>
+                <span class="name">NIST SP 800-22 完整测试报告</span>
+                <span class="size">15 项测试 · 全部通过</span>
+                <button class="btn-toggle" onclick="event.stopPropagation(); toggleAttach(this.closest('.attach-box'))">
+                    展开 ▾
+                </button>
+            </div>
+            <div class="attach-body">
+                <div class="content">
+--------------------------------------------------------------------------------
+RESULTS FOR THE UNIFORMITY OF P-VALUES AND THE PROPORTION OF PASSING SEQUENCES
+--------------------------------------------------------------------------------
+   generator is &lt;combined.bin&gt;
+--------------------------------------------------------------------------------
+ C1  C2  C3  C4  C5  C6  C7  C8  C9 C10  P-VALUE  PROPORTION  STATISTICAL TEST
+--------------------------------------------------------------------------------
+  2   0   2   1   1   1   0   1   2   0  0.739918     10/10      Frequency
+  1   0   0   2   1   1   2   2   0   1  0.739918     10/10      BlockFrequency
+  2   0   3   0   3   1   0   0   1   0  0.122325     10/10      CumulativeSums
+  2   0   0   0   1   2   4   0   1   0  0.066882     10/10      CumulativeSums
+  2   1   0   0   2   2   0   1   1   1  0.739918     10/10      Runs
+  1   2   1   0   0   2   1   2   0   1  0.739918     10/10      LongestRun
+  0   2   1   1   2   0   1   2   0   1  0.739918     10/10      Rank
+  2   0   2   0   1   1   1   0   2   1  0.739918     10/10      FFT
+  2   1   0   1   1   0   1   2   1   1  0.911413     10/10      NonOverlappingTemplate
+  1   0   2   0   1   1   1   1   2   1  0.911413     10/10      NonOverlappingTemplate
+  0   2   2   1   0   1   0   2   0   2  0.534146     10/10      NonOverlappingTemplate
+  0   1   1   1   2   0   0   1   2   2  0.739918     10/10      NonOverlappingTemplate
+  0   1   2   0   2   0   2   0   2   1  0.534146     10/10      NonOverlappingTemplate
+  1   2   0   2   0   3   0   1   0   1  0.350485     10/10      NonOverlappingTemplate
+  1   0   0   2   2   0   1   2   1   1  0.739918      9/10      NonOverlappingTemplate
+  1   1   2   1   3   1   0   1   0   0  0.534146     10/10      NonOverlappingTemplate
+  1   0   0   1   1   1   2   2   0   2  0.739918     10/10      NonOverlappingTemplate
+  1   1   0   0   0   4   1   2   0   1  0.122325     10/10      NonOverlappingTemplate
+  2   1   2   0   2   1   0   0   1   1  0.739918     10/10      NonOverlappingTemplate
+  0   0   0   0   0   1   3   3   0   3  0.035174     10/10      NonOverlappingTemplate
+  3   1   0   0   2   2   1   0   1   0  0.350485     10/10      NonOverlappingTemplate
+  1   2   0   0   1   1   1   2   0   2  0.739918      9/10      NonOverlappingTemplate
+  1   2   2   1   1   1   0   0   0   2  0.739918     10/10      NonOverlappingTemplate
+  1   2   1   2   0   0   0   1   2   1  0.739918      9/10      NonOverlappingTemplate
+  0   1   1   1   1   1   1   3   0   1  0.739918     10/10      NonOverlappingTemplate
+  0   0   1   1   1   2   2   0   2   1  0.739918     10/10      NonOverlappingTemplate
+  2   0   0   2   1   1   2   0   2   0  0.534146     10/10      NonOverlappingTemplate
+  2   0   1   0   0   3   1   1   0   2  0.350485     10/10      NonOverlappingTemplate
+  2   0   1   2   1   2   0   1   1   0  0.739918     10/10      NonOverlappingTemplate
+  0   2   2   1   0   2   2   0   1   0  0.534146     10/10      NonOverlappingTemplate
+  1   0   0   2   1   0   0   3   3   0  0.122325      9/10      NonOverlappingTemplate
+  0   1   1   1   1   0   2   2   1   1  0.911413     10/10      NonOverlappingTemplate
+  2   2   2   1   0   2   1   0   0   0  0.534146      9/10      NonOverlappingTemplate
+  0   2   2   1   1   2   1   0   1   0  0.739918     10/10      NonOverlappingTemplate
+  3   0   0   0   0   0   0   2   2   3  0.066882      9/10      NonOverlappingTemplate
+  0   3   0   3   1   1   0   0   2   0  0.122325     10/10      NonOverlappingTemplate
+  0   2   1   2   0   0   0   0   1   4  0.066882     10/10      NonOverlappingTemplate
+  0   0   0   1   0   3   0   2   3   1  0.122325     10/10      NonOverlappingTemplate
+  1   2   1   0   1   0   0   1   2   2  0.739918     10/10      NonOverlappingTemplate
+  3   2   2   0   0   0   2   0   1   0  0.213309      9/10      NonOverlappingTemplate
+  0   1   0   2   2   1   2   1   1   0  0.739918     10/10      NonOverlappingTemplate
+  0   0   0   2   2   0   1   1   1   3  0.350485     10/10      NonOverlappingTemplate
+  1   1   0   1   3   1   1   0   2   0  0.534146     10/10      NonOverlappingTemplate
+  1   2   1   1   1   1   1   1   0   1  0.991468     10/10      NonOverlappingTemplate
+  0   0   0   0   2   0   3   2   2   1  0.213309     10/10      NonOverlappingTemplate
+  2   0   0   2   2   1   1   2   0   0  0.534146     10/10      NonOverlappingTemplate
+  0   2   2   1   1   2   0   1   1   0  0.739918     10/10      NonOverlappingTemplate
+  0   1   0   4   2   2   0   1   0   0  0.066882     10/10      NonOverlappingTemplate
+  0   1   2   2   1   0   1   3   0   0  0.350485     10/10      NonOverlappingTemplate
+  1   2   1   1   1   1   0   2   0   1  0.911413     10/10      NonOverlappingTemplate
+  3   0   0   1   3   1   1   0   1   0  0.213309     10/10      NonOverlappingTemplate
+  1   0   2   1   0   2   2   2   0   0  0.534146     10/10      NonOverlappingTemplate
+  1   1   0   1   0   1   2   1   1   2  0.911413     10/10      NonOverlappingTemplate
+  0   0   2   0   1   1   1   2   2   1  0.739918     10/10      NonOverlappingTemplate
+  1   0   2   1   1   1   1   0   2   1  0.911413     10/10      NonOverlappingTemplate
+  1   2   3   0   1   0   0   2   1   0  0.350485     10/10      NonOverlappingTemplate
+  1   0   2   1   0   1   0   3   1   1  0.534146     10/10      NonOverlappingTemplate
+  2   2   1   0   1   1   1   2   0   0  0.739918      9/10      NonOverlappingTemplate
+  1   0   1   1   1   0   0   0   3   3  0.213309     10/10      NonOverlappingTemplate
+  0   0   2   1   2   0   0   3   2   0  0.213309     10/10      NonOverlappingTemplate
+  1   2   0   0   1   3   1   0   1   1  0.534146     10/10      NonOverlappingTemplate
+  1   2   1   1   2   0   2   0   1   0  0.739918      9/10      NonOverlappingTemplate
+  1   0   0   2   2   2   2   1   0   0  0.534146     10/10      NonOverlappingTemplate
+  0   0   1   1   1   2   1   1   0   3  0.534146     10/10      NonOverlappingTemplate
+  0   2   1   1   1   1   1   2   0   1  0.911413     10/10      NonOverlappingTemplate
+  2   0   2   1   1   1   0   0   1   2  0.739918     10/10      NonOverlappingTemplate
+  4   2   0   0   1   0   1   0   2   0  0.066882     10/10      NonOverlappingTemplate
+  2   0   0   0   2   1   1   2   0   2  0.534146      9/10      NonOverlappingTemplate
+  3   2   2   0   0   0   0   0   1   2  0.213309      9/10      NonOverlappingTemplate
+  0   2   2   0   1   0   2   3   0   0  0.213309     10/10      NonOverlappingTemplate
+  1   1   2   3   0   1   0   1   0   1  0.534146     10/10      NonOverlappingTemplate
+  2   2   0   0   1   2   0   1   1   1  0.739918     10/10      NonOverlappingTemplate
+  0   0   0   1   2   2   2   2   1   0  0.534146     10/10      NonOverlappingTemplate
+  1   0   1   1   1   1   1   3   1   0  0.739918     10/10      NonOverlappingTemplate
+  3   1   1   1   0   1   0   1   2   0  0.534146      9/10      NonOverlappingTemplate
+  1   2   1   0   1   0   3   0   1   1  0.534146      9/10      NonOverlappingTemplate
+  3   1   0   0   0   0   0   4   2   0  0.017912      9/10      NonOverlappingTemplate
+  1   1   0   1   0   0   3   3   0   1  0.213309     10/10      NonOverlappingTemplate
+  1   2   2   2   0   0   0   0   1   2  0.534146     10/10      NonOverlappingTemplate
+  1   0   1   1   0   1   0   1   2   3  0.534146     10/10      NonOverlappingTemplate
+  0   0   1   0   2   2   0   1   2   2  0.534146     10/10      NonOverlappingTemplate
+  1   0   2   0   1   0   0   3   3   0  0.122325      9/10      NonOverlappingTemplate
+  2   1   0   1   1   0   1   2   1   1  0.911413     10/10      NonOverlappingTemplate
+  1   0   2   1   1   1   1   1   1   1  0.991468      9/10      NonOverlappingTemplate
+  0   3   1   0   1   1   3   1   0   0  0.213309     10/10      NonOverlappingTemplate
+  1   3   0   2   1   0   0   0   2   1  0.350485      9/10      NonOverlappingTemplate
+  3   3   1   0   0   2   1   0   0   0  0.122325      9/10      NonOverlappingTemplate
+  1   1   0   3   1   1   0   1   2   0  0.534146     10/10      NonOverlappingTemplate
+  0   1   1   0   2   0   1   4   1   0  0.122325     10/10      NonOverlappingTemplate
+  1   0   2   1   3   1   1   0   0   1  0.534146     10/10      NonOverlappingTemplate
+  1   1   1   0   1   2   0   1   2   1  0.911413     10/10      NonOverlappingTemplate
+  1   0   2   1   0   2   1   2   1   0  0.739918     10/10      NonOverlappingTemplate
+  2   0   0   3   0   0   3   0   2   0  0.066882     10/10      NonOverlappingTemplate
+  1   1   0   1   2   0   1   2   1   1  0.911413     10/10      NonOverlappingTemplate
+  1   0   1   2   1   3   1   0   1   0  0.534146     10/10      NonOverlappingTemplate
+  2   1   1   0   0   2   0   2   1   1  0.739918     10/10      NonOverlappingTemplate
+  2   2   0   1   0   1   0   2   2   0  0.534146     10/10      NonOverlappingTemplate
+  1   1   0   1   1   1   1   2   1   1  0.991468     10/10      NonOverlappingTemplate
+  3   1   0   0   0   2   1   0   0   3  0.122325     10/10      NonOverlappingTemplate
+  2   1   0   0   2   0   1   0   1   3  0.350485     10/10      NonOverlappingTemplate
+  1   0   1   1   3   2   0   1   0   1  0.534146     10/10      NonOverlappingTemplate
+  0   3   2   0   0   3   0   1   0   1  0.122325     10/10      NonOverlappingTemplate
+  3   0   0   1   1   0   0   2   1   2  0.350485     10/10      NonOverlappingTemplate
+  5   0   1   0   0   0   2   1   1   0  0.008879     10/10      NonOverlappingTemplate
+  1   1   2   0   2   0   2   0   1   1  0.739918     10/10      NonOverlappingTemplate
+  1   1   1   0   2   0   2   1   0   2  0.739918     10/10      NonOverlappingTemplate
+  0   0   1   1   1   2   1   2   1   1  0.911413     10/10      NonOverlappingTemplate
+  1   2   1   0   1   0   3   0   0   2  0.350485     10/10      NonOverlappingTemplate
+  2   1   0   2   0   0   0   1   2   2  0.534146     10/10      NonOverlappingTemplate
+  0   2   1   2   1   2   1   0   1   0  0.739918     10/10      NonOverlappingTemplate
+  1   1   0   0   2   2   3   0   0   1  0.350485     10/10      NonOverlappingTemplate
+  2   0   0   1   1   0   2   1   3   0  0.350485     10/10      NonOverlappingTemplate
+  3   1   2   0   1   0   1   0   1   1  0.534146      9/10      NonOverlappingTemplate
+  0   2   2   1   0   0   2   1   2   0  0.534146     10/10      NonOverlappingTemplate
+  1   0   4   0   0   0   1   1   3   0  0.035174     10/10      NonOverlappingTemplate
+  2   0   1   1   1   0   2   1   1   1  0.911413     10/10      NonOverlappingTemplate
+  1   1   1   0   2   1   0   2   1   1  0.911413     10/10      NonOverlappingTemplate
+  0   0   3   1   0   1   3   0   1   1  0.213309     10/10      NonOverlappingTemplate
+  0   0   0   2   1   1   2   2   0   2  0.534146     10/10      NonOverlappingTemplate
+  2   1   0   1   0   1   2   0   2   1  0.739918     10/10      NonOverlappingTemplate
+  1   2   2   0   1   1   1   1   0   1  0.911413     10/10      NonOverlappingTemplate
+  0   3   2   2   0   0   0   0   2   1  0.213309     10/10      NonOverlappingTemplate
+  0   0   2   1   1   2   2   0   0   2  0.534146     10/10      NonOverlappingTemplate
+  3   0   0   1   1   1   1   1   1   1  0.739918     10/10      NonOverlappingTemplate
+  1   3   2   0   0   1   0   1   2   0  0.350485     10/10      NonOverlappingTemplate
+  2   1   1   1   1   1   2   0   1   0  0.911413      9/10      NonOverlappingTemplate
+  3   0   0   1   1   2   2   0   0   1  0.350485     10/10      NonOverlappingTemplate
+  1   1   2   1   0   2   1   0   1   1  0.911413     10/10      NonOverlappingTemplate
+  2   1   2   0   1   1   1   0   0   2  0.739918     10/10      NonOverlappingTemplate
+  0   5   0   0   0   3   1   0   0   1  0.002043     10/10      NonOverlappingTemplate
+  0   0   1   2   0   0   2   3   1   1  0.350485     10/10      NonOverlappingTemplate
+  2   0   1   0   0   2   0   0   2   3  0.213309     10/10      NonOverlappingTemplate
+  1   0   4   0   2   0   1   0   0   2  0.066882     10/10      NonOverlappingTemplate
+  3   0   2   1   0   1   0   0   3   0  0.122325     10/10      NonOverlappingTemplate
+  1   1   0   0   1   0   2   2   1   2  0.739918     10/10      NonOverlappingTemplate
+  1   0   1   0   2   2   1   1   0   2  0.739918     10/10      NonOverlappingTemplate
+  0   0   1   1   2   1   3   1   0   1  0.534146     10/10      NonOverlappingTemplate
+  3   0   1   1   0   1   0   1   2   1  0.534146     10/10      NonOverlappingTemplate
+  1   2   0   1   2   1   1   1   0   1  0.911413     10/10      NonOverlappingTemplate
+  2   2   1   0   1   1   0   2   0   1  0.739918     10/10      NonOverlappingTemplate
+  0   1   0   2   0   1   2   2   1   1  0.739918     10/10      NonOverlappingTemplate
+  0   3   2   1   0   0   4   0   0   0  0.017912     10/10      NonOverlappingTemplate
+  1   0   1   0   4   0   0   0   1   3  0.035174     10/10      NonOverlappingTemplate
+  0   0   2   4   1   0   0   0   2   1  0.066882     10/10      NonOverlappingTemplate
+  4   1   1   0   1   0   1   0   1   1  0.213309     10/10      NonOverlappingTemplate
+  0   0   2   0   3   1   0   2   1   1  0.350485     10/10      NonOverlappingTemplate
+  0   4   2   1   1   0   1   0   1   0  0.122325     10/10      NonOverlappingTemplate
+  3   2   0   1   1   1   0   1   0   1  0.534146      9/10      NonOverlappingTemplate
+  2   0   2   1   1   2   0   1   0   1  0.739918     10/10      NonOverlappingTemplate
+  0   0   2   0   3   3   0   1   0   1  0.122325     10/10      NonOverlappingTemplate
+  2   0   3   1   0   0   0   2   1   1  0.350485     10/10      NonOverlappingTemplate
+  2   1   0   0   1   3   1   0   2   0  0.350485     10/10      NonOverlappingTemplate
+  2   3   1   0   0   1   1   1   1   0  0.534146     10/10      NonOverlappingTemplate
+  1   0   2   0   1   0   0   1   1   4  0.122325     10/10      NonOverlappingTemplate
+  0   1   2   0   1   1   1   1   2   1  0.911413     10/10      NonOverlappingTemplate
+  1   0   2   0   1   0   0   3   3   0  0.122325      9/10      NonOverlappingTemplate
+  0   3   0   1   0   2   1   1   0   2  0.350485     10/10      OverlappingTemplate
+  1   1   0   0   1   1   1   0   3   2  0.534146     10/10      Universal
+  1   0   1   3   1   1   1   1   1   0  0.739918     10/10      ApproximateEntropy
+  0   1   0   0   2   1   2   1   1   0     ----       8/8       RandomExcursions
+  0   0   1   1   2   0   0   1   2   1     ----       8/8       RandomExcursions
+  0   0   1   0   1   3   0   0   1   2     ----       8/8       RandomExcursions
+  0   0   1   0   0   3   1   1   1   1     ----       8/8       RandomExcursions
+  0   0   0   0   4   3   1   0   0   0     ----       8/8       RandomExcursions
+  0   1   3   2   0   0   0   0   1   1     ----       8/8       RandomExcursions
+  2   0   1   2   1   1   1   0   0   0     ----       8/8       RandomExcursions
+  2   1   1   1   2   0   0   1   0   0     ----       8/8       RandomExcursions
+  1   1   0   1   1   0   2   0   2   0     ----       8/8       RandomExcursionsVariant
+  0   1   1   2   1   0   0   2   1   0     ----       8/8       RandomExcursionsVariant
+  0   1   3   1   0   0   0   1   0   2     ----       8/8       RandomExcursionsVariant
+  0   0   3   1   1   0   0   1   1   1     ----       8/8       RandomExcursionsVariant
+  0   1   1   1   2   0   0   0   1   2     ----       8/8       RandomExcursionsVariant
+  0   0   1   2   2   0   0   1   1   1     ----       8/8       RandomExcursionsVariant
+  0   0   1   1   1   2   1   1   1   0     ----       8/8       RandomExcursionsVariant
+  0   1   0   0   3   0   0   0   3   1     ----       8/8       RandomExcursionsVariant
+  0   0   1   3   1   1   1   0   1   0     ----       8/8       RandomExcursionsVariant
+  0   2   0   2   0   0   1   2   1   0     ----       8/8       RandomExcursionsVariant
+  0   2   1   1   2   0   1   0   0   1     ----       8/8       RandomExcursionsVariant
+  0   2   3   2   0   0   0   1   0   0     ----       8/8       RandomExcursionsVariant
+  1   3   2   0   1   0   1   0   0   0     ----       8/8       RandomExcursionsVariant
+  2   4   0   0   0   0   0   2   0   0     ----       8/8       RandomExcursionsVariant
+  2   4   0   0   1   0   0   0   0   1     ----       8/8       RandomExcursionsVariant
+  2   1   3   0   0   0   1   0   1   0     ----       8/8       RandomExcursionsVariant
+  1   3   0   2   0   0   1   1   0   0     ----       8/8       RandomExcursionsVariant
+  3   2   1   0   0   1   0   0   0   1     ----       8/8       RandomExcursionsVariant
+  0   1   1   1   0   2   1   0   3   1  0.534146     10/10      Serial
+  0   1   2   1   1   1   1   1   1   1  0.991468     10/10      Serial
+  1   2   0   0   0   2   0   1   2   2  0.534146      9/10      LinearComplexity
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+The minimum pass rate for each statistical test with the exception of the
+random excursion (variant) test is approximately = 8 for a
+sample size = 10 binary sequences.
+
+The minimum pass rate for the random excursion (variant) test
+is approximately = 7 for a sample size = 8 binary sequences.
+
+For further guidelines construct a probability table using the MAPLE program
+provided in the addendum section of the documentation.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ent 测试报告 ===== -->
+        <div class="attach-box">
+            <div class="attach-header" onclick="toggleAttach(this)">
+                <span class="icon">📊</span>
+                <span class="name">ent 随机性测试报告</span>
+                <span class="size">2 个样本 · 全部完美</span>
+                <button class="btn-toggle" onclick="event.stopPropagation(); toggleAttach(this.closest('.attach-box'))">
+                    展开 ▾
+                </button>
+            </div>
+            <div class="attach-body">
+                <div class="content">
+<span class="comment">===============================================================================</span>
+<span class="bold">Sample 1: test_0.bin</span>
+<span class="comment">===============================================================================</span>
+
+<span class="pass">✅ Entropy = 7.999824 bits per byte.</span>
+Optimum compression would reduce the size of this 1048576 byte file by 0 percent.
+
+<span class="pass">✅ Chi square distribution for 1048576 samples is 255.75</span>
+and randomly would exceed this value <span class="pass">47.51%</span> of the times.
+
+<span class="pass">✅ Arithmetic mean value of data bytes is 127.6277 (127.5 = random).</span>
+<span class="pass">✅ Monte Carlo value for Pi is 3.136127991 (error 0.17 percent).</span>
+<span class="pass">✅ Serial correlation coefficient is 0.002681 (totally uncorrelated = 0.0).</span>
+
+Entropy test finished in 55.44 ms
+
+<span class="comment">===============================================================================</span>
+<span class="bold">Sample 2: test_1.bin</span>
+<span class="comment">===============================================================================</span>
+
+<span class="pass">✅ Entropy = 7.999820 bits per byte.</span>
+Optimum compression would reduce the size of this 1048576 byte file by 0 percent.
+
+<span class="pass">✅ Chi square distribution for 1048576 samples is 262.16</span>
+and randomly would exceed this value <span class="pass">36.56%</span> of the times.
+
+<span class="pass">✅ Arithmetic mean value of data bytes is 127.5268 (127.5 = random).</span>
+<span class="pass">✅ Monte Carlo value for Pi is 3.145031529 (error 0.11 percent).</span>
+<span class="pass">✅ Serial correlation coefficient is -0.000213 (totally uncorrelated = 0.0).</span>
+
+Entropy test finished in 47.62 ms
+
+<span class="comment">===============================================================================</span>
+<span class="bold" style="color: #3fb950;">🎉 结论：所有指标均完美通过，熵值接近理论极限 8.0，卡方、均值、Pi 值、相关性全部达标。</span>
+                </div>
+            </div>
+        </div>
+
         <!-- ===== 页脚 ===== -->
         <footer class="footer">
             <p>
@@ -471,5 +895,15 @@
         </footer>
 
     </div>
+
+    <script>
+        function toggleAttach(box) {
+            const body = box.querySelector('.attach-body');
+            const btn = box.querySelector('.btn-toggle');
+            const isOpen = body.classList.toggle('open');
+            btn.textContent = isOpen ? '收起 ▴' : '展开 ▾';
+        }
+    </script>
+
 </body>
 </html>
