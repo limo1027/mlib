@@ -8,11 +8,14 @@ phi = 1.618033988749895
 EPSILON = 1e-18
 INF = float('inf')
 
+
 class MathError(BaseException):
     pass
 
+
 class UndeFinedError(MathError):
     pass
+
 
 class Complex:
     def __init__(self, real, imag=None):
@@ -96,9 +99,11 @@ class Complex:
 
     def __mod__(self, other):
         if isinstance(other, (Complex, complex)):
-            raise TypeError("unsupported operand type(s) for %: 'complex' and 'complex'")
-        
+            raise TypeError(
+                "unsupported operand type(s) for %: 'complex' and 'complex'")
+
         return Complex(self.real % other, self.imag % other)
+
     def __truediv__(self, other):
         if isinstance(other, (int, float)):
             return Complex(self.real / other, self.imag / other)
@@ -126,6 +131,7 @@ class Complex:
     def __rpow__(self, other):
         other = self._to_Complex(other)
         return other ** self
+
     def __abs__(self):
         return (self.real ** 2 + self.imag ** 2) ** 0.5
 
@@ -142,13 +148,13 @@ class Complex:
     def __repr__(self):
         imag = round(self.imag, 12)
         real = round(self.real, 12)
-        
+
         # 消除 -0.0 和接近 0 的值
         if abs(real) < EPSILON:
             real = 0.0
         if abs(imag) < EPSILON:
             imag = 0.0
-        
+
         if real == 0:
             if imag == 1:
                 return "i"
@@ -193,33 +199,33 @@ class Complex:
             except ValueError as e:
                 raise TypeError(f"无法从字符串创建复数: {e}")
         raise TypeError(f"Unknown type: {type(number)}")
-    
+
     def _parse_complex_str(self, s):
         """解析复数字符串"""
         s = s.strip().replace(' ', '')
-        
+
         if not s:
             raise ValueError("空字符串不能解析为复数")
-        
+
         # 特殊值
         if s in ('i', 'j', '+i', '+j'):
             return (0, 1)
         if s in ('-i', '-j'):
             return (0, -1)
-        
+
         # 找到虚部标记
         imag_pos = -1
         for i, char in enumerate(s):
             if char in 'ij':
                 imag_pos = i
                 break
-        
+
         if imag_pos == -1:
             try:
                 return (float(s), 0)
             except ValueError:
                 raise ValueError(f"无法解析复数字符串: {s}")
-        
+
         # 🔥 修复：找到最后一个运算符的位置
         # 从 imag_pos 往前找 '+' 或 '-'
         op_pos = -1
@@ -227,7 +233,7 @@ class Complex:
             if s[i] in '+-':
                 op_pos = i
                 break
-        
+
         if op_pos == -1:
             # 没有运算符，整个字符串就是虚部
             real = 0.0
@@ -235,7 +241,7 @@ class Complex:
         else:
             real_str = s[:op_pos]
             imag_str = s[op_pos:imag_pos]
-            
+
             # 处理实部
             if real_str == '' or real_str == '+':
                 real = 0.0
@@ -246,7 +252,7 @@ class Complex:
                     real = float(real_str)
                 except ValueError:
                     raise ValueError(f"无法解析实数部分: {real_str}")
-        
+
         # 处理虚部系数
         if imag_str == '' or imag_str == '+':
             imag = 1.0
@@ -257,8 +263,9 @@ class Complex:
                 imag = float(imag_str)
             except ValueError:
                 raise ValueError(f"无法解析虚数部分: {imag_str}")
-        
+
         return (real, imag)
+
 
 def triangle_wave(t, period=1.0, amplitude=1.0, phase=0.0):
     """三角波"""
@@ -356,7 +363,7 @@ def _exp(x, terms=20):
 
     # 整数部分用乘法（e^整数 = e^1 累乘）
     e_pow_int = result  # 已经是 e^fractional_part
-    e1 = e # e 的近似值
+    e1 = e  # e 的近似值
 
     for _ in range(integer_part):
         e_pow_int *= e1
@@ -573,7 +580,9 @@ def cos(x):
         return (exp(ix) + exp(-ix)) / 2
 
     x = Frac(x)
-    return sin(x + pi/2)
+    pi_frac = Frac(314159265358979323846264,
+                   100000000000000000000000)
+    return sin(x + pi_frac/2)
 
 
 def sin(x):
@@ -591,7 +600,7 @@ def sin(x):
         return result
     if isinstance(x, (int, float)) and x > 1000:
         pi_frac = Frac(314159265358979323846264,
-                    100000000000000000000000)
+                       100000000000000000000000)
         x_frac = Frac(x)
         result = Frac(0, 1)
     else:
@@ -614,6 +623,7 @@ def sin(x):
         x_frac = -pi_frac - x_frac
 
     # 现在 x_frac 在 [-pi/2, pi/2]，泰勒展开（14项，到 x^27）
+    x_frac = float(x)
     term = x_frac
     n = 0
     for i in range(14):  # 到 x^27，双精度够
@@ -623,12 +633,19 @@ def sin(x):
 
     return float(result)
 
+
 def tan(x):
     """正切函数"""
+    from . import Frac
+    pi_frac = Frac(314159265358979323846264,
+                   100000000000000000000000)
+    x = Frac(x)
+    x = x % pi_frac
+    x = float(x)
     c = cos(x)
     if abs(c) < EPSILON:
         raise UndeFinedError("tan(x) 在 x = {:.6f} 处无定义".format(x))
-    return sin(x) / c
+    return float(Frac(sin(x)) / Frac(c))
 
 
 def cot(x):
@@ -831,14 +848,14 @@ def root(x, n=2):
     """n 次方根"""
     if n == 0:
         raise UndeFinedError("0 次方根无定义")
-    
+
     # 负数的奇数根
     if isinstance(x, (int, float)) and x < 0 and n % 2 == 1:
         return -((-x) ** (1.0 / n))
-    
+
     elif isinstance(x, (complex, Complex)) or n % 2 == 0:
         x = Complex(x)  # 就这么简单！
-    
+
     return x ** (1.0 / n)
 
 
@@ -1090,3 +1107,10 @@ def egcd(a, m):
     if x < 0:
         x = x % m0
     return x
+
+
+def relative_error(self_val, real_val):
+    """计算相对误差：|self - real| / |real|"""
+    if abs(real_val) < EPSILON:
+        return float('inf')  # 避免除以零
+    return abs(self_val - real_val) / abs(real_val)
