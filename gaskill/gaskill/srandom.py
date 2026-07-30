@@ -33,7 +33,7 @@ class Random:
         if moduli is None:
             moduli = [5, 7, 11, 13, 89, 97, 997, 991, 9971]
 
-        s = str(seed) + type(seed).__name__
+        s = str(seed) + type(seed).__name__ + str(id(seed))
         parts = [str(ord(c) * place) for place, c in enumerate(s, start=1)]
         big_str = ''.join(parts)
 
