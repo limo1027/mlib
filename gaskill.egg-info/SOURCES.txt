@@ -1,4 +1,5 @@
 LICENSE
+README.md
 setup.py
 gaskill/__init__.py
 gaskill.egg-info/PKG-INFO
@@ -7,6 +8,7 @@ gaskill.egg-info/dependency_links.txt
 gaskill.egg-info/top_level.txt
 gaskill/gaskill/__init__.py
 gaskill/gaskill/_roll.py
+gaskill/gaskill/abc.py
 gaskill/gaskill/sbase64.py
 gaskill/gaskill/scache.py
 gaskill/gaskill/scolor.py

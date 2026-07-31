@@ -14,14 +14,11 @@ env/
 dist/
 build/
 *.egg-info/
-
 # IDE 和系统文件
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
-SOURCES.txt
-PKG-INFO
 
 # 日志
 *.log
