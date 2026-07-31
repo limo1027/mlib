@@ -1,4 +1,5 @@
 from .sgeometry import Rect
+from .abc import ABC, abstractmethod
 _render_handlers = {}
 
 
@@ -24,27 +25,17 @@ def render_all(components):
     return all_cmds
 
 
-class UI:
+class UI(ABC):
     """UI 元素抽象基类"""
 
     def __init__(self, x, y, width, height):
         self.rect = Rect(x, y, width, height)
         self.visible = True
-        self._check_abstract()
 
-    def _check_abstract(self):
-        """检查子类是否实现了抽象方法"""
-        if type(self) is UI:
-            raise TypeError("UI 是抽象类，不能直接实例化")
-
-        # 检查必须实现的方法
-        for method in ['render']:
-            if getattr(self.__class__, method, None) is getattr(UI, method, None):
-                raise TypeError(f"必须实现抽象方法 {method}()")
-
+    @abstractmethod
     def render(self):
         """渲染（子类必须实现）"""
-        raise NotImplementedError("子类必须实现 render() 方法")
+        pass
 
     def handle_event(self, event):
         """处理事件（可选实现）"""
