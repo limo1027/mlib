@@ -591,11 +591,9 @@ def sin(x):
     if isinstance(x, (Complex, complex)):
         result = 0
         term = x
-        n = 0
         for i in range(20):  # 到 x^27，双精度够
             result += term
-            term = term * (-x * x / ((2*n + 2) * (2*n + 3)))
-            n += 1
+            term = term * (-x * x / ((2*i + 2) * (2*i + 3)))
 
         return result
     if isinstance(x, (int, float)) and x > 1000:
@@ -623,13 +621,12 @@ def sin(x):
         x_frac = -pi_frac - x_frac
 
     # 现在 x_frac 在 [-pi/2, pi/2]，泰勒展开（14项，到 x^27）
-    x_frac = float(x)
+    x_frac = float(x_frac)
     term = x_frac
-    n = 0
+
     for i in range(14):  # 到 x^27，双精度够
         result += term
-        term *= -x_frac * x_frac / ((2*n + 2) * (2*n + 3))
-        n += 1
+        term *= -x_frac * x_frac / ((2*i + 2) * (2*i + 3))
 
     return float(result)
 
