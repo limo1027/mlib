@@ -572,7 +572,7 @@ def ln(z):
     return _log_complex(z)
 
 
-def cos(x):
+def cos(x, fast=True):
     from . import Frac
     """余弦函数"""
     if isinstance(x, Complex):
@@ -582,10 +582,10 @@ def cos(x):
     x = Frac(x)
     pi_frac = Frac(314159265358979323846264,
                    100000000000000000000000)
-    return sin(x + pi_frac/2)
+    return sin(x + pi_frac/2, fast)
 
 
-def sin(x):
+def sin(x, fast=True):
     from . import Frac
 
     if isinstance(x, (Complex, complex)):
@@ -596,9 +596,9 @@ def sin(x):
             term = term * (-x * x / ((2*i + 2) * (2*i + 3)))
 
         return result
-    if isinstance(x, (int, float)) and x > 1000:
-        pi_frac = Frac(314159265358979323846264,
-                       100000000000000000000000)
+    if isinstance(x, (int, float)) and x > 1000 and (not fast):
+        pi_frac = Frac(31415926535897932384626433832795028841971,
+                       10000000000000000000000000000000000000000)
         x_frac = Frac(x)
         result = Frac(0, 1)
     else:
@@ -606,7 +606,6 @@ def sin(x):
         x_frac = x
         result = 0
     two_pi = pi_frac * 2
-
     # 周期规约到 [-pi, pi]
     x_frac = x_frac % two_pi
     if x_frac > pi_frac:
@@ -621,9 +620,8 @@ def sin(x):
         x_frac = -pi_frac - x_frac
 
     # 现在 x_frac 在 [-pi/2, pi/2]，泰勒展开（14项，到 x^27）
-    x_frac = float(x_frac)
     term = x_frac
-
+    x_frac = float(x_frac)
     for i in range(14):  # 到 x^27，双精度够
         result += term
         term *= -x_frac * x_frac / ((2*i + 2) * (2*i + 3))

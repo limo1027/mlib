@@ -1,4 +1,4 @@
-from .smath import gcd as _gcd, log_fast, EPSILON
+from .smath import gcd, log_fast, EPSILON
 
 
 def _is_int(floater):
@@ -31,6 +31,7 @@ def _perfect_root(n, k):
 
 class Frac:
     """轻量分数类"""
+    # __slots__ = ("n", "d")
 
     def __init__(self, numerator, denominator=None):
         """初始化分数"""
@@ -45,8 +46,7 @@ class Frac:
             numerator = -numerator
             denominator = -denominator
 
-        # 自己约分，不用 math
-        g = _gcd(numerator, denominator)
+        g = gcd(numerator, denominator)
         self.n = numerator // g
         self.d = denominator // g
 
@@ -122,14 +122,12 @@ class Frac:
         """分数取模 self % other"""
         other = self._to_frac(other)
 
-        # self / other = (a/b) / (c/d) = (a*d) / (b*c)
-        quotient = (self.n * other.d) / (self.d * other.n)
+        num = self.n * other.d
+        den = self.d * other.n
 
-        # 向下取整
-        from .smath import floor
-        k = floor(quotient)
+        k = num // den
 
-        # self - other × k
+        # self - other * k
         return self - other * k
 
     def __rmod__(self, other):
@@ -252,7 +250,6 @@ class Frac:
             length = spec[:-1].replace(".", "")
             length = int(length) if length else 0
             return self.as_percent(length)
-
 
         if spec == 'l' or spec == 'latex':
             if self.d == 1:

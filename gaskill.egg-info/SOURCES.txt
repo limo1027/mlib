@@ -9,6 +9,7 @@ gaskill.egg-info/top_level.txt
 gaskill/gaskill/__init__.py
 gaskill/gaskill/_roll.py
 gaskill/gaskill/abc.py
+gaskill/gaskill/pickle.py
 gaskill/gaskill/sbase64.py
 gaskill/gaskill/scache.py
 gaskill/gaskill/scolor.py
@@ -34,13 +35,13 @@ gaskill/gaskill/ssaver.py
 gaskill/gaskill/sstat.py
 gaskill/gaskill/sui.py
 gaskill/gaskill/svector.py
+gaskill/gaskill/type.py
 gaskill/plus/__init__.py
 gaskill/plus/bmp.py
 gaskill/plus/database.py
 gaskill/plus/decimal.py
 gaskill/plus/ecc.py
 gaskill/plus/hashlib.py
-gaskill/plus/pickle.py
 gaskill/plus/poly.py
 gaskill/plus/radical.py
 gaskill/plus/re.py

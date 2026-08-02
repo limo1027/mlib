@@ -1,6 +1,51 @@
-from gaskill import gcd
-
 prec = 50
+
+
+def get_e():
+    # 设置计算精度（比需要的多算几位，减少舍入误差）
+    precision = prec + 10
+
+    e = Decimal(0)
+    factorial = Decimal(1)  # 0! = 1
+
+    for n in range(0, precision * 2):  # 迭代足够多的项
+        if n > 0:
+            factorial *= n  # 计算 n!
+        e += Decimal(1) / factorial
+    return e
+
+
+def compute_ln2():
+    """使用 arctanh 级数计算 ln(2) 到指定精度"""
+    precision = prec
+    # 常数：1/3
+    one_third = Decimal(1) / Decimal(3)
+
+    # 级数求和
+    term = one_third
+    n = 1
+    result = Decimal(0)
+
+    while True:
+        # 当前项 = term / (2n-1)
+        current = term / Decimal(2*n - 1)
+
+        # 如果当前项小到可以忽略，停止
+        if current < Decimal(1) / (10 ** precision):
+            break
+
+        result += current
+
+        # 更新 term：term *= (1/3)^2 = term / 9
+        term = term / Decimal(9)
+        n += 1
+
+    return result * 2
+
+
+# 使用示例
+
+# 输出：0.6931471805599453094172321214581765680755001343602552
 
 
 class Decimal:
@@ -51,7 +96,8 @@ class Decimal:
                     frac_part = frac_part.rstrip('0')
                     if frac_part:
                         self.fr_len = len(frac_part)
-                        self.value = int(int_part + frac_part) if int_part else int(frac_part)
+                        self.value = int(
+                            int_part + frac_part) if int_part else int(frac_part)
                         if value < 0:
                             self.value = -self.value
                     else:
@@ -103,6 +149,9 @@ class Decimal:
         self._simplify()
 
     def _simplify(self):
+        if self.fr_len > prec:
+            self.value //= 10 ** (self.fr_len - prec)
+            self.fr_len = prec
         if self.value == 0:
             self.fr_len = 0
             return
@@ -154,6 +203,9 @@ class Decimal:
 
     def __neg__(self):
         return Decimal(-self.value, self.fr_len)
+
+    def __abs__(self):
+        return Decimal(abs(self.value), self.fr_len)
 
     def __mul__(self, other):
         other = self._to_decimal(other)
@@ -231,156 +283,86 @@ class Decimal:
 
     # ==================== pow 相关 ====================
 
-    def _ln_series(self, x, eps):
-        """级数计算 ln(x)，x > 0"""
-        if x.value <= 0:
-            raise ValueError("x 必须 > 0")
+    def exp(self, value):
+        if value < 0:
+            return 1.0 / self.exp(-value)
 
-        # 转成 float 计算，只用于 ln 内部
-        xf = float(x)
-        z = (xf - 1) / (xf + 1)
-        z2 = z * z
-        term = z
-        result = 0.0
-        n = 1
-
-        while abs(term) > eps:
+        int_part = int(value)
+        float_part = value - int_part
+        result = Decimal(1)
+        term = 1.0
+        i = 1
+        EPS = Decimal(1) / 10 ** prec
+        while abs(term) >= EPS:
+            term *= float_part / i
             result += term
-            n += 2
-            term = term * z2 * (n - 2) / n
+            i += 1
 
-        return 2 * result
+        e_pow_int = result  # 已经是 e^fractional_part
+        e1 = get_e()  # e 的近似值
 
+        for _ in range(int_part):
+            e_pow_int *= e1
 
-    def _ln_float(self, x, eps):
-        """ln 的 float 版本"""
-        if x <= 0:
-            raise ValueError("x 必须 > 0")
-        z = (x - 1) / (x + 1)
-        z2 = z * z
-        term = z
-        result = 0.0
-        n = 1
-        while abs(term) > eps:
-            result += term
-            n += 2
-            term = term * z2 * (n - 2) / n
-        return 2 * result
+        return e_pow_int
 
+    def ln(self, value):
+        EPS = Decimal(1) / 10 ** prec
+        if value <= 0:
+            raise ValueError("ln(x) 定义域为 x > 0")
+        if value < 1:
+            return -self.ln(1 / value)
+        exponent = 0
+        while value > 2:
+            value /= 2
+            exponent += 1
 
-    def _exp_newton(self, x_float, eps):
-        """牛顿法计算 e^x"""
-        # 处理负数
-        if x_float < 0:
-            return 1.0 / self._exp_newton(-x_float, eps)
+        y = (value - 1) / (value + 1)
 
-        # 缩放，让 x 在 [-0.5, 0.5] 区间
-        n = 1
-        x = x_float
-        while abs(x) > 0.5:
-            x /= 2
-            n *= 2
-
-        # 初值：泰勒二阶近似
-        y = 1.0 + x + x * x / 2
-
-        for _ in range(50):
-            ln_y = self._ln_float(y, eps / 10)
-            y_new = y * (1 - ln_y + x)
-            if abs(y_new - y) < eps:
+        result = 0
+        y_pow = y
+        i = 1
+        while True:
+            result += y_pow / i
+            y_pow *= y * y
+            if y_pow / (i + 2) < EPS:
                 break
-            y = y_new
 
-        # 还原缩放：y = y^n（用快速幂）
-        result = y
-        exp = n
-        while exp > 1:
-            result *= result
-            exp >>= 1
-        return result
+            i += 2
 
+        result *= 2
+        return result + exponent * compute_ln2()
 
     def __pow__(self, other):
-        other = self._to_decimal(other)
-        # 指数为 0
-        if other.value == 0:
+        result = self
+
+        if self == 1:
             return Decimal(1)
 
-        # 指数为整数：快速幂
-        if other.fr_len == 0:
-            result = Decimal(1)
-            base = self
-            exp = other.value
+        elif other == 0:
+            if self != 0:
+                return Decimal(1)
+            else:
+                raise ValueError("0^0 is undefined.")
 
-            if exp < 0:
-                base = Decimal(1) / base
-                exp = -exp
+        elif self == 0:
+            if other > 0:
+                return 0
+            else:
+                raise ValueError(f"{int(other)}^0 is undefined.")
 
-            if base.value < 0 and exp % 2 == 1:
-                result = Decimal(-1)
-                base = Decimal(abs(base.value), base.fr_len)
-            elif base.value < 0:
-                base = Decimal(abs(base.value), base.fr_len)
+        elif isinstance(other, int):
+            if other < 0:
+                return 1 / self ** (-other)
+            for _ in range(other-1):
+                result = result * self
 
-            while exp > 0:
-                if exp & 1:
-                    result = result * base
-                base = base * base
-                exp >>= 1
             return result
 
-        # 小数指数：负底数检查
-        if self.value < 0:
-            m = other.value
-            n = 10 ** other.fr_len
-            g = gcd(abs(m), n)
-            m //= g
-            n //= g
+        if isinstance(other, (float, Decimal)):
+            other = Decimal(other)
+            return self.exp(other * self.ln(self))
 
-            if n % 2 == 0:
-                raise ValueError("negative base with fractional exponent has no real solution")
-
-            abs_self = Decimal(abs(self.value), self.fr_len)
-            result = abs_self ** other
-            return -result
-
-        # 正底数：a^b = exp(b * ln(a))
-        a = float(self)
-        b = float(other)
-        neg = False
-        if b < 0:
-            b = -b
-            neg = True
-
-        eps = 10 ** (-prec - 2)
-        
-        # 先算 ln(a)
-        ln_a = self._ln_float(a, eps)
-        
-        # 再算 exp(b * ln_a)
-        result_float = self._exp_newton(b * ln_a, eps)
-        if neg:
-            result_float = 1 / result_float
-        # 转回 Decimal，四舍五入到 prec 位
-        result_str = f"{result_float:.{prec + 5}f}"
-        # 去掉末尾的 0
-        result_str = result_str.rstrip('0').rstrip('.')
-        
-        if '.' in result_str:
-            int_part, frac_part = result_str.split('.')
-            # 如果 frac_part 全是 0，转成整数
-            if frac_part and all(c == '0' for c in frac_part):
-                return Decimal(int(int_part), 0)
-            # 否则保留小数
-            value_str = int_part + frac_part
-            if result_float < 0:
-                value = -int(value_str)
-            else:
-                value = int(value_str)
-            return Decimal(value, len(frac_part))
-        else:
-            return Decimal(int(result_str), 0)
-        
     def __float__(self):
         return self.value / (10 ** self.fr_len)
 
@@ -407,7 +389,7 @@ class Decimal:
         if neg:
             result.insert(0, "-")
 
-        return f'Decimal("{''.join(result)}")'
+        return f'Decimal("{"".join(result)}")'
 
     def __str__(self):
         return repr(self)

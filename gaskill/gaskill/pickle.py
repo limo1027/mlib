@@ -1,6 +1,3 @@
-from gaskill.gaskill.smath import ceil
-
-
 def pack_float(num):
     """将浮点数转换为二进制表示"""
 
@@ -130,6 +127,7 @@ def pack_int(n, bits=None):
 
 
 def pack_str(n):
+    from .smath import ceil
     result = bin(int.from_bytes(n.encode(), "big"))[2:]
     return result.rjust(ceil(len(result) / 8) * 8, "0")
 

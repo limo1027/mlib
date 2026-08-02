@@ -118,17 +118,22 @@ class MathTester(TestCase):
     @test
     def test_sin(self):
         """测试 sin"""
-        self.assert_almost_equal(smath.sin(0), 0, places=12)
-        self.assert_almost_equal(smath.sin(smath.pi / 2), 1, places=12)
-        self.assert_almost_equal(smath.sin(smath.pi), 0, places=12)
-        self.assert_almost_equal(smath.sin(smath.pi * 3 / 2), -1, places=12)
+        self.assert_almost_equal(smath.sin(fast=False, x=0), 0, places=12)
+        self.assert_almost_equal(
+            smath.sin(fast=False, x=smath.pi / 2), 1, places=12)
+        self.assert_almost_equal(
+            smath.sin(fast=False, x=smath.pi), 0, places=12)
+        self.assert_almost_equal(
+            smath.sin(fast=False, x=smath.pi * 3 / 2), -1, places=12)
 
     @test
     def test_cos(self):
         """测试 cos"""
-        self.assert_almost_equal(smath.cos(0), 1, places=12)
-        self.assert_almost_equal(smath.cos(smath.pi / 2), 0, places=12)
-        self.assert_almost_equal(smath.cos(smath.pi), -1, places=12)
+
+        self.assert_almost_equal(
+            smath.cos(fast=False, x=smath.pi / 2), 0, places=12)
+        self.assert_almost_equal(
+            smath.cos(fast=False, x=smath.pi), -1, places=12)
 
     @test
     def test_tan(self):

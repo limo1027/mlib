@@ -19,6 +19,7 @@ build/
 .idea/
 .DS_Store
 Thumbs.db
+test*.py
 
 # 日志
 *.log

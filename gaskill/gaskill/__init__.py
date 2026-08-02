@@ -25,3 +25,4 @@ from .solver import *
 from .sstat import *
 from .sbase64 import *
 from .abc import *
+from .pickle import *
