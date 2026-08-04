@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: gaskill
-Version: 2.15.1
+Version: 2.15.2
 Summary: A comprehensive Python library for game development utilities
 Home-page: https://github.com/limo1027/gaskill
 Author: Limo
@@ -18,8 +18,26 @@ License-File: LICENSE
 Dynamic: author
 Dynamic: author-email
 Dynamic: classifier
+Dynamic: description
 Dynamic: description-content-type
 Dynamic: home-page
 Dynamic: license-file
 Dynamic: requires-python
 Dynamic: summary
+
+# Mlib
+一个0依赖库
+
+不依赖random，math等标准库
+
+纯python制作，不使用C拓展
+
+快速开始
+
+```bash
+git clone https://github.com/limo1027/mlib
+cd mlib
+python -c "from gaskill.test import run_test; run_test()"
+```
+
+[Learn More?](https://limo1027.github.io/mlib)

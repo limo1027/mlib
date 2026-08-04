@@ -3,8 +3,8 @@ from setuptools import Command
 import subprocess
 import sys
 import os
-long_description = ""
-VERSION = eval(os.getenv('VERSION', '"2.15.1"'))
+long_description = open("README.md").read()
+VERSION = eval(os.getenv('VERSION', '"2.15.2"'))
 
 
 def run(cmd, check=True):

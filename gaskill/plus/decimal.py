@@ -17,7 +17,7 @@ def get_e():
 
 def compute_ln2():
     """使用 arctanh 级数计算 ln(2) 到指定精度"""
-    precision = prec
+    precision = prec + 1
     # 常数：1/3
     one_third = Decimal(1) / Decimal(3)
 
@@ -31,7 +31,7 @@ def compute_ln2():
         current = term / Decimal(2*n - 1)
 
         # 如果当前项小到可以忽略，停止
-        if current < Decimal(1) / (10 ** precision):
+        if current <= Decimal(1) / (10 ** precision):
             break
 
         result += current
@@ -41,11 +41,6 @@ def compute_ln2():
         n += 1
 
     return result * 2
-
-
-# 使用示例
-
-# 输出：0.6931471805599453094172321214581765680755001343602552
 
 
 class Decimal:
@@ -211,8 +206,31 @@ class Decimal:
         other = self._to_decimal(other)
         return Decimal(self.value * other.value, self.fr_len + other.fr_len)
 
+    def __round__(self, value=0):
+        result = Decimal(self.value, self.fr_len)
+        if result.fr_len > value:
+            last = int(str(result.value)[value + 1])
+            result.value //= 10 ** (result.fr_len - value)
+            if last >= 5:
+                result.value += 1
+            result.fr_len = value
+        result._simplify()
+        return result
+
+    def __mod__(self, other):
+        other = self._to_decimal(other)
+        v1, v2, f = self._align(other)
+        return Decimal(v1 % v2, f)
+
     def __rmul__(self, other):
         return self * other
+
+    def __floordiv__(self, other):
+        result = self / other
+        if result.fr_len > 0:
+            result.value //= 10 ** result.fr_len
+            result.fr_len = 0
+        return result
 
     def __truediv__(self, other):
         other = self._to_decimal(other)
@@ -362,6 +380,9 @@ class Decimal:
         if isinstance(other, (float, Decimal)):
             other = Decimal(other)
             return self.exp(other * self.ln(self))
+
+    def __rpow__(self, other):
+        return other ** self
 
     def __float__(self):
         return self.value / (10 ** self.fr_len)
