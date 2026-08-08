@@ -28,10 +28,9 @@ class Random:
             n = sum(int(d) for d in str(n))
         return (n * m) % 1000
 
-    def hash(self, seed, moduli=None):
+    def hash(self, seed):
         """自定义哈希函数"""
-        if moduli is None:
-            moduli = [5, 7, 11, 13, 89, 97, 997, 991, 9971]
+        moduli = [5, 7, 11, 13, 89, 97, 997, 991, 9971]
 
         s = str(seed) + type(seed).__name__
         parts = [str(ord(c) * place) for place, c in enumerate(s, start=1)]
