@@ -1,4 +1,5 @@
-prec = 50
+from gaskill import factorial
+prec = 500
 
 
 def get_e():
@@ -414,3 +415,48 @@ class Decimal:
 
     def __str__(self):
         return repr(self)
+
+
+def pi():
+    """丘德诺夫斯基算法"""
+    global prec
+    prec = prec + 10
+
+    # 常数: 12 / 640320^(3/2)
+    C = Decimal(640320) ** Decimal('1.5')
+    constant = Decimal(12) / C
+
+    series_sum = Decimal(0)
+    n = 0
+
+    while True:
+        # 计算 (6n)!
+        fact_6n = Decimal(factorial(6 * n))
+
+        # 计算 (n!)^3
+        fact_n = Decimal(factorial(n))
+        fact_n_3 = fact_n ** 3
+
+        # 计算 (3n)!
+        fact_3n = Decimal(factorial(3 * n))
+
+        # 计算分子: (-1)^n * (6n)! * (13591409 + 545140134n)
+        numerator = fact_6n * Decimal(13591409 + 545140134 * n)
+        if n % 2 == 1:
+            numerator = -numerator
+
+        # 计算分母: (n!)^3 * (3n)! * 640320^(3n)
+        denominator = fact_n_3 * fact_3n * (Decimal(640320) ** (3 * n))
+
+        term = numerator / denominator
+
+        # 如果项小到可以忽略，停止
+        if abs(term) <= Decimal(1) / (10 ** (prec + 5)):
+            break
+
+        series_sum += term
+        n += 1
+
+    pi = Decimal(1) / (constant * series_sum)
+    pi = round(pi, prec - 10)
+    return pi
