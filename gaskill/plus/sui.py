@@ -1,5 +1,5 @@
-from .sgeometry import Rect
-from .abc import ABC, abstractmethod
+from gaskill import Rect
+from gaskill import ABC, abstractmethod
 _render_handlers = {}
 
 
