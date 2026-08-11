@@ -4,7 +4,7 @@ import subprocess
 import sys
 import os
 long_description = open("README.md").read()
-VERSION = eval(os.getenv('VERSION', '"2.17.0"'))
+VERSION = eval(os.getenv('VERSION', '"2.23.60679"'))
 
 
 def run(cmd, check=True):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from gaskill.gaskill.sfrac import Frac
-from gaskill.gaskill.smath import comb, prime_factors as factorize
-from gaskill.gaskill.sformat import superscript
+from gaskill import Frac
+from gaskill import comb, prime_factors as factorize
+from gaskill import superscript
 
 
 class Radical:

@@ -572,7 +572,7 @@ def ln(z):
     return _log_complex(z)
 
 
-def cos(x, fast=True):
+def cos(x, fast=False):
     from . import Frac
     """余弦函数"""
     if isinstance(x, Complex):
@@ -585,7 +585,7 @@ def cos(x, fast=True):
     return sin(x + pi_frac/2, fast)
 
 
-def sin(x, fast=True):
+def sin(x, fast=False):
     from . import Frac
 
     if isinstance(x, (Complex, complex)):

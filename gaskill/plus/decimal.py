@@ -416,8 +416,6 @@ class Decimal:
                 if string_value.startswith("-"):
                     string_value = string_value[1:]
                 last = int(string_value[value])
-                if value != prec:
-                    print(result.value, 10 ** (result.fr_len - value))
                 if result < 0:
                     result = -result
                     neg = True
