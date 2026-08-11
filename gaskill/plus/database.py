@@ -1,3 +1,6 @@
+from gaskill import DJB2
+
+
 class DiskKV:
     """极致优化 - 最小化对象分配"""
 
@@ -94,7 +97,7 @@ class DiskKV:
 
     def _find_empty_slot(self, key):
         """查找空位 - 使用内存缓存"""
-        start = hash(key) % self.capacity
+        start = DJB2(key) % self.capacity
         index = start
 
         # 先查内存中的空位缓存

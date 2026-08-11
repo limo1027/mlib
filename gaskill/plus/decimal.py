@@ -1,8 +1,100 @@
 from gaskill import factorial
-prec = 500
+prec = 50
 
 
-def get_e():
+def dec_exp(value):
+    if value < 0:
+        return 1.0 / dec_exp(-value)
+    int_part = int(value)
+    float_part = value - int_part
+    result = Decimal(1)
+    term = 1.0
+    i = 1
+    EPS = Decimal(1) / 10 ** prec
+    while abs(term) >= EPS:
+        term *= float_part / i
+        result += term
+        i += 1
+    e_pow_int = result  # 已经是 e^fractional_part
+    e1 = dec_e()  # e 的近似值
+    for _ in range(int_part):
+        e_pow_int *= e1
+    return e_pow_int
+
+
+def dec_ln(value):
+    EPS = Decimal(1) / 10 ** prec
+    if value <= 0:
+        raise ValueError("dec_ln(x) 定义域为 x > 0")
+    if value < 1:
+        return -dec_ln(1 / value)
+    exponent = 0
+    while value > 2:
+        value /= 2
+        exponent += 1
+
+    y = (value - 1) / (value + 1)
+    result = 0
+    y_pow = y
+    i = 1
+    while True:
+        result += y_pow / i
+        y_pow *= y * y
+        if y_pow / (i + 2) < EPS:
+            break
+
+        i += 2
+
+    result *= 2
+    return result + exponent * dec_ln2()
+
+
+def dec_pi():
+    """丘德诺夫斯基算法"""
+    global prec
+    _prec = prec + 10
+
+    # 常数: 12 / 640320^(3/2)
+    C = Decimal(640320) ** Decimal('1.5')
+    constant = Decimal(12) / C
+
+    series_sum = Decimal(0)
+    n = 0
+
+    while True:
+        # 计算 (6n)!
+        fact_6n = Decimal(factorial(6 * n))
+
+        # 计算 (n!)^3
+        fact_n = Decimal(factorial(n))
+        fact_n_3 = fact_n ** 3
+
+        # 计算 (3n)!
+        fact_3n = Decimal(factorial(3 * n))
+
+        # 计算分子: (-1)^n * (6n)! * (13591409 + 545140134n)
+        numerator = fact_6n * Decimal(13591409 + 545140134 * n)
+        if n % 2 == 1:
+            numerator = -numerator
+
+        # 计算分母: (n!)^3 * (3n)! * 640320^(3n)
+        denominator = fact_n_3 * fact_3n * (Decimal(640320) ** (3 * n))
+
+        term = numerator / denominator
+
+        # 如果项小到可以忽略，停止
+        if abs(term) <= Decimal(1) / (10 ** (_prec + 5)):
+            break
+
+        series_sum += term
+        n += 1
+
+    pi = Decimal(1) / (constant * series_sum)
+    pi = round(pi, _prec - 10)
+    return pi
+
+
+def dec_e():
     # 设置计算精度（比需要的多算几位，减少舍入误差）
     precision = prec + 10
 
@@ -16,8 +108,8 @@ def get_e():
     return e
 
 
-def compute_ln2():
-    """使用 arctanh 级数计算 ln(2) 到指定精度"""
+def dec_ln2():
+    """使用 arctanh 级数计算 dec_ln(2) 到指定精度"""
     precision = prec + 1
     # 常数：1/3
     one_third = Decimal(1) / Decimal(3)
@@ -42,6 +134,110 @@ def compute_ln2():
         n += 1
 
     return result * 2
+
+
+def dec_sin(x):
+    # 设置精度（多留几位余量）
+    precision = prec + 10
+
+    # 将输入转为 Decimal
+    if not isinstance(x, Decimal):
+        x = Decimal(str(x))
+    pi = dec_pi()
+
+    # ---- 第1步：角度规约到 [0, pi/2] ----
+    # 利用周期性、对称性
+    # 规约到 [-pi, pi]
+    two_pi = 2 * pi
+    x = x % two_pi
+    if x > pi:
+        x = x - two_pi
+
+    # 记录符号
+    sign = 1
+    if x < 0:
+        sign = -1
+        x = -x
+
+    # 利用 sin(x) = sin(pi - x) 规约到 [0, pi/2]
+    if x > pi / 2:
+        x = pi - x
+
+    # ---- 第2步：二倍角递归 ----
+    # 不断二分，直到角度足够小
+    # 目标是让 x / 2^n < 10^(-precision/2)
+    n = 0
+    target = Decimal(10) ** (-precision // 2)
+    x_copy = x
+    while x_copy > target:
+        x_copy /= 2
+        n += 1
+
+    # 如果 n 太大（角度本身就很小），限制一下
+    if n > 200:
+        n = 200
+
+    # 计算 sin(小角度) 用泰勒级数
+    # 小角度 = x / 2^n
+    small_angle = x / (Decimal(2) ** n)
+
+    # 泰勒级数：sin(θ) = θ - θ³/6 + θ⁵/120 - θ⁷/5040 + ...
+    sin_val = small_angle
+    term = small_angle
+    power = small_angle * small_angle
+    for k in range(1, precision):
+        term *= -power / ((2*k) * (2*k + 1))
+        sin_val += term
+        if abs(term) < Decimal(10) ** (-precision - 5):
+            break
+
+    # ---- 第3步：用二倍角公式回推 ----
+    # sin(2θ) = 2 * sin(θ) * cos(θ) = 2 * sin(θ) * sqrt(1 - sin²(θ))
+    # 这里 AGM 可以用来加速高精度开平方，但 decimal 的 sqrt 已经够快了
+    for _ in range(n):
+        cos_val = (1 - sin_val * sin_val) ** 0.5
+        sin_val = 2 * sin_val * cos_val
+
+    # 恢复符号
+    return sign * sin_val
+
+
+def dec_cos(x):
+    return dec_sin(x + dec_pi() / 2)
+
+
+def dec_atan(x):
+    sign = 1 if x >= 0 else -1
+    EPS = 10 ** -prec
+    precision = prec + 10
+    x = abs(x)
+
+    # 大 x 时用互补角公式
+    if x > 1:
+        return sign * (dec_pi() / 2 - dec_atan(1 / x))
+
+    t = x / (1 + (1 + x * x) ** 0.5)
+    t2 = t * t
+    term = t
+    result = 0
+    n = 1
+
+    for _ in range(precision):
+        result += term / n
+        term *= -t2
+        n += 2
+        if abs(term / n) < EPS:
+            break
+
+    return sign * 2 * result
+
+
+def asin(x):
+    if x == 1:
+        return dec_pi() / 2
+    if x == -1:
+        return -dec_pi() / 2
+    return dec_atan(x / (1 - x * x) ** 0.5)
 
 
 class Decimal:
@@ -145,9 +341,10 @@ class Decimal:
         self._simplify()
 
     def _simplify(self):
-        if self.fr_len > prec:
-            self.value //= 10 ** (self.fr_len - prec)
-            self.fr_len = prec
+        if self.fr_len > prec + 1:
+            result = round(self, prec)
+            self.value = result.value
+            self.fr_len = result.fr_len
         if self.value == 0:
             self.fr_len = 0
             return
@@ -208,15 +405,38 @@ class Decimal:
         return Decimal(self.value * other.value, self.fr_len + other.fr_len)
 
     def __round__(self, value=0):
-        result = Decimal(self.value, self.fr_len)
-        if result.fr_len > value:
-            last = int(str(result.value)[value + 1])
-            result.value //= 10 ** (result.fr_len - value)
-            if last >= 5:
-                result.value += 1
-            result.fr_len = value
-        result._simplify()
-        return result
+        result = Decimal(1)
+        result.fr_len = self.fr_len
+        result.value = self.value
+        neg = False
+        try:
+            if result.fr_len > value:
+                string_value = str(result.value).zfill(
+                    self.fr_len)[-self.fr_len:]
+                if string_value.startswith("-"):
+                    string_value = string_value[1:]
+                last = int(string_value[value])
+                if value != prec:
+                    print(result.value, 10 ** (result.fr_len - value))
+                if result < 0:
+                    result = -result
+                    neg = True
+                result.value //= 10 ** (result.fr_len - value)
+                if neg:
+                    result.value *= -1
+
+                if last >= 5:
+                    if result.value < 0:
+                        result.value -= 1
+                    else:
+                        result.value += 1
+                result.fr_len = value
+
+        except:
+            return self
+        else:
+            result._simplify()
+            return result
 
     def __mod__(self, other):
         other = self._to_decimal(other)
@@ -300,58 +520,6 @@ class Decimal:
     def __ge__(self, other):
         return not (self < other)
 
-    # ==================== pow 相关 ====================
-
-    def exp(self, value):
-        if value < 0:
-            return 1.0 / self.exp(-value)
-
-        int_part = int(value)
-        float_part = value - int_part
-        result = Decimal(1)
-        term = 1.0
-        i = 1
-        EPS = Decimal(1) / 10 ** prec
-        while abs(term) >= EPS:
-            term *= float_part / i
-            result += term
-            i += 1
-
-        e_pow_int = result  # 已经是 e^fractional_part
-        e1 = get_e()  # e 的近似值
-
-        for _ in range(int_part):
-            e_pow_int *= e1
-
-        return e_pow_int
-
-    def ln(self, value):
-        EPS = Decimal(1) / 10 ** prec
-        if value <= 0:
-            raise ValueError("ln(x) 定义域为 x > 0")
-        if value < 1:
-            return -self.ln(1 / value)
-        exponent = 0
-        while value > 2:
-            value /= 2
-            exponent += 1
-
-        y = (value - 1) / (value + 1)
-
-        result = 0
-        y_pow = y
-        i = 1
-        while True:
-            result += y_pow / i
-            y_pow *= y * y
-            if y_pow / (i + 2) < EPS:
-                break
-
-            i += 2
-
-        result *= 2
-        return result + exponent * compute_ln2()
-
     def __pow__(self, other):
         result = self
 
@@ -380,7 +548,7 @@ class Decimal:
 
         if isinstance(other, (float, Decimal)):
             other = Decimal(other)
-            return self.exp(other * self.ln(self))
+            return dec_exp(other * dec_ln(self))
 
     def __rpow__(self, other):
         return other ** self
@@ -415,48 +583,3 @@ class Decimal:
 
     def __str__(self):
         return repr(self)
-
-
-def pi():
-    """丘德诺夫斯基算法"""
-    global prec
-    prec = prec + 10
-
-    # 常数: 12 / 640320^(3/2)
-    C = Decimal(640320) ** Decimal('1.5')
-    constant = Decimal(12) / C
-
-    series_sum = Decimal(0)
-    n = 0
-
-    while True:
-        # 计算 (6n)!
-        fact_6n = Decimal(factorial(6 * n))
-
-        # 计算 (n!)^3
-        fact_n = Decimal(factorial(n))
-        fact_n_3 = fact_n ** 3
-
-        # 计算 (3n)!
-        fact_3n = Decimal(factorial(3 * n))
-
-        # 计算分子: (-1)^n * (6n)! * (13591409 + 545140134n)
-        numerator = fact_6n * Decimal(13591409 + 545140134 * n)
-        if n % 2 == 1:
-            numerator = -numerator
-
-        # 计算分母: (n!)^3 * (3n)! * 640320^(3n)
-        denominator = fact_n_3 * fact_3n * (Decimal(640320) ** (3 * n))
-
-        term = numerator / denominator
-
-        # 如果项小到可以忽略，停止
-        if abs(term) <= Decimal(1) / (10 ** (prec + 5)):
-            break
-
-        series_sum += term
-        n += 1
-
-    pi = Decimal(1) / (constant * series_sum)
-    pi = round(pi, prec - 10)
-    return pi

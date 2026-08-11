@@ -17,7 +17,6 @@ from .sfsm import *
 from .spool import *
 from .spathfinder import *
 from .ssaver import *
-from .sui import *
 from .sformat import *
 from .snoise import *
 from .scrypt import *
@@ -26,3 +25,4 @@ from .sstat import *
 from .sbase64 import *
 from .abc import *
 from .pickle import *
+from .hashlib import sha256, DJB2  # noqa: F401

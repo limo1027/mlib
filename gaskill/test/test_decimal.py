@@ -650,6 +650,28 @@ class DecimalTester(TestCase):
             self.assert_equal(result.value, expected_value)
             self.assert_equal(result.fr_len, expected_fr_len)
 
+    @test
+    def test_sin_precision(self):
+        """验证 sin 在关键点上的 Decimal 精度"""
+        decimal.prec = 60
+        pi = decimal.dec_pi()
+
+        # sin(pi/2) = 1: 直接用 Decimal 比较
+        self.assert_almost_equal(
+            decimal.dec_sin(pi / 2), decimal.Decimal(1), places=40)
+
+        # sin(pi) ≈ 0: 比较与 0 的差值
+        self.assert_almost_equal(
+            decimal.dec_sin(pi), decimal.Decimal(0), places=40)
+
+    @test
+    def test_sin_symmetry(self):
+        """验证 sin 的对称性：比较两个 Decimal 的差值"""
+        x = decimal.Decimal("1.23456789")
+        two_pi = 2 * decimal.dec_pi()
+        diff = decimal.dec_sin(x) - decimal.dec_sin(x + two_pi)
+        self.assert_true(abs(diff) < decimal.Decimal(10) ** (-45))
+
 
 if __name__ == "__main__":
     runner = TestRunner()

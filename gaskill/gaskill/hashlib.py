@@ -178,8 +178,9 @@ def sha256(message):
 
     return result
 
-def DJB2(s, capacity):
+
+def DJB2(s, capacity=0xffffffff):
     h = 5381
     for byte in s.encode('utf-8'):
-        h = ((h * 33) + byte) & 0x7fffffff
+        h = ((h * 33) + byte) % capacity
     return h % capacity

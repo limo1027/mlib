@@ -3,8 +3,8 @@ ECDSA 签名 - 用户自定义临时私钥 k
 用户提供：私钥、消息、临时私钥 k
 """
 
-from .hashlib import sha256
-from ..gaskill.smath import egcd as mod_inv
+from gaskill import sha256
+from gaskill import egcd as mod_inv
 
 
 class Point:

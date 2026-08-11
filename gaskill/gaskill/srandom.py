@@ -1,5 +1,6 @@
 from ._roll import parse_dice, roll_dice
 from .smath import ln
+from .hashlib import DJB2
 
 
 class Random:
@@ -78,6 +79,7 @@ class Random:
         self.h ^= self.h >> 6
         self.h = (self.h + self.g) % 10**16
         self.i = 3.75 * self.i * (1 - self.i)
+        self.h = DJB2(str(self.h), capacity=10 ** 16)
         return a + self.h % (b - a + 1)
 
     def roll(self, expr):
