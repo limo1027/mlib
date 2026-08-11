@@ -1507,6 +1507,71 @@ QUATERNION OPERATORS:
   q + q, q - q, q * q, q * scalar, q / scalar, -q, q == q, q[i]
 
 
+FFT - FAST FOURIER TRANSFORM
+============================================================================
+
+fft(x) - Fast Fourier Transform (supports any length, auto-pads to power of 2)
+ifft(X, original_length=None) - Inverse FFT
+
+fftfreq(N, d=1.0) - Generate frequency coordinates for FFT
+fftshift(x) - Shift zero frequency to center
+ifftshift(x) - Inverse of fftshift
+
+magnitude_spectrum(x, shift=False) - Compute magnitude spectrum |X|
+power_spectrum(x, shift=False) - Compute power spectrum |X|^2
+phase_spectrum(x, shift=False) - Compute phase spectrum angle(X)
+
+INPUT/OUTPUT:
+x - List of numbers (int, float, or Complex)
+X - List of Complex numbers (FFT output)
+
+RETURN VALUES:
+fft(x) - Returns (X, N) where N is original length (for ifft)
+ifft(X, original_length) - Returns list of Complex (or numbers)
+fftfreq(N, d) - Returns list of frequencies (d = sampling interval)
+
+USAGE:
+from mlib.plus.fft import fft, ifft, fftfreq, fftshift, magnitude_spectrum
+
+Basic FFT
+x = [1.0, 2.0, 3.0, 4.0]
+X, N = fft(x)
+x_recovered = ifft(X, N)
+
+Frequency analysis
+freqs = fftfreq(len(x), d=0.01)
+mag = magnitude_spectrum(x, shift=True)
+
+Shift zero frequency to center
+X_shifted = fftshift(X)
+
+NOTES:
+
+Input length does NOT need to be a power of 2 (auto-padding applied)
+
+fft() returns (spectrum, original_length) for proper reconstruction
+
+fftshift() and ifftshift() work for both even and odd lengths
+
+EXAMPLES:
+
+Sine wave analysis
+from mlib import pi, sin
+t = [i * 0.01 for i in range(100)]
+x = [sin(2pi50*t[i]) for i in range(len(t))]
+X, N = fft(x)
+freqs = fftfreq(N, d=0.01)
+mag = magnitude_spectrum(x, shift=True)
+
+Peak at 50 Hz
+Filtering
+X, N = fft(x)
+for i in range(len(X)):
+if abs(fftfreq(N, 0.01)[i]) > 100:
+X[i] = 0
+filtered = ifft(X, N)
+
+
 ============================================================================
 IMPORT PATHS
 ============================================================================

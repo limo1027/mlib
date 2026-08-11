@@ -241,6 +241,8 @@ def asin(x):
 
 
 class Decimal:
+    __slots__ = ("value", "fr_len")
+
     def __init__(self, value, fr_len=None):
         if fr_len is not None:
             self.value = value
@@ -339,6 +341,9 @@ class Decimal:
         self.value = int(value)
         self.fr_len = 0
         self._simplify()
+
+    def __hash__(self):
+        return hash((self.value, self.fr_len))
 
     def _simplify(self):
         if self.fr_len > prec + 1:

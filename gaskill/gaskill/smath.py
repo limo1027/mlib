@@ -596,7 +596,7 @@ def sin(x, fast=False):
             term = term * (-x * x / ((2*i + 2) * (2*i + 3)))
 
         return result
-    if isinstance(x, (int, float)) and x > 1000 and (not fast):
+    if isinstance(x, (int, float)) and x > 1000000 and (not fast):
         pi_frac = Frac(31415926535897932384626433832795028841971,
                        10000000000000000000000000000000000000000)
         x_frac = Frac(x)

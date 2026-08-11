@@ -6,6 +6,7 @@ from .zip import compress, decompress  # noqa: F401
 from .re import Regex  # noqa: F401
 from .bmp import *
 from .ecc import *
-from .decimal import *  # noqa: F401
+from .decimal import *
 from .database import DiskKV  # noqa: F401
 from .tester import *
+from .fft import *
