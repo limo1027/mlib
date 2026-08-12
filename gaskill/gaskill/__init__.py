@@ -26,3 +26,4 @@ from .sbase64 import *
 from .abc import *
 from .pickle import *
 from .hashlib import sha256, DJB2  # noqa: F401
+from .type import *

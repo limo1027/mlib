@@ -1,4 +1,4 @@
-def pack_float(num):
+def pack_float(num: int) -> str:
     """将浮点数转换为二进制表示"""
 
     if num == 0:
@@ -70,7 +70,7 @@ def pack_float(num):
     return result
 
 
-def unpack_float(byte_data):
+def unpack_float(byte_data: str) -> float:
     """从 8 字节解析 IEEE 754 双精度浮点数（不用 struct）"""
     # 修复：如果传入的是字符串，先转换为字节
     if isinstance(byte_data, str):
@@ -112,7 +112,7 @@ def unpack_float(byte_data):
     return -value if sign else value
 
 
-def pack_int(n, bits=None):
+def pack_int(n: int, bits=None) -> str:
     if bits is None:
         # 自动计算所需位数（包括符号位）
         if n >= 0:
@@ -126,13 +126,13 @@ def pack_int(n, bits=None):
     return bin(n)[2:].zfill(bits)[-bits:]
 
 
-def pack_str(n):
+def pack_str(n: str) -> str:
     from .smath import ceil
     result = bin(int.from_bytes(n.encode(), "big"))[2:]
     return result.rjust(ceil(len(result) / 8) * 8, "0")
 
 
-def bits_to_bytes(bits):
+def bits_to_bytes(bits: str) -> bytes:
     """二进制字符串 → bytes"""
     # 补齐到 8 的倍数
     if len(bits) % 8 != 0:
@@ -145,12 +145,12 @@ def bits_to_bytes(bits):
     return bytes(result)
 
 
-def bytes_to_bits(data):
+def bytes_to_bits(data: bytes) -> str:
     """bytes → 二进制字符串"""
     return ''.join(format(b, '08b') for b in data)
 
 
-def pack_to_file(obj, filename):
+def pack_to_file(obj: object, filename: str) -> None:
     """打包对象并写入文件"""
     # 1. 打包对象
     packed = pack(obj)  # 返回 b'类型标记 + 二进制字符串 + \x00'
@@ -162,7 +162,7 @@ def pack_to_file(obj, filename):
 
 # ============ 辅助函数 ============
 
-def pack_varint(n):
+def pack_varint(n: int) -> bytes:
     """变长整数编码（无符号）"""
     if n == 0:
         return b'\x00'
@@ -176,7 +176,7 @@ def pack_varint(n):
     return bytes(result)
 
 
-def unpack_varint(data, pos):
+def unpack_varint(data: bytes, pos: int) -> "tuple[int, int]":
     """解包变长整数"""
     result = 0
     shift = 0
@@ -192,7 +192,7 @@ def unpack_varint(data, pos):
 
 # ============ pack ============
 
-def pack(obj):
+def pack(obj: object) -> bytes:
     """打包任意对象为二进制"""
     if isinstance(obj, str):
         # 字符串：S + 变长长度 + UTF-8 数据
@@ -240,7 +240,7 @@ def pack(obj):
 
 # ============ unpack ============
 
-def unpack(data, pos=0):
+def unpack(data: bytes, pos: int = 0):
     """从二进制解包"""
     if pos >= len(data):
         return None, pos
@@ -305,13 +305,13 @@ def unpack(data, pos=0):
         raise TypeError(f"未知类型码: {type_code}")
 
 
-def dump(obj, filename):
+def dump(obj: object, filename: str):
     """保存对象到文件"""
     with open(filename, 'wb') as f:
         f.write(pack(obj))
 
 
-def load(filename):
+def load(filename: str):
     """从文件加载对象"""
     with open(filename, 'rb') as f:
         data = f.read()

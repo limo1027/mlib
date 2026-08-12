@@ -1,4 +1,5 @@
-from .abc import ABC, abstractmethod
+__package__ = "gaskill.gaskill"
+from .abc import ABC, abstractmethod  # noqa
 
 
 class DefaultDict:
@@ -69,10 +70,9 @@ class Iterable(ABC):
 
     @classmethod
     def __subclasshook__(cls, C):
-        if cls is Iterable:
-            # 如果类实现了 __iter__，就认为是 Iterable 的子类
-            if any("__iter__" in B.__dict__ for B in C.__mro__):
-                return True
+        # 用 hasattr 而不是 in __dict__
+        if any(hasattr(B, "__iter__") for B in C.__mro__):
+            return True
         return NotImplemented
 
 

@@ -14,7 +14,7 @@ _BASE256_ALPHABET = ''.join(chr(_BASE256_START + i)
 
 # ==================== Base16 ====================
 
-def b16encode(data):
+def b16encode(data: bytes) -> bytes:
     """Base16编码(十六进制)"""
     result = bytearray()
     for byte in data:
@@ -23,7 +23,7 @@ def b16encode(data):
     return bytes(result)
 
 
-def b16decode(data):
+def b16decode(data: bytes) -> bytes:
     """Base16解码"""
     if len(data) % 2 != 0:
         raise ValueError("Base16编码长度必须为偶数")
@@ -41,7 +41,7 @@ def b16decode(data):
 
 # ==================== Base32 ====================
 
-def b32encode(data):
+def b32encode(data: bytes) -> bytes:
     """Base32编码"""
     if not data:
         return b''
@@ -75,7 +75,7 @@ def b32encode(data):
     return bytes(result)
 
 
-def b32decode(data):
+def b32decode(data: bytes) -> bytes:
     """Base32解码"""
     data = data.rstrip(b'=')
     if not data:
@@ -103,7 +103,7 @@ def b32decode(data):
 
 # ==================== Base64 ====================
 
-def b64encode(data):
+def b64encode(data: bytes) -> bytes:
     """Base64编码"""
     if not data:
         return b''
@@ -135,7 +135,7 @@ def b64encode(data):
     return bytes(result)
 
 
-def b64decode(data):
+def b64decode(data: bytes) -> bytes:
     """Base64解码"""
     data = data.rstrip(b'=')
     if not data:
@@ -163,13 +163,13 @@ def b64decode(data):
 
 # ==================== Base64URL ====================
 
-def b64urlencode(data):
+def b64urlencode(data: bytes) -> bytes:
     """Base64URL编码(URL安全版本,用 - 和 _ 替代 + 和 /)"""
     result = b64encode(data)
     return result.replace(b'+', b'-').replace(b'/', b'_')
 
 
-def b64urldecode(data):
+def b64urldecode(data: bytes) -> bytes:
     """Base64URL解码"""
     data = data.replace(b'-', b'+').replace(b'_', b'/')
     return b64decode(data)
@@ -177,7 +177,7 @@ def b64urldecode(data):
 
 # ==================== Base58 ====================
 
-def b58encode(data):
+def b58encode(data: bytes) -> bytes:
     """Base58编码"""
     if not data:
         return b''
@@ -208,7 +208,7 @@ def b58encode(data):
     return b'1' * leading_zeros + bytes(result)
 
 
-def b58decode(data):
+def b58decode(data: bytes) -> bytes:
     """Base58解码"""
     if not data:
         return b''
@@ -246,7 +246,7 @@ def b58decode(data):
 
 # ==================== Base256（中文版） ====================
 
-def b256encode(data):
+def b256encode(data: bytes) -> bytes:
     """Base256编码（中文版）"""
     result = bytearray()
     for byte in data:
@@ -254,7 +254,7 @@ def b256encode(data):
     return bytes(result)
 
 
-def b256decode(data):
+def b256decode(data: bytes) -> bytes:
     """Base256解码（中文版）"""
     if len(data) % 3 != 0:
         raise ValueError("Base256编码长度必须为3的倍数")

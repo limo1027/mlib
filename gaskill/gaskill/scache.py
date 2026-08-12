@@ -1,3 +1,6 @@
+from .type import Callable
+
+
 def _to_hashble(key):
     return str(key)+":"+type(key).__name__
 
@@ -5,11 +8,11 @@ def _to_hashble(key):
 class LFUCache:
     """最少使用缓存(Least Frequently Used Cache)"""
 
-    def __init__(self, max_size=100):
+    def __init__(self, max_size: int = 100) -> None:
         self._max_size = max_size
         self._cache = {}
 
-    def get(self, key, default=None):
+    def get(self, key: object, default: object = None) -> object:
         """获取缓存值"""
         if key not in self:
             return default
@@ -17,7 +20,7 @@ class LFUCache:
         self._cache[_to_hashble(key)][1] += 1
         return self._cache[_to_hashble(key)][0]
 
-    def set(self, key, value):
+    def set(self, key: object, value: object) -> None:
         """设置缓存"""
         if key in self:
             self._cache[_to_hashble(key)][1] += 1
@@ -28,19 +31,19 @@ class LFUCache:
 
         self._cache[_to_hashble(key)] = [value, 1, _to_hashble(key)]
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: object, value: object) -> None:
         self.set(key, value)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: object) -> object:
         value = self.get(key)
         if value is None:
             raise KeyError(key)
         return value
 
-    def __contains__(self, key):
+    def __contains__(self, key: object) -> bool:
         return _to_hashble(key) in self._cache
 
-    def pop(self, key, default=None):
+    def pop(self, key: object, default: object = None) -> object:
         """移除并返回缓存"""
         if key not in self._cache:
             return default
@@ -48,136 +51,127 @@ class LFUCache:
         value = self._cache.pop(key)
         return value
 
-    def clear(self):
+    def clear(self) -> None:
         """清空缓存"""
         self._cache.clear()
 
-    def keys(self):
+    def keys(self) -> list:
         """所有键"""
         return list(self._cache.keys())
 
-    def values(self):
+    def values(self) -> list:
         """所有值"""
         return list(self._cache.values())
 
-    def items(self):
+    def items(self) -> object:
         """所有键值对"""
         return list(self._cache.items())
 
     @property
-    def size(self):
+    def size(self) -> int:
         """当前缓存数量"""
         return len(self._cache)
 
     @property
-    def max_size(self):
+    def max_size(self) -> int:
         """最大缓存数量"""
         return self._max_size
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._cache)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"LFUCache(size={len(self._cache)}, max_size={self._max_size})"
 
 
 class LRUCache:
     """最近最少使用缓存 (Least Recently Used Cache)"""
 
-    def __init__(self, max_size=100):
+    def __init__(self, max_size: int = 100) -> None:
         """初始化 LRU 缓存"""
         self._max_size = max_size
         self._cache = {}
         self._order = []
 
-    def get(self, key, default=None):
+    def get(self, key: object, default: object = None) -> object:
         """获取缓存值"""
         if key not in self:
             return default
 
         self._order.remove(key)
         self._order.append(key)
-        try:
-            return self._cache[key]
-        except TypeError:
-            return self._cache[_to_hashble(key)]
+        self._cache[_to_hashble(key)]
 
-    def set(self, key, value):
+    def set(self, key: object, value: object) -> None:
         """设置缓存"""
         if key in self:
-            self._order.remove(key)
+            self._order.remove(_to_hashble(key))
         elif len(self._cache) >= self._max_size:
             oldest = self._order.pop(0)
             del self._cache[oldest]
 
-        try:
-            self._cache[key] = value
-        except TypeError:
-            self._cache[_to_hashble(key)] = value
+        self._cache[_to_hashble(key)] = value
         self._order.append(key)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: object, value: object) -> None:
         self.set(key, value)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: object) -> object:
         value = self.get(key)
         if value is None:
             raise KeyError(key)
         return value
 
-    def __contains__(self, key):
-        try:
-            return key in self._cache
-        except TypeError:
-            return _to_hashble(key) in self._cache
+    def __contains__(self, key: object) -> bool:
+        return _to_hashble(key) in self._cache
 
-    def pop(self, key, default=None):
+    def pop(self, key: object, default=None) -> object:
         """移除并返回缓存"""
         if key not in self._cache:
             return default
 
-        self._order.remove(key)
-        value = self._cache.pop(key)
+        self._order.remove(_to_hashble(key))
+        value = self._cache.pop(_to_hashble(key))
         return value
 
-    def clear(self):
+    def clear(self) -> None:
         """清空缓存"""
         self._cache.clear()
         self._order.clear()
 
-    def keys(self):
+    def keys(self) -> list:
         """所有键"""
         return list(self._cache.keys())
 
-    def values(self):
+    def values(self) -> list:
         """所有值"""
         return list(self._cache.values())
 
-    def items(self):
+    def items(self) -> list:
         """所有键值对"""
         return list(self._cache.items())
 
     @property
-    def size(self):
+    def size(self) -> int:
         """当前缓存数量"""
         return len(self._cache)
 
     @property
-    def max_size(self):
+    def max_size(self) -> int:
         """最大缓存数量"""
         return self._max_size
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._cache)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"LRUCache(size={len(self._cache)}, max_size={self._max_size})"
 
 
 class CacheEntry:
     """缓存条目（带过期时间）"""
 
-    def __init__(self, key, value, ttl=None):
+    def __init__(self, key: object, value: object, ttl: int = None) -> None:
         """初始化缓存条目"""
         self.key = key
         self.value = value
@@ -195,13 +189,13 @@ class CacheEntry:
 class TTLCache:
     """带过期时间的缓存"""
 
-    def __init__(self, max_size=100, default_ttl=None):
+    def __init__(self, max_size: int = 100, default_ttl: int = None):
         """初始化 TTL 缓存"""
         self._max_size = max_size
         self._default_ttl = default_ttl
         self._cache = {}
 
-    def get(self, key, default=None, current_time=0):
+    def get(self, key: object, default: object = None, current_time: int = 0):
         """获取缓存值"""
         if key not in self._cache:
             return default
@@ -217,7 +211,7 @@ class TTLCache:
 
         return entry.value
 
-    def set(self, key, value, ttl=None, current_time=0):
+    def set(self, key: object, value: object, ttl=None, current_time: int = 0):
         """设置缓存"""
         if ttl is None:
             ttl = self._default_ttl
@@ -243,7 +237,7 @@ class TTLCache:
         """清空缓存"""
         self._cache.clear()
 
-    def remove_expired(self, current_time):
+    def remove_expired(self, current_time: int):
         """移除所有过期条目"""
         expired_keys = [
             key for key, entry in self._cache.items()
@@ -315,9 +309,9 @@ class _MemoizeMethod:
         return result
 
 
-def memoize(max_size=128, method=False):
+def memoize(max_size: int = 128, method: bool = False):
     """记忆化装饰器"""
-    def decorator(func):
+    def decorator(func: Callable):
         if method:
             return _MemoizeMethod(func, max_size)
         return _MemoizeFunc(func, max_size)
@@ -327,7 +321,7 @@ def memoize(max_size=128, method=False):
 class RingBuffer:
     """环形缓冲区 - 固定大小的 FIFO 缓冲区"""
 
-    def __init__(self, capacity):
+    def __init__(self, capacity: int):
         """初始化环形缓冲区"""
         self._capacity = capacity
         self._buffer = [None] * capacity
@@ -335,7 +329,7 @@ class RingBuffer:
         self._tail = 0
         self._size = 0
 
-    def push(self, item):
+    def push(self, item: object):
         """添加元素"""
         self._buffer[self._tail] = item
         self._tail = (self._tail + 1) % self._capacity

@@ -149,12 +149,8 @@ def compress_block(block_bytes, h_vals):
     ]
 
 
-def sha256(message):
-    # 统一转为字节
-    if isinstance(message, str):
-        msg_bytes = [ord(c) for c in message]
-    else:
-        msg_bytes = list(message)
+def sha256(message: bytes) -> str:
+    msg_bytes = list(message)
 
     # 填充
     padded = pad_message(msg_bytes)
@@ -179,7 +175,7 @@ def sha256(message):
     return result
 
 
-def DJB2(s, capacity=0xffffffff):
+def DJB2(s: str, capacity: int = 0xffffffff) -> int:
     h = 5381
     for byte in s.encode('utf-8'):
         h = ((h * 33) + byte) % capacity

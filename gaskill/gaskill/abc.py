@@ -4,32 +4,29 @@ gaskill.abc - 抽象基类模块（零依赖）
 
 
 class ABCMeta(type):
-    """元类：自动收集抽象方法"""
-
     def __new__(cls, name, bases, dct):
-        # 1. 从所有父类继承抽象方法
+        # 初始化缓存和注册表（必须有！）
+        dct.setdefault('_abc_cache', set())
+        dct.setdefault('_abc_negative_cache', set())
+        dct.setdefault('_abc_registry', set())
+
+        # 收集抽象方法（你已有的代码）
         abstract_methods = set()
         for base in bases:
             if hasattr(base, '_abstract_methods'):
                 abstract_methods.update(base._abstract_methods)
 
-        # 2. 处理当前类定义的方法
         for key, value in dct.items():
-            # 如果当前类显式定义了抽象方法（有 _is_abstract 标记）
-            if hasattr(value, '_is_abstract') and value._is_abstract:
+            if hasattr(value, '__isabstractmethod__') and value.__isabstractmethod__:
                 abstract_methods.add(key)
-            else:
-                # 如果当前类定义了具体实现（没有 _is_abstract 标记）
-                # 并且该方法在抽象方法集合中，则移除（即实现了该抽象方法）
-                if key in abstract_methods:
-                    abstract_methods.remove(key)
+            elif key in abstract_methods:
+                abstract_methods.remove(key)
 
-        # 3. 存储最终的抽象方法集合
         dct['_abstract_methods'] = frozenset(abstract_methods)
         return super().__new__(cls, name, bases, dct)
 
     def __call__(cls, *args, **kwargs):
-        """实例化时检查抽象方法是否都已实现"""
+        """实例化检查（你已有）"""
         if cls._abstract_methods:
             methods = ', '.join(cls._abstract_methods)
             raise TypeError(
@@ -37,6 +34,58 @@ class ABCMeta(type):
                 f"with abstract methods {methods}"
             )
         return super().__call__(*args, **kwargs)
+
+    # ============ 新增：必须重写的方法 ============
+
+    def __subclasscheck__(cls, subclass):
+        """
+        控制 issubclass(subclass, cls) 的行为
+        这是鸭子类型的核心！
+        """
+        # 1️⃣ 检查缓存（加速）
+        if subclass in cls._abc_cache:
+            return True
+        if subclass in cls._abc_negative_cache:
+            return False
+
+        # 2️⃣ 检查真实继承
+        if cls in subclass.__mro__:
+            cls._abc_cache.add(subclass)
+            return True
+
+        # 3️⃣ 检查注册的虚拟子类
+        if subclass in getattr(cls, '_abc_registry', set()):
+            cls._abc_cache.add(subclass)
+            return True
+
+        # 4️⃣ 调用 __subclasshook__（这是你自定义逻辑的入口）
+        hook = getattr(cls, '__subclasshook__', None)
+        if hook is not None:
+            try:
+                result = hook(subclass)
+                if result is True:
+                    cls._abc_cache.add(subclass)
+                    return True
+                # 如果返回 NotImplemented，继续检查
+            except Exception:
+                # 钩子出错，视为不是子类
+                pass
+
+        # 5️⃣ 负缓存
+        cls._abc_negative_cache.add(subclass)
+        return False
+
+    def __instancecheck__(cls, instance):
+        """
+        控制 isinstance(instance, cls) 的行为
+        通常直接调用 __subclasscheck__
+        """
+        return cls.__subclasscheck__(type(instance))
+
+    def register(cls, subclass):
+        """注册虚拟子类"""
+        cls._abc_registry.add(subclass)
+        return subclass
 
 
 class ABC(metaclass=ABCMeta):
