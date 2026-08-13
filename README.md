@@ -15,4 +15,4 @@ python -c "from gaskill.test import run_test; run_test()"
 
 [Learn More?](https://limo1027.github.io/mlib)
 
-# 最新版本差异: 加了一些类型注解，还在pathfinder中添加了流场
+# 最新版本差异: 在plus中添加一个新的数据库，读极快，但是写偏慢
