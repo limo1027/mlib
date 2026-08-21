@@ -45,6 +45,7 @@ gaskill/plus/fft.py
 gaskill/plus/poly.py
 gaskill/plus/radical.py
 gaskill/plus/re.py
+gaskill/plus/sql.py
 gaskill/plus/sui.py
 gaskill/plus/tester.py
 gaskill/plus/zip.py

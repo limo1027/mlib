@@ -3,7 +3,7 @@ from setuptools import Command
 import subprocess
 import sys
 import os
-long_description = open("README.md").read()
+long_description = open("README.md").read() + open("using help.txt").read()
 VERSION = eval(os.getenv('VERSION', '"3.0.0"'))
 
 
