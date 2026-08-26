@@ -1,8 +1,3 @@
-"""
-gaskill.abc - 抽象基类模块（零依赖）
-"""
-
-
 class ABCMeta(type):
     def __new__(cls, name, bases, dct):
         # 初始化缓存和注册表（必须有！）
@@ -26,7 +21,7 @@ class ABCMeta(type):
         return super().__new__(cls, name, bases, dct)
 
     def __call__(cls, *args, **kwargs):
-        """实例化检查（你已有）"""
+        """实例化检查"""
         if cls._abstract_methods:
             methods = ', '.join(cls._abstract_methods)
             raise TypeError(
@@ -38,10 +33,7 @@ class ABCMeta(type):
     # ============ 新增：必须重写的方法 ============
 
     def __subclasscheck__(cls, subclass):
-        """
-        控制 issubclass(subclass, cls) 的行为
-        这是鸭子类型的核心！
-        """
+        """控制 issubclass(subclass, cls) 的行为"""
         # 1️⃣ 检查缓存（加速）
         if subclass in cls._abc_cache:
             return True
@@ -76,10 +68,7 @@ class ABCMeta(type):
         return False
 
     def __instancecheck__(cls, instance):
-        """
-        控制 isinstance(instance, cls) 的行为
-        通常直接调用 __subclasscheck__
-        """
+        """控制 isinstance(instance, cls) 的行为"""
         return cls.__subclasscheck__(type(instance))
 
     def register(cls, subclass):

@@ -1,4 +1,4 @@
-def pack_float(num: int) -> str:
+def pack_float(num: float) -> str:
     """将浮点数转换为二进制表示"""
 
     if num == 0:
@@ -19,11 +19,11 @@ def pack_float(num: int) -> str:
     int_part = int(num)
     frac_part = num - int_part
 
-    int_bits = []
+    int_bits: "list[str]" = []
     if int_part == 0:
         int_bits = ['0']
     else:
-        temp = int_part
+        temp: "int | float" = int_part
         while temp > 0:
             int_bits.append(str(temp % 2))
             temp //= 2
@@ -63,14 +63,14 @@ def pack_float(num: int) -> str:
     mantissa_bits = binary[mantissa_start:mantissa_start + 52]
 
     mantissa_bits = mantissa_bits + ['0'] * (52 - len(mantissa_bits))
-    mantissa_bits = ''.join(mantissa_bits[:52])
+    mantissa_str_bits = ''.join(mantissa_bits[:52])
 
-    result = sign + exp_bits + mantissa_bits
+    result = sign + exp_bits + mantissa_str_bits
 
     return result
 
 
-def unpack_float(byte_data: str) -> float:
+def unpack_float(byte_data: bytes) -> float:
     """从 8 字节解析 IEEE 754 双精度浮点数（不用 struct）"""
     # 修复：如果传入的是字符串，先转换为字节
     if isinstance(byte_data, str):
@@ -80,12 +80,13 @@ def unpack_float(byte_data: str) -> float:
             byte_list = []
             for i in range(0, 64, 8):
                 byte_list.append(int(byte_data[i:i+8], 2))
-            byte_data = bytes(byte_list)
+            _bytes = bytes(byte_list)
         else:
             raise ValueError("二进制字符串长度必须是64")
 
+    _bytes = byte_data
     # 1. 转成 64 位二进制字符串
-    bits = ''.join(format(b, '08b') for b in byte_data)
+    bits = ''.join(format(b, '08b') for b in _bytes)
 
     # 2. 解析符号、指数、尾数
     sign = int(bits[0])
@@ -209,7 +210,7 @@ def pack(obj: object) -> bytes:
 
     elif isinstance(obj, float):
         # 浮点数：F + 8字节 IEEE 754
-        bits = pack_float(obj)  # 您的函数，返回二进制字符串
+        bits = pack_float(obj)
         return b'F' + bits_to_bytes(bits)
 
     elif isinstance(obj, bool):
@@ -247,6 +248,7 @@ def unpack(data: bytes, pos: int = 0):
 
     type_code = data[pos:pos+1]
     pos += 1
+    value: object = None
 
     if type_code == b'S':
         # 字符串
@@ -276,33 +278,33 @@ def unpack(data: bytes, pos: int = 0):
 
     elif type_code == b'L':
         # 列表
-        result = []
+        list_result = []
         while pos < len(data):
             if data[pos:pos+1] == b'E':
                 pos += 1
                 break
             item, pos = unpack(data, pos)
-            result.append(item)
-        return result, pos
+            list_result.append(item)
+        return list_result, pos
 
     elif type_code == b'D':
         # 字典
-        result = {}
+        dict_result: "dict[object, object]" = {}
         while pos < len(data):
             if data[pos:pos+1] == b'E':
                 pos += 1
                 break
             key, pos = unpack(data, pos)
             value, pos = unpack(data, pos)
-            result[key] = value
-        return result, pos
+            dict_result[key] = value
+        return dict_result, pos
 
     elif type_code == b'N':
         # None
         return None, pos
 
     else:
-        raise TypeError(f"未知类型码: {type_code}")
+        raise TypeError(f"未知类型码: {type_code.decode("ascii")}")
 
 
 def dump(obj: object, filename: str):

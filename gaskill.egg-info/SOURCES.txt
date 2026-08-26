@@ -8,9 +8,7 @@ gaskill.egg-info/dependency_links.txt
 gaskill.egg-info/top_level.txt
 gaskill/gaskill/__init__.py
 gaskill/gaskill/_roll.py
-gaskill/gaskill/abc.py
-gaskill/gaskill/hashlib.py
-gaskill/gaskill/pickle.py
+gaskill/gaskill/sabc.py
 gaskill/gaskill/sbase64.py
 gaskill/gaskill/scache.py
 gaskill/gaskill/scolor.py
@@ -23,12 +21,14 @@ gaskill/gaskill/sfrac.py
 gaskill/gaskill/sfsm.py
 gaskill/gaskill/sgeometry.py
 gaskill/gaskill/sgeometry3d.py
+gaskill/gaskill/shashlib.py
 gaskill/gaskill/sinterp.py
 gaskill/gaskill/smath.py
 gaskill/gaskill/smatrix.py
 gaskill/gaskill/snoise.py
 gaskill/gaskill/solver.py
 gaskill/gaskill/spathfinder.py
+gaskill/gaskill/spickle.py
 gaskill/gaskill/spool.py
 gaskill/gaskill/squaternion.py
 gaskill/gaskill/srandom.py
@@ -38,6 +38,7 @@ gaskill/gaskill/svector.py
 gaskill/gaskill/type.py
 gaskill/plus/__init__.py
 gaskill/plus/bmp.py
+gaskill/plus/csv.py
 gaskill/plus/database.py
 gaskill/plus/decimal.py
 gaskill/plus/ecc.py

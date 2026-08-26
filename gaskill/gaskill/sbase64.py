@@ -270,7 +270,7 @@ def b256decode(data: bytes) -> bytes:
         seq = bytes(data[i:i+3])
         val = dec_map.get(seq)
         if val is None:
-            raise ValueError(f"非法Base256字符序列: {seq}")
+            raise ValueError(f"非法Base256字符序列: {seq.decode("ascii")}")
         result.append(val)
     return bytes(result)
 

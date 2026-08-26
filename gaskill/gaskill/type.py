@@ -1,5 +1,4 @@
-__package__ = "gaskill.gaskill"
-from .abc import ABC, abstractmethod  # noqa
+from .sabc import ABC, abstractmethod  # noqa
 
 
 class DefaultDict:
@@ -79,6 +78,10 @@ class Iterable(ABC):
 class Callable(ABC):
     """可调用对象抽象基类"""
 
+    def __init__(self):
+        self.__name__ = ...
+        self.__annotations__ = ...
+
     @abstractmethod
     def __call__(self, *args, **kwargs):
         ...
@@ -89,6 +92,11 @@ class Callable(ABC):
             if any("__call__" in B.__dict__ for B in C.__mro__):
                 return True
         return NotImplemented
+
+    @classmethod
+    def __class_getitem__(cls, item):
+        """支持 Callable[[Args], Ret] 语法"""
+        return cls
 
 
 class Number(ABC):

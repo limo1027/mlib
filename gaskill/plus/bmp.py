@@ -1,5 +1,5 @@
 # 纯 Python BMP 读写器
-
+from gaskill import type
 
 
 class BMPError(Exception):
@@ -98,13 +98,14 @@ class BMPImage:
     def __init__(self, width: int = 0, height: int = 0):
         self.width = width
         self.height = height
-        self.pixels = []  # [row][col] = (R, G, B, A) 或 (R, G, B)
+        # [row][col] = (R, G, B, A) 或 (R, G, B)
+        self.pixels: "list[list[tuple[int, int, int | int, int, int, int]]]" = []
         self.header = BMPHeader()
-        self.palette = []  # 调色板 [(R, G, B), ...]
+        self.palette: "list[tuple[int, int, int]]" = []  # 调色板 [(R, G, B), ...]
         self.bit_count = 24
         self.has_alpha = False
 
-    def set_pixel(self, x: int, y: int, color: tuple):
+    def set_pixel(self, x: int, y: int, color: "tuple[int, int, int] | tuple[int, int, int, int]"):
         """设置像素颜色 (R, G, B) 或 (R, G, B, A)"""
         if not (0 <= x < self.width and 0 <= y < self.height):
             raise BMPError(f"像素坐标 ({x}, {y}) 超出范围 {self.width}x{self.height}")
@@ -133,7 +134,7 @@ class BMPImage:
 
         # 检查签名
         if data[0:2] != b'BM':
-            raise BMPError(f"不是BMP文件 (签名: {data[0:2]})")
+            raise BMPError(f"不是BMP文件 (签名: {data[0:2].decode('ascii')})")
 
         # 解析文件头
         header = BMPHeader()

@@ -1,0 +1,2898 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="image/icon.svg">
+    <title>MLib - Python Library Reference / Python 库参考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans SC', sans-serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #f5f6f8;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 290px;
+            height: 100vh;
+            overflow-y: auto;
+            background: #1e2a3a;
+            color: #c8d0d8;
+            padding: 20px 0 40px 0;
+            z-index: 100;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #4a6a8a;
+            border-radius: 4px;
+        }
+        .sidebar .logo {
+            padding: 0 20px 16px 20px;
+            border-bottom: 1px solid #2a3a4a;
+            margin-bottom: 12px;
+        }
+        .sidebar .logo h1 {
+            color: #fff;
+            font-weight: 300;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+        }
+        .sidebar .logo .sub {
+            color: #7a8a9a;
+            font-size: 0.8rem;
+        }
+        .sidebar .lang-toggle {
+            padding: 10px 20px;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #2a3a4a;
+            margin-bottom: 8px;
+        }
+        .sidebar .lang-toggle button {
+            background: transparent;
+            border: 1px solid #4a5a6a;
+            color: #8a9aaa;
+            padding: 4px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .sidebar .lang-toggle button:hover {
+            border-color: #6a8aaa;
+            color: #c8d0d8;
+        }
+        .sidebar .lang-toggle button.active {
+            background: #3a5a7a;
+            border-color: #5a8aaa;
+            color: #fff;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0 8px;
+        }
+        .sidebar li {
+            padding: 0;
+        }
+        .sidebar .section-title {
+            font-weight: 600;
+            color: #7a9aba;
+            padding: 14px 16px 4px 16px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border-bottom: 1px solid #2a3a4a;
+            margin: 8px 0 4px 0;
+        }
+        .sidebar a {
+            color: #b0c0d0;
+            text-decoration: none;
+            display: block;
+            padding: 4px 16px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            transition: background 0.15s, color 0.15s;
+        }
+        .sidebar a:hover {
+            background: #2a3a4a;
+            color: #fff;
+        }
+        .sidebar a.active {
+            color: #fff;
+            background: #2a4a6a;
+        }
+        .main {
+            margin-left: 290px;
+            padding: 24px 40px 60px 40px;
+            min-height: 100vh;
+        }
+        .module {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            padding: 28px 34px;
+            margin-bottom: 32px;
+            border: 1px solid #e8ecf0;
+        }
+        .module h2 {
+            font-weight: 500;
+            font-size: 1.8rem;
+            color: #1a2a3a;
+            border-bottom: 2px solid #e8ecf0;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+        .module .path {
+            color: #6a7a8a;
+            font-size: 0.82rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f0f2f5;
+            padding: 2px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 14px;
+        }
+        .module .desc {
+            color: #3a4a5a;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .module .desc-zh {
+            color: #3a4a5a;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            display: none;
+        }
+        body.lang-zh .desc { display: none; }
+        body.lang-zh .desc-zh { display: block; }
+
+        .class-block {
+            margin: 24px 0 6px 0;
+            border-left: 4px solid #3a7a9a;
+            padding-left: 20px;
+        }
+        .class-block h3 {
+            font-weight: 600;
+            font-size: 1.15rem;
+            color: #1a3a5a;
+        }
+        .class-block .signature {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f0f4f8;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            margin: 6px 0 10px 0;
+            display: inline-block;
+            color: #1a3a5a;
+            border: 1px solid #e0e6ec;
+        }
+        .class-block .class-desc {
+            color: #3a4a5a;
+            font-size: 0.92rem;
+            margin-bottom: 10px;
+        }
+        .class-block .class-desc-zh {
+            color: #3a4a5a;
+            font-size: 0.92rem;
+            margin-bottom: 10px;
+            display: none;
+        }
+        body.lang-zh .class-desc { display: none; }
+        body.lang-zh .class-desc-zh { display: block; }
+
+        .method-list, .func-list {
+            margin: 8px 0 6px 8px;
+        }
+        .method-item, .func-item {
+            padding: 8px 0 8px 12px;
+            font-size: 0.92rem;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .method-item:last-child, .func-item:last-child {
+            border-bottom: none;
+        }
+        .method-item .name, .func-item .name {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-weight: 600;
+            color: #1a5a7a;
+            font-size: 0.95rem;
+        }
+        .method-item .sig, .func-item .sig {
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: #4a4a5a;
+            font-size: 0.88rem;
+            background: #f4f6f8;
+            padding: 1px 10px;
+            border-radius: 3px;
+            display: inline-block;
+            margin: 2px 0;
+        }
+        .method-item .desc, .func-item .desc {
+            color: #3a4a5a;
+            font-size: 0.88rem;
+            padding: 4px 0 2px 16px;
+        }
+        .method-item .desc-zh, .func-item .desc-zh {
+            color: #3a4a5a;
+            font-size: 0.88rem;
+            padding: 4px 0 2px 16px;
+            display: none;
+        }
+        body.lang-zh .desc { display: none; }
+        body.lang-zh .desc-zh { display: block; }
+
+        .method-item .params, .func-item .params {
+            color: #4a5a6a;
+            font-size: 0.85rem;
+            padding: 2px 0 2px 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        .method-item .params-zh, .func-item .params-zh {
+            color: #4a5a6a;
+            font-size: 0.85rem;
+            padding: 2px 0 2px 20px;
+            display: none;
+        }
+        body.lang-zh .params { display: none; }
+        body.lang-zh .params-zh { display: block; }
+
+        .method-item .returns, .func-item .returns {
+            color: #2a6a4a;
+            font-size: 0.85rem;
+            padding: 2px 0 2px 20px;
+        }
+        .method-item .returns-zh, .func-item .returns-zh {
+            color: #2a6a4a;
+            font-size: 0.85rem;
+            padding: 2px 0 2px 20px;
+            display: none;
+        }
+        body.lang-zh .returns { display: none; }
+        body.lang-zh .returns-zh { display: block; }
+
+        .const-list {
+            margin: 8px 0 6px 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 14px;
+        }
+        .const-item {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85rem;
+            color: #1a3a5a;
+            background: #f0f2f5;
+            padding: 2px 14px;
+            border-radius: 4px;
+        }
+        .const-item .val {
+            color: #6a7a8a;
+            font-weight: 300;
+        }
+        .badge {
+            font-size: 0.65rem;
+            background: #3a7a9a;
+            color: #fff;
+            padding: 1px 10px;
+            border-radius: 12px;
+            margin-left: 8px;
+            font-weight: 400;
+        }
+        .badge.green { background: #2d7a4a; }
+        .badge.orange { background: #b87a2a; }
+        .badge.purple { background: #7a4a8a; }
+        .lang-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            color: #6a8aaa;
+            margin-left: 6px;
+            font-weight: 400;
+        }
+        @media (max-width: 820px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+            .main {
+                margin-left: 0;
+                padding: 16px;
+            }
+        }
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e2a3a;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            z-index: 200;
+        }
+        .scroll-top:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo">
+        <h1>MLib</h1>
+        <div class="sub">Pure Python · No Extensions</div>
+    </div>
+    <div class="lang-toggle">
+        <button class="active" data-lang="en" onclick="setLang('en')">English</button>
+        <button data-lang="zh" onclick="setLang('zh')">中文</button>
+    </div>
+    <ul>
+        <li class="section-title">Core (gaskill/)</li>
+        <li><a href="#mod-gaskill">gaskill</a></li>
+        <li><a href="#mod-roll">_roll</a></li>
+        <li><a href="#mod-sabc">sabc</a></li>
+        <li><a href="#mod-sbase64">sbase64</a></li>
+        <li><a href="#mod-scache">scache</a></li>
+        <li><a href="#mod-scolor">scolor</a></li>
+        <li><a href="#mod-scrypt">scrypt</a></li>
+        <li><a href="#mod-scurve">scurve</a></li>
+        <li><a href="#mod-seasing">seasing</a></li>
+        <li><a href="#mod-sevent">sevent</a></li>
+        <li><a href="#mod-sformat">sformat</a></li>
+        <li><a href="#mod-sfrac">sfrac</a></li>
+        <li><a href="#mod-sfsm">sfsm</a></li>
+        <li><a href="#mod-sgeometry">sgeometry</a></li>
+        <li><a href="#mod-sgeometry3d">sgeometry3d</a></li>
+        <li><a href="#mod-shashlib">shashlib</a></li>
+        <li><a href="#mod-sinterp">sinterp</a></li>
+        <li><a href="#mod-smath">smath</a></li>
+        <li><a href="#mod-smatrix">smatrix</a></li>
+        <li><a href="#mod-snoise">snoise</a></li>
+        <li><a href="#mod-solver">solver</a></li>
+        <li><a href="#mod-spathfinder">spathfinder</a></li>
+        <li><a href="#mod-spickle">spickle</a></li>
+        <li><a href="#mod-spool">spool</a></li>
+        <li><a href="#mod-squaternion">squaternion</a></li>
+        <li><a href="#mod-srandom">srandom</a></li>
+        <li><a href="#mod-ssaver">ssaver</a></li>
+        <li><a href="#mod-sstat">sstat</a></li>
+        <li><a href="#mod-svector">svector</a></li>
+        <li><a href="#mod-type">type</a></li>
+
+        <li class="section-title">Plus (plus/)</li>
+        <li><a href="#mod-plus">plus</a></li>
+        <li><a href="#mod-bmp">bmp</a></li>
+        <li><a href="#mod-csv">csv</a></li>
+        <li><a href="#mod-database">database</a></li>
+        <li><a href="#mod-decimal">decimal</a></li>
+        <li><a href="#mod-ecc">ecc</a></li>
+        <li><a href="#mod-fft">fft</a></li>
+        <li><a href="#mod-poly">poly</a></li>
+        <li><a href="#mod-radical">radical</a></li>
+        <li><a href="#mod-re">re</a></li>
+        <li><a href="#mod-sql">sql</a></li>
+        <li><a href="#mod-sui">sui</a></li>
+        <li><a href="#mod-tester">tester</a></li>
+        <li><a href="#mod-zip">zip</a></li>
+    </ul>
+</div>
+
+<div class="main" id="main-content">
+
+    <!-- ======================== -->
+    <!-- GASKILL CORE             -->
+    <!-- ======================== -->
+
+    <!-- gaskill -->
+    <div class="module" id="mod-gaskill">
+        <h2>gaskill</h2>
+        <div class="path">gaskill/gaskill/__init__.py</div>
+        <div class="desc">Core namespace aggregator. Imports all public symbols from submodules.</div>
+        <div class="desc-zh">核心命名空间聚合器。从子模块导入所有公共符号。</div>
+        <div class="class-block">
+            <h3>Imported Symbols / 导入的符号</h3>
+            <div class="class-desc">All public symbols from the following modules are imported into the gaskill namespace:</div>
+            <div class="class-desc-zh">以下模块的所有公共符号被导入到 gaskill 命名空间：</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">smath</span> <span class="desc">Core math functions, constants, Complex class</span><span class="desc-zh">核心数学函数、常量、Complex 类</span></div>
+                <div class="method-item"><span class="name">sfrac</span> <span class="desc">Frac class for exact rational arithmetic</span><span class="desc-zh">Frac 类用于精确有理数运算</span></div>
+                <div class="method-item"><span class="name">svector</span> <span class="desc">vec2, vec3, vec4 vector classes</span><span class="desc-zh">vec2、vec3、vec4 向量类</span></div>
+                <div class="method-item"><span class="name">smatrix</span> <span class="desc">Matrix class with linear algebra operations</span><span class="desc-zh">Matrix 矩阵类，含线性代数运算</span></div>
+                <div class="method-item"><span class="name">squaternion</span> <span class="desc">Quaternion class for 3D rotations</span><span class="desc-zh">四元数类，用于 3D 旋转</span></div>
+                <div class="method-item"><span class="name">srandom</span> <span class="desc">Random number generator with dice support</span><span class="desc-zh">随机数生成器，支持骰子</span></div>
+                <div class="method-item"><span class="name">scolor</span> <span class="desc">Color manipulation and constants</span><span class="desc-zh">颜色操作和常量</span></div>
+                <div class="method-item"><span class="name">sgeometry</span> <span class="desc">2D geometry: Polygon, Rect, Circle, Line2</span><span class="desc-zh">2D 几何：多边形、矩形、圆、线段</span></div>
+                <div class="method-item"><span class="name">sgeometry3d</span> <span class="desc">3D geometry: AABB, Ray, Sphere, Plane</span><span class="desc-zh">3D 几何：AABB、射线、球体、平面</span></div>
+                <div class="method-item"><span class="name">scurve</span> <span class="desc">Curves: Bezier, B-spline, NURBS</span><span class="desc-zh">曲线：贝塞尔、B样条、NURBS</span></div>
+                <div class="method-item"><span class="name">seasing</span> <span class="desc">Easing functions for animation</span><span class="desc-zh">动画缓动函数</span></div>
+                <div class="method-item"><span class="name">sinterp</span> <span class="desc">Interpolation functions</span><span class="desc-zh">插值函数</span></div>
+                <div class="method-item"><span class="name">scache</span> <span class="desc">Cache data structures: LRU, LFU, TTL</span><span class="desc-zh">缓存数据结构：LRU、LFU、TTL</span></div>
+                <div class="method-item"><span class="name">sevent</span> <span class="desc">Event system with listeners</span><span class="desc-zh">事件系统，含监听器</span></div>
+                <div class="method-item"><span class="name">sfsm</span> <span class="desc">Finite State Machine</span><span class="desc-zh">有限状态机</span></div>
+                <div class="method-item"><span class="name">spool</span> <span class="desc">Object pool and stack allocator</span><span class="desc-zh">对象池和栈分配器</span></div>
+                <div class="method-item"><span class="name">spathfinder</span> <span class="desc">Pathfinding: A*, Dijkstra, BFS, flow field</span><span class="desc-zh">寻路：A*、Dijkstra、BFS、流场</span></div>
+                <div class="method-item"><span class="name">ssaver</span> <span class="desc">Save/Load system with hash verification</span><span class="desc-zh">存档/读档系统，含哈希校验</span></div>
+                <div class="method-item"><span class="name">sformat</span> <span class="desc">String formatting utilities</span><span class="desc-zh">字符串格式化工具</span></div>
+                <div class="method-item"><span class="name">snoise</span> <span class="desc">Perlin, Simplex, and point-based noise</span><span class="desc-zh">Perlin、Simplex 和基于点的噪声</span></div>
+                <div class="method-item"><span class="name">scrypt</span> <span class="desc">Cryptography: RSA, secret sharing</span><span class="desc-zh">加密：RSA、秘密共享</span></div>
+                <div class="method-item"><span class="name">solver</span> <span class="desc">Equation solvers</span><span class="desc-zh">方程求解器</span></div>
+                <div class="method-item"><span class="name">sstat</span> <span class="desc">Statistics functions</span><span class="desc-zh">统计函数</span></div>
+                <div class="method-item"><span class="name">sbase64</span> <span class="desc">Base16/32/64/58/256 encodings</span><span class="desc-zh">Base16/32/64/58/256 编码</span></div>
+                <div class="method-item"><span class="name">sabc</span> <span class="desc">Abstract Base Class support</span><span class="desc-zh">抽象基类支持</span></div>
+                <div class="method-item"><span class="name">spickle</span> <span class="desc">Binary serialization</span><span class="desc-zh">二进制序列化</span></div>
+                <div class="method-item"><span class="name">type</span> <span class="desc">Type utilities: DefaultDict, ABC bases</span><span class="desc-zh">类型工具：DefaultDict、ABC 基类</span></div>
+                <div class="method-item"><span class="name">sha256</span> <span class="sig">(message: bytes) -> str</span> <span class="desc">SHA-256 hash digest</span><span class="desc-zh">SHA-256 哈希摘要</span></div>
+                <div class="method-item"><span class="name">DJB2</span> <span class="sig">(s: str, capacity: int = 0xffffffff) -> int</span> <span class="desc">DJB2 hash function</span><span class="desc-zh">DJB2 哈希函数</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- _roll -->
+    <div class="module" id="mod-roll">
+        <h2>_roll</h2>
+        <div class="path">gaskill/gaskill/_roll.py</div>
+        <div class="desc">Dice notation parser and roller. Used internally by <code>srandom.Random.roll()</code>.</div>
+        <div class="desc-zh">骰子表达式解析器和掷骰器。由 <code>srandom.Random.roll()</code> 内部使用。</div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">parse_dice</span>
+                <span class="sig">(expr: str) -> dict</span>
+                <div class="desc">Parse a dice expression into a structured dictionary.</div>
+                <div class="desc-zh">将骰子表达式解析为结构化字典。</div>
+                <div class="params">Params: <strong>expr</strong> - Dice expression string</div>
+                <div class="params-zh">参数：<strong>expr</strong> - 骰子表达式字符串</div>
+                <div class="returns">Returns: dict with 'expr', 'parts', 'total'</div>
+                <div class="returns-zh">返回：包含 'expr'、'parts'、'total' 的字典</div>
+            </div>
+            <div class="func-item">
+                <span class="name">roll_dice</span>
+                <span class="sig">(parse_result: dict, random_func: callable) -> int</span>
+                <div class="desc">Roll dice based on a parsed result.</div>
+                <div class="desc-zh">根据解析结果掷骰子。</div>
+                <div class="params">Params: <strong>parse_result</strong> - From parse_dice; <strong>random_func</strong> - Function returning random int</div>
+                <div class="params-zh">参数：<strong>parse_result</strong> - parse_dice 的结果；<strong>random_func</strong> - 返回随机整数的函数</div>
+                <div class="returns">Returns: Total rolled value</div>
+                <div class="returns-zh">返回：掷骰总结果</div>
+            </div>
+            <div class="func-item">
+                <span class="name">get_dice_info</span>
+                <span class="sig">(expr: str) -> dict</span>
+                <div class="desc">Return metadata about a dice expression.</div>
+                <div class="desc-zh">返回骰子表达式的元信息。</div>
+                <div class="params">Params: <strong>expr</strong> - Dice expression</div>
+                <div class="params-zh">参数：<strong>expr</strong> - 骰子表达式</div>
+                <div class="returns">Returns: dict with 'expr', 'dice_count', 'total_sides', etc.</div>
+                <div class="returns-zh">返回：包含 'expr'、'dice_count'、'total_sides' 等的字典</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- sabc -->
+    <div class="module" id="mod-sabc">
+        <h2>sabc</h2>
+        <div class="path">gaskill/gaskill/sabc.py</div>
+        <div class="desc">Abstract Base Class (ABC) implementation with virtual subclass support.</div>
+        <div class="desc-zh">抽象基类（ABC）实现，支持虚拟子类。</div>
+        <div class="class-block">
+            <h3>ABCMeta</h3>
+            <div class="signature">class ABCMeta(type)</div>
+            <div class="class-desc">Metaclass for defining Abstract Base Classes.</div>
+            <div class="class-desc-zh">定义抽象基类的元类。</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">__new__</span>
+                    <span class="sig">(cls, name, bases, dct)</span>
+                    <div class="desc">Create a new class. Collects abstract methods and initializes caches.</div>
+                    <div class="desc-zh">创建新类。收集抽象方法并初始化缓存。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">__call__</span>
+                    <span class="sig">(cls, *args, **kwargs)</span>
+                    <div class="desc">Prevents instantiation if abstract methods remain.</div>
+                    <div class="desc-zh">如果还有抽象方法，阻止实例化。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">__subclasscheck__</span>
+                    <span class="sig">(cls, subclass)</span>
+                    <div class="desc">Controls issubclass() behavior with caching and hooks.</div>
+                    <div class="desc-zh">控制 issubclass() 行为，含缓存和钩子。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">__instancecheck__</span>
+                    <span class="sig">(cls, instance)</span>
+                    <div class="desc">Controls isinstance() behavior.</div>
+                    <div class="desc-zh">控制 isinstance() 行为。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">register</span>
+                    <span class="sig">(cls, subclass)</span>
+                    <div class="desc">Register a virtual subclass.</div>
+                    <div class="desc-zh">注册虚拟子类。</div>
+                </div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>ABC</h3>
+            <div class="signature">class ABC(metaclass=ABCMeta)</div>
+            <div class="class-desc">Base class for Abstract Base Classes.</div>
+            <div class="class-desc-zh">抽象基类的基类。</div>
+        </div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">abstractmethod</span>
+                <span class="sig">(func)</span>
+                <div class="desc">Decorator marking a method as abstract.</div>
+                <div class="desc-zh">装饰器，将方法标记为抽象。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">abstractclassmethod</span>
+                <span class="sig">(func)</span>
+                <div class="desc">Decorator for abstract class methods.</div>
+                <div class="desc-zh">抽象类方法装饰器。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">abstractstaticmethod</span>
+                <span class="sig">(func)</span>
+                <div class="desc">Decorator for abstract static methods.</div>
+                <div class="desc-zh">抽象静态方法装饰器。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">abstractproperty</span>
+                <span class="sig">(func)</span>
+                <div class="desc">Decorator for abstract properties.</div>
+                <div class="desc-zh">抽象属性装饰器。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- sbase64 -->
+    <div class="module" id="mod-sbase64">
+        <h2>sbase64</h2>
+        <div class="path">gaskill/gaskill/sbase64.py</div>
+        <div class="desc">Base16, Base32, Base64, Base64URL, Base58, and Base256 (Chinese) encodings.</div>
+        <div class="desc-zh">Base16、Base32、Base64、Base64URL、Base58 和 Base256（中文）编码。</div>
+        <div class="const-list">
+            <span class="const-item">BASE16_ALPHABET</span>
+            <span class="const-item">BASE32_ALPHABET</span>
+            <span class="const-item">BASE64_ALPHABET</span>
+            <span class="const-item">BASE64URL_ALPHABET</span>
+            <span class="const-item">BASE58_ALPHABET</span>
+        </div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">b16encode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Encode to Base16 (hexadecimal).</div>
+                <div class="desc-zh">编码为 Base16（十六进制）。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b16decode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Decode from Base16.</div>
+                <div class="desc-zh">从 Base16 解码。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b32encode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Encode to Base32.</div>
+                <div class="desc-zh">编码为 Base32。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b32decode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Decode from Base32.</div>
+                <div class="desc-zh">从 Base32 解码。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b64encode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Encode to Base64.</div>
+                <div class="desc-zh">编码为 Base64。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b64decode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Decode from Base64.</div>
+                <div class="desc-zh">从 Base64 解码。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b64urlencode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Encode to Base64URL (URL-safe).</div>
+                <div class="desc-zh">编码为 Base64URL（URL 安全）。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b64urldecode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Decode from Base64URL.</div>
+                <div class="desc-zh">从 Base64URL 解码。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b58encode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Encode to Base58 (Bitcoin alphabet).</div>
+                <div class="desc-zh">编码为 Base58（比特币字母表）。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b58decode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Decode from Base58.</div>
+                <div class="desc-zh">从 Base58 解码。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b256encode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Encode to Base256 using Chinese characters.</div>
+                <div class="desc-zh">使用中文字符编码为 Base256。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b256decode</span>
+                <span class="sig">(data: bytes) -> bytes</span>
+                <div class="desc">Decode from Base256 (Chinese).</div>
+                <div class="desc-zh">从 Base256（中文）解码。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- scache -->
+    <div class="module" id="mod-scache">
+        <h2>scache</h2>
+        <div class="path">gaskill/gaskill/scache.py</div>
+        <div class="desc">Caching data structures: LFU, LRU, TTL, memoization, RingBuffer, and CacheStats.</div>
+        <div class="desc-zh">缓存数据结构：LFU、LRU、TTL、记忆化、环形缓冲区和缓存统计。</div>
+        <div class="class-block">
+            <h3>LFUCache</h3>
+            <div class="signature">class LFUCache(max_size: int = 100)</div>
+            <div class="class-desc">Least Frequently Used cache.</div>
+            <div class="class-desc-zh">最少使用缓存。</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">get</span>
+                    <span class="sig">(key, default=None)</span>
+                    <div class="desc">Get value, increments access count.</div>
+                    <div class="desc-zh">获取值，增加访问计数。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">set</span>
+                    <span class="sig">(key, value)</span>
+                    <div class="desc">Store value, evicts LFU item if full.</div>
+                    <div class="desc-zh">存储值，满时淘汰最少使用项。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">pop</span>
+                    <span class="sig">(key, default=None)</span>
+                    <div class="desc">Remove and return value.</div>
+                    <div class="desc-zh">移除并返回值。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">clear</span>
+                    <span class="sig">()</span>
+                    <div class="desc">Clear all items.</div>
+                    <div class="desc-zh">清空所有项。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">keys</span> <span class="sig">() -> list</span>
+                    <div class="desc">All keys.</div>
+                    <div class="desc-zh">所有键。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">values</span> <span class="sig">() -> list</span>
+                    <div class="desc">All values.</div>
+                    <div class="desc-zh">所有值。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">items</span> <span class="sig">() -> list</span>
+                    <div class="desc">All key-value pairs.</div>
+                    <div class="desc-zh">所有键值对。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">size</span> <span class="sig">(property)</span>
+                    <div class="desc">Current number of items.</div>
+                    <div class="desc-zh">当前项数。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">max_size</span> <span class="sig">(property)</span>
+                    <div class="desc">Maximum capacity.</div>
+                    <div class="desc-zh">最大容量。</div>
+                </div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>LRUCache</h3>
+            <div class="signature">class LRUCache(max_size: int = 100)</div>
+            <div class="class-desc">Least Recently Used cache.</div>
+            <div class="class-desc-zh">最近最少使用缓存。</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">get</span>
+                    <span class="sig">(key, default=None)</span>
+                    <div class="desc">Get value, moves to most recent.</div>
+                    <div class="desc-zh">获取值，移到最近使用位置。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">set</span>
+                    <span class="sig">(key, value)</span>
+                    <div class="desc">Store value, evicts LRU if full.</div>
+                    <div class="desc-zh">存储值，满时淘汰最近最少使用项。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">pop</span>
+                    <span class="sig">(key, default=None)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">clear</span>
+                    <span class="sig">()</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">keys</span> <span class="sig">() -> list</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">values</span> <span class="sig">() -> list</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">items</span> <span class="sig">() -> list</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">size</span> <span class="sig">(property)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">max_size</span> <span class="sig">(property)</span>
+                </div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>CacheEntry</h3>
+            <div class="signature">class CacheEntry(key, value, ttl: int = 0)</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">is_expired</span>
+                    <span class="sig">(current_time: int) -> bool</span>
+                    <div class="desc">Check if entry has expired.</div>
+                    <div class="desc-zh">检查条目是否已过期。</div>
+                </div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>TTLCache</h3>
+            <div class="signature">class TTLCache(max_size: int = 100, default_ttl: int | None = None)</div>
+            <div class="class-desc">Time-to-live cache with expiration.</div>
+            <div class="class-desc-zh">带过期时间的缓存。</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">get</span>
+                    <span class="sig">(key, default=None, current_time=0)</span>
+                    <div class="desc">Get value, removes if expired.</div>
+                    <div class="desc-zh">获取值，过期则移除。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">set</span>
+                    <span class="sig">(key, value, ttl=0, current_time=0)</span>
+                    <div class="desc">Store with TTL.</div>
+                    <div class="desc-zh">带 TTL 存储。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">clear</span>
+                    <span class="sig">()</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">remove_expired</span>
+                    <span class="sig">(current_time: int) -> int</span>
+                    <div class="desc">Remove all expired entries.</div>
+                    <div class="desc-zh">移除所有过期条目。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">size</span> <span class="sig">(property)</span>
+                </div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>RingBuffer</h3>
+            <div class="signature">class RingBuffer(capacity: int)</div>
+            <div class="class-desc">Fixed-size FIFO buffer.</div>
+            <div class="class-desc-zh">固定大小 FIFO 缓冲区。</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">push</span>
+                    <span class="sig">(item)</span>
+                    <div class="desc">Add item, overwrites oldest if full.</div>
+                    <div class="desc-zh">添加项，满时覆盖最旧项。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">pop</span>
+                    <span class="sig">()</span>
+                    <div class="desc">Remove and return oldest.</div>
+                    <div class="desc-zh">移除并返回最旧项。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">peek</span>
+                    <span class="sig">()</span>
+                    <div class="desc">Return oldest without removing.</div>
+                    <div class="desc-zh">返回最旧项但不移除。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">clear</span>
+                    <span class="sig">()</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">is_empty</span>
+                    <span class="sig">() -> bool</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">is_full</span>
+                    <span class="sig">() -> bool</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">capacity</span> <span class="sig">(property)</span>
+                </div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>CacheStats</h3>
+            <div class="signature">class CacheStats()</div>
+            <div class="class-desc">Cache hit/miss/eviction statistics.</div>
+            <div class="class-desc-zh">缓存命中/未命中/淘汰统计。</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">record_hit</span>
+                    <span class="sig">()</span>
+                    <div class="desc">Record a cache hit.</div>
+                    <div class="desc-zh">记录缓存命中。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">record_miss</span>
+                    <span class="sig">()</span>
+                    <div class="desc">Record a cache miss.</div>
+                    <div class="desc-zh">记录缓存未命中。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">record_eviction</span>
+                    <span class="sig">()</span>
+                    <div class="desc">Record a cache eviction.</div>
+                    <div class="desc-zh">记录缓存淘汰。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">reset</span>
+                    <span class="sig">()</span>
+                    <div class="desc">Reset all statistics.</div>
+                    <div class="desc-zh">重置所有统计。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">hits</span> <span class="sig">(property)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">misses</span> <span class="sig">(property)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">evictions</span> <span class="sig">(property)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">total_requests</span> <span class="sig">(property)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">hit_rate</span> <span class="sig">(property) -> float</span>
+                </div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">memoize</span>
+                <span class="sig">(max_size: int = 128, method: bool = False) -> callable</span>
+                <div class="desc">Decorator for function/method memoization.</div>
+                <div class="desc-zh">函数/方法记忆化装饰器。</div>
+                <div class="params">Params: <strong>max_size</strong> - Cache size; <strong>method</strong> - If True, skips self</div>
+                <div class="params-zh">参数：<strong>max_size</strong> - 缓存大小；<strong>method</strong> - 为 True 时跳过 self</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- scolor -->
+    <div class="module" id="mod-scolor">
+        <h2>scolor</h2>
+        <div class="path">gaskill/gaskill/scolor.py</div>
+        <div class="desc">Color manipulation: RGB/HSV conversion, blending, gradients, luminance, contrast, deltaE, etc.</div>
+        <div class="desc-zh">颜色操作：RGB/HSV 转换、混合、渐变、亮度、对比度、deltaE 等。</div>
+        <div class="const-list">
+            <span class="const-item">WHITE</span> <span class="const-item">BLACK</span> <span class="const-item">RED</span> <span class="const-item">GREEN</span> <span class="const-item">BLUE</span>
+            <span class="const-item">YELLOW</span> <span class="const-item">PURPLE</span> <span class="const-item">ORANGE</span> <span class="const-item">CYAN</span> <span class="const-item">GRAY</span>
+            <span class="const-item">BROWN</span> <span class="const-item">PINK</span> <span class="const-item">GOLD</span> <span class="const-item">MAGENTA</span> <span class="const-item">BACKGROUND</span>
+            <span class="const-item">LIGHT_BLUE</span> <span class="const-item">LIGHT_GRAY</span> <span class="const-item">LIGHT_ORANGE</span> <span class="const-item">LIGHT_GREEN</span>
+            <span class="const-item">LIGHT_BROWN</span> <span class="const-item">LIGHT_PINK</span> <span class="const-item">LIGHT_PURPLE</span> <span class="const-item">LIGHT_CYAN</span>
+            <span class="const-item">LIGHT_YELLOW</span> <span class="const-item">LIGHT_CORAL</span> <span class="const-item">DARK_GREEN</span> <span class="const-item">DARK_BLUE</span>
+            <span class="const-item">DARK_RED</span> <span class="const-item">DARK_GOLD</span> <span class="const-item">DARK_PURPLE</span> <span class="const-item">DARK_BROWN</span>
+            <span class="const-item">DARK_CYAN</span> <span class="const-item">DARK_ORANGE</span> <span class="const-item">DARK_GRAY</span> <span class="const-item">DARK_PINK</span>
+            <span class="const-item">AQUA</span> <span class="const-item">LAVENDER</span> <span class="const-item">CORAL</span> <span class="const-item">TEAL</span>
+            <span class="const-item">INDIGO</span> <span class="const-item">VIOLET</span> <span class="const-item">MAROON</span> <span class="const-item">OLIVE</span>
+            <span class="const-item">NAVY</span> <span class="const-item">LIME</span> <span class="const-item">FUCHSIA</span> <span class="const-item">SILVER</span>
+            <span class="const-item">PRIMARY</span> <span class="const-item">SECONDARY</span> <span class="const-item">SUCCESS</span> <span class="const-item">WARNING</span>
+            <span class="const-item">ERROR</span> <span class="const-item">INFO</span> <span class="const-item">TRANSPARENT</span>
+        </div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">rgb</span>
+                <span class="sig">(r: int, g: int, b: int) -> tuple</span>
+                <div class="desc">Create RGB color tuple.</div>
+                <div class="desc-zh">创建 RGB 颜色元组。</div>
+                <div class="params">Params: <strong>r,g,b</strong> - 0-255</div>
+                <div class="params-zh">参数：<strong>r,g,b</strong> - 0-255</div>
+            </div>
+            <div class="func-item">
+                <span class="name">rgba</span>
+                <span class="sig">(r: int, g: int, b: int, a: int = 255) -> tuple</span>
+                <div class="desc">Create RGBA color tuple.</div>
+                <div class="desc-zh">创建 RGBA 颜色元组。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">hex_to_rgb</span>
+                <span class="sig">(hex_str: str) -> tuple</span>
+                <div class="desc">Convert hex string to RGB.</div>
+                <div class="desc-zh">将十六进制字符串转换为 RGB。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">rgb_to_hex</span>
+                <span class="sig">(r: int, g: int, b: int) -> str</span>
+                <div class="desc">Convert RGB to hex string.</div>
+                <div class="desc-zh">将 RGB 转换为十六进制字符串。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">complementary</span>
+                <span class="sig">(color, mode='rgb') -> tuple</span>
+                <div class="desc">Return complementary color.</div>
+                <div class="desc-zh">返回互补色。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">color_lerp</span>
+                <span class="sig">(c1, c2, t) -> tuple</span>
+                <div class="desc">Linear interpolation between colors.</div>
+                <div class="desc-zh">颜色线性插值。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">rgb_to_hsv</span>
+                <span class="sig">(r, g, b) -> tuple</span>
+                <div class="desc">Convert RGB to HSV.</div>
+                <div class="desc-zh">将 RGB 转换为 HSV。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">hsv_to_rgb</span>
+                <span class="sig">(h, s, v) -> tuple</span>
+                <div class="desc">Convert HSV to RGB.</div>
+                <div class="desc-zh">将 HSV 转换为 RGB。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">blend</span>
+                <span class="sig">(c1, c2, mode='normal', alpha=0.5) -> tuple</span>
+                <div class="desc">Blend two colors with various modes.</div>
+                <div class="desc-zh">使用多种模式混合两种颜色。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">gradient_at</span>
+                <span class="sig">(color_dict, t) -> tuple</span>
+                <div class="desc">Sample gradient at position t.</div>
+                <div class="desc-zh">在位置 t 采样渐变色。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">gradient_range</span>
+                <span class="sig">(color_dict, steps=256) -> list</span>
+                <div class="desc">Generate gradient color list.</div>
+                <div class="desc-zh">生成渐变颜色列表。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">grayscale</span>
+                <span class="sig">(color) -> int</span>
+                <div class="desc">Convert to grayscale.</div>
+                <div class="desc-zh">转换为灰度。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">invert</span>
+                <span class="sig">(color) -> tuple</span>
+                <div class="desc">Invert color.</div>
+                <div class="desc-zh">反色。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">adjust_brightness</span>
+                <span class="sig">(color, factor) -> tuple</span>
+                <div class="desc">Adjust brightness.</div>
+                <div class="desc-zh">调整亮度。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">adjust_saturation</span>
+                <span class="sig">(color, factor) -> tuple</span>
+                <div class="desc">Adjust saturation.</div>
+                <div class="desc-zh">调整饱和度。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">adjust_hue</span>
+                <span class="sig">(color, degrees) -> tuple</span>
+                <div class="desc">Adjust hue.</div>
+                <div class="desc-zh">调整色相。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">set_alpha</span>
+                <span class="sig">(color, alpha) -> tuple</span>
+                <div class="desc">Set alpha channel.</div>
+                <div class="desc-zh">设置 Alpha 通道。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">premultiply_alpha</span>
+                <span class="sig">(color) -> tuple</span>
+                <div class="desc">Premultiply alpha.</div>
+                <div class="desc-zh">预乘 Alpha。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">delta_e</span>
+                <span class="sig">(c1, c2) -> float</span>
+                <div class="desc">CIE 1976 color difference.</div>
+                <div class="desc-zh">CIE 1976 色差。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">distance</span>
+                <span class="sig">(c1, c2) -> float</span>
+                <div class="desc">Euclidean distance in RGB.</div>
+                <div class="desc-zh">RGB 欧几里得距离。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">luminance</span>
+                <span class="sig">(color) -> float</span>
+                <div class="desc">Relative luminance (WCAG).</div>
+                <div class="desc-zh">相对亮度（WCAG）。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">contrast_ratio</span>
+                <span class="sig">(c1, c2) -> float</span>
+                <div class="desc">WCAG contrast ratio.</div>
+                <div class="desc-zh">WCAG 对比度比率。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">is_dark</span>
+                <span class="sig">(color, threshold=0.5) -> bool</span>
+                <div class="desc">Check if color is dark.</div>
+                <div class="desc-zh">检查颜色是否为暗色。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">is_light</span>
+                <span class="sig">(color, threshold=0.5) -> bool</span>
+                <div class="desc">Check if color is light.</div>
+                <div class="desc-zh">检查颜色是否为亮色。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">mix</span>
+                <span class="sig">(c1, c2, amount=0.5) -> tuple</span>
+                <div class="desc">Alias for color_lerp.</div>
+                <div class="desc-zh">color_lerp 的别名。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">rgb_to_cymb</span>
+                <span class="sig">(r, g, b) -> tuple</span>
+                <div class="desc">RGB to CYMB.</div>
+                <div class="desc-zh">RGB 转 CYMB。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">cymb_to_rgb</span>
+                <span class="sig">(c, y, m, k) -> tuple</span>
+                <div class="desc">CYMB to RGB.</div>
+                <div class="desc-zh">CYMB 转 RGB。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">random_color</span>
+                <span class="sig">(rng=None) -> tuple</span>
+                <div class="desc">Generate random RGB color.</div>
+                <div class="desc-zh">生成随机 RGB 颜色。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- scrypt -->
+    <div class="module" id="mod-scrypt">
+        <h2>scrypt</h2>
+        <div class="path">gaskill/gaskill/scrypt.py</div>
+        <div class="desc">Cryptography: RSA key generation, encryption/decryption, simple symmetric cipher, secret sharing.</div>
+        <div class="desc-zh">加密：RSA 密钥生成、加密/解密、简单对称加密、秘密共享。</div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">rsa_generate_keys</span>
+                <span class="sig">(bits: int = 512) -> dict</span>
+                <div class="desc">Generate RSA key pair.</div>
+                <div class="desc-zh">生成 RSA 密钥对。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">rsa_encrypt</span>
+                <span class="sig">(message: str, public_key: dict) -> int</span>
+                <div class="desc">RSA encryption.</div>
+                <div class="desc-zh">RSA 加密。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">rsa_decrypt</span>
+                <span class="sig">(cipher: int, private_key: dict) -> str</span>
+                <div class="desc">RSA decryption.</div>
+                <div class="desc-zh">RSA 解密。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">simple_encrypt</span>
+                <span class="sig">(value: str, key: str = None, second: list[int] | None = None) -> tuple</span>
+                <div class="desc">Custom symmetric encryption. Returns (cipher, key, IV) if key not provided.</div>
+                <div class="desc-zh">自定义对称加密。若未提供 key，返回 (密文, key, IV)。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">simple_decrypt</span>
+                <span class="sig">(cipher: int, key: str, IV: str, second: list[int] | None = None) -> str</span>
+                <div class="desc">Decrypt from simple_encrypt.</div>
+                <div class="desc-zh">解密 simple_encrypt 的结果。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">share_secret</span>
+                <span class="sig">(plaintext: str, keys: list, threshold: int) -> dict</span>
+                <div class="desc">Shamir-style secret sharing.</div>
+                <div class="desc-zh">Shamir 风格秘密共享。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">recover_secret</span>
+                <span class="sig">(shares_dict: dict, threshold: int) -> str</span>
+                <div class="desc">Recover secret from shares.</div>
+                <div class="desc-zh">从份额恢复秘密。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">gaussian_elimination</span>
+                <span class="sig">(A, b) -> list</span>
+                <div class="desc">Solve linear system with fractions.</div>
+                <div class="desc-zh">使用分数解线性方程组。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- scurve -->
+    <div class="module" id="mod-scurve">
+        <h2>scurve</h2>
+        <div class="path">gaskill/gaskill/scurve.py</div>
+        <div class="desc">Curve evaluation: Bezier (quadratic, cubic, arbitrary degree), B-spline, NURBS.</div>
+        <div class="desc-zh">曲线求值：贝塞尔（二次、三次、任意阶）、B样条、NURBS。</div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">quadratic_bezier</span>
+                <span class="sig">(p0, p1, p2, t)</span>
+                <div class="desc">Quadratic Bezier curve.</div>
+                <div class="desc-zh">二次贝塞尔曲线。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">cubic_bezier</span>
+                <span class="sig">(p0, p1, p2, p3, t)</span>
+                <div class="desc">Cubic Bezier curve.</div>
+                <div class="desc-zh">三次贝塞尔曲线。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">bezier</span>
+                <span class="sig">(points, t)</span>
+                <div class="desc">De Casteljau evaluation for arbitrary degree.</div>
+                <div class="desc-zh">德卡斯特里奥算法求任意阶贝塞尔曲线。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">bezier_derivative</span>
+                <span class="sig">(points, t, order=1)</span>
+                <div class="desc">Derivative of Bezier curve.</div>
+                <div class="desc-zh">贝塞尔曲线的导数。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b_spline</span>
+                <span class="sig">(control_points, knots, degree, t)</span>
+                <div class="desc">B-spline evaluation using Cox-de Boor.</div>
+                <div class="desc-zh">使用 Cox-de Boor 求 B样条。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">uniform_knots</span>
+                <span class="sig">(n, degree) -> list</span>
+                <div class="desc">Generate uniform knot vector.</div>
+                <div class="desc-zh">生成均匀节点向量。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">clamped_knots</span>
+                <span class="sig">(n, degree) -> list</span>
+                <div class="desc">Generate clamped knot vector.</div>
+                <div class="desc-zh">生成钳制节点向量。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">b_spline_curve</span>
+                <span class="sig">(control_points, degree=3, steps=100) -> list</span>
+                <div class="desc">Generate points on a B-spline curve.</div>
+                <div class="desc-zh">生成 B样条曲线上的点序列。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">nurbs</span>
+                <span class="sig">(control_points, weights, knots, degree, t)</span>
+                <div class="desc">NURBS curve evaluation.</div>
+                <div class="desc-zh">NURBS 曲线求值。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">bezier_path</span>
+                <span class="sig">(points, steps=100) -> list</span>
+                <div class="desc">Generate points on a Bezier curve.</div>
+                <div class="desc-zh">生成贝塞尔曲线上的点序列。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">bezier_length</span>
+                <span class="sig">(points, steps=100) -> float</span>
+                <div class="desc">Approximate Bezier curve length.</div>
+                <div class="desc-zh">估算贝塞尔曲线长度。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">curve_length</span>
+                <span class="sig">(points_func, steps=100) -> float</span>
+                <div class="desc">Generic curve length calculation.</div>
+                <div class="desc-zh">通用曲线长度计算。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">de_casteljau_subdivide</span>
+                <span class="sig">(points, t) -> tuple</span>
+                <div class="desc">Subdivide Bezier curve at t.</div>
+                <div class="desc-zh">在 t 处细分贝塞尔曲线。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- seasing -->
+    <div class="module" id="mod-seasing">
+        <h2>seasing</h2>
+        <div class="path">gaskill/gaskill/seasing.py</div>
+        <div class="desc">Easing functions for animation: linear, quad, cubic, exponential, circular, elastic, bounce, back, sine.</div>
+        <div class="desc-zh">动画缓动函数：线性、二次、三次、指数、圆形、弹性、弹跳、回退、正弦。</div>
+        <div class="const-list">
+            <span class="const-item">EASING</span> <span class="val">dict mapping names to functions</span>
+        </div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">linear</span>
+                <span class="sig">(t) -> float</span>
+                <div class="desc">Linear easing.</div>
+                <div class="desc-zh">线性缓动。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">quad_in</span> <span class="sig">(t)</span>
+                <div class="desc">Quadratic ease-in.</div>
+                <div class="desc-zh">二次缓入。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">quad_out</span> <span class="sig">(t)</span>
+                <div class="desc">Quadratic ease-out.</div>
+                <div class="desc-zh">二次缓出。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">quad_in_out</span> <span class="sig">(t)</span>
+                <div class="desc">Quadratic ease-in-out.</div>
+                <div class="desc-zh">二次缓入缓出。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">cubic_in</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">cubic_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">cubic_in_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">back_in</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">back_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">bounce_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">bounce_in</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">bounce_in_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">expo_in</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">expo_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">expo_in_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">circ_in</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">circ_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">circ_in_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">elastic_out</span> <span class="sig">(t, amplitude=1, period=0.3)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">elastic_in</span> <span class="sig">(t, amplitude=1, period=0.3)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">sine_in</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">sine_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">sine_in_out</span> <span class="sig">(t)</span>
+            </div>
+            <div class="func-item">
+                <span class="name">tween</span>
+                <span class="sig">(start, end, duration, elapsed, easing=linear)</span>
+                <div class="desc">Compute tween value.</div>
+                <div class="desc-zh">计算补间值。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">ease</span>
+                <span class="sig">(t, type='linear')</span>
+                <div class="desc">Apply easing by name.</div>
+                <div class="desc-zh">按名称应用缓动。</div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Tween</h3>
+            <div class="signature">class Tween(start, end, duration, easing=linear)</div>
+            <div class="class-desc">Simple tween animation class.</div>
+            <div class="class-desc-zh">简单的补间动画类。</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">update</span>
+                    <span class="sig">(dt)</span>
+                    <div class="desc">Update tween and return current value.</div>
+                    <div class="desc-zh">更新补间并返回当前值。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">reset</span>
+                    <span class="sig">()</span>
+                    <div class="desc">Reset to start state.</div>
+                    <div class="desc-zh">重置到初始状态。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- sevent -->
+    <div class="module" id="mod-sevent">
+        <h2>sevent</h2>
+        <div class="path">gaskill/gaskill/sevent.py</div>
+        <div class="desc">Event system with persistent, once, times, conditional, and delayed listeners.</div>
+        <div class="desc-zh">事件系统，支持持久、一次性、计数、条件和延迟监听器。</div>
+        <div class="const-list">
+            <span class="const-item">event</span> <span class="val">global EventSystem instance</span>
+        </div>
+        <div class="class-block">
+            <h3>EventSystem</h3>
+            <div class="signature">class EventSystem(dt=0.016)</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">on</span>
+                    <span class="sig">(event_name, handler) -> int</span>
+                    <div class="desc">Register persistent listener.</div>
+                    <div class="desc-zh">注册持久监听器。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">once</span>
+                    <span class="sig">(event_name, handler) -> int</span>
+                    <div class="desc">Register one-time listener.</div>
+                    <div class="desc-zh">注册一次性监听器。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">times</span>
+                    <span class="sig">(count, event_name, handler) -> int</span>
+                    <div class="desc">Register listener that fires count times.</div>
+                    <div class="desc-zh">注册触发 count 次的监听器。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">when</span>
+                    <span class="sig">(event_name, condition, handler) -> int</span>
+                    <div class="desc">Register conditional listener.</div>
+                    <div class="desc-zh">注册条件监听器。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">wheel_once</span>
+                    <span class="sig">(event_name, condition, handler) -> int</span>
+                    <div class="desc">Conditional listener that fires once.</div>
+                    <div class="desc-zh">条件监听器，触发一次。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">delay</span>
+                    <span class="sig">(delay_time, event_name, handler) -> int</span>
+                    <div class="desc">Register delayed event.</div>
+                    <div class="desc-zh">注册延迟事件。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">emit</span>
+                    <span class="sig">(event_name, *args, **kwargs)</span>
+                    <div class="desc">Emit an event.</div>
+                    <div class="desc-zh">触发事件。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">update</span>
+                    <span class="sig">(dt=None)</span>
+                    <div class="desc">Process delayed events.</div>
+                    <div class="desc-zh">处理延迟事件。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">remove</span>
+                    <span class="sig">(event_name, listener_id) -> bool</span>
+                    <div class="desc">Remove listener by ID.</div>
+                    <div class="desc-zh">按 ID 移除监听器。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">redo</span>
+                    <span class="sig">(event_name, listener_id) -> bool</span>
+                    <div class="desc">Reactivate a listener.</div>
+                    <div class="desc-zh">重新激活监听器。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">clear</span>
+                    <span class="sig">(event_name=None)</span>
+                    <div class="desc">Clear all listeners.</div>
+                    <div class="desc-zh">清除所有监听器。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- sformat -->
+    <div class="module" id="mod-sformat">
+        <h2>sformat</h2>
+        <div class="path">gaskill/gaskill/sformat.py</div>
+        <div class="desc">String formatting: UUID, superscript, visual length, table, ordinal, polynomial, number-to-words, encode/decode, time, file size.</div>
+        <div class="desc-zh">字符串格式化：UUID、上标、视觉宽度、表格、序数、多项式、数字转英文、编码/解码、时间、文件大小。</div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">uuid4</span>
+                <span class="sig">(obj) -> str</span>
+                <div class="desc">Generate UUID from any object.</div>
+                <div class="desc-zh">从任意对象生成 UUID。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">superscript</span>
+                <span class="sig">(n) -> str</span>
+                <div class="desc">Convert number to superscript.</div>
+                <div class="desc-zh">将数字转为上标。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">visual_len</span>
+                <span class="sig">(t) -> int</span>
+                <div class="desc">Visual width: CJK=2, ASCII=1.</div>
+                <div class="desc-zh">视觉宽度：中文=2，英文=1。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">center</span>
+                <span class="sig">(s, width) -> str</span>
+                <div class="desc">Visually center a string.</div>
+                <div class="desc-zh">按视觉宽度居中对齐。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">table</span>
+                <span class="sig">(data, border_style="unicode", shows=...) -> str</span>
+                <div class="desc">Render a pretty table.</div>
+                <div class="desc-zh">渲染精美表格。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">ordinal</span>
+                <span class="sig">(number) -> str</span>
+                <div class="desc">Convert to ordinal string (1st, 2nd, etc.).</div>
+                <div class="desc-zh">转为序数字符串（1st、2nd 等）。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">to_poly</span>
+                <span class="sig">(expr, use_star=False) -> str</span>
+                <div class="desc">Convert expression to polynomial.</div>
+                <div class="desc-zh">将表达式转为多项式字符串。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">number_to_english</span>
+                <span class="sig">(n) -> str</span>
+                <div class="desc">Convert number to English words.</div>
+                <div class="desc-zh">数字转英文单词。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">english_to_number</span>
+                <span class="sig">(s) -> int</span>
+                <div class="desc">Convert English words to number.</div>
+                <div class="desc-zh">英文单词转数字。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">insert</span>
+                <span class="sig">(base_str, place, insert_str) -> str</span>
+                <div class="desc">Insert substring at position.</div>
+                <div class="desc-zh">在指定位置插入子串。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">encode</span>
+                <span class="sig">(string) -> str</span>
+                <div class="desc">Encode string to numeric sequence.</div>
+                <div class="desc-zh">将字符串编码为数字序列。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">decode</span>
+                <span class="sig">(encoded) -> str | tuple</span>
+                <div class="desc">Decode numeric sequence.</div>
+                <div class="desc-zh">解码数字序列。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">time_format</span>
+                <span class="sig">(seconds, mode='auto') -> str</span>
+                <div class="desc">Format time duration.</div>
+                <div class="desc-zh">格式化时间长度。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">file_size</span>
+                <span class="sig">(size_bytes, mode='auto', decimal=False) -> str</span>
+                <div class="desc">Format file size.</div>
+                <div class="desc-zh">格式化文件大小。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- sfrac -->
+    <div class="module" id="mod-sfrac">
+        <h2>sfrac</h2>
+        <div class="path">gaskill/gaskill/sfrac.py</div>
+        <div class="desc">Exact rational number arithmetic (Fraction class).</div>
+        <div class="desc-zh">精确有理数运算（分数类）。</div>
+        <div class="class-block">
+            <h3>Frac</h3>
+            <div class="signature">class Frac(numerator, denominator=None)</div>
+            <div class="class-desc">Immutable fraction with automatic reduction.</div>
+            <div class="class-desc-zh">不可变分数，自动约分。</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">as_percent</span>
+                    <span class="sig">(precision=0) -> str</span>
+                    <div class="desc">Return as percentage.</div>
+                    <div class="desc-zh">返回百分比字符串。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">__pow__</span>
+                    <span class="sig">(other)</span>
+                    <div class="desc">Exponentiation with rational roots.</div>
+                    <div class="desc-zh">含有理根的幂运算。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">__format__</span>
+                    <span class="sig">(spec)</span>
+                    <div class="desc">Supports %, l (LaTeX), m (mixed), f, e.</div>
+                    <div class="desc-zh">支持 %、l（LaTeX）、m（带分数）、f、e 格式。</div>
+                </div>
+            </div>
+            <div class="class-desc"><strong>Attributes / 属性:</strong> <span class="name">n</span> - numerator / 分子, <span class="name">d</span> - denominator / 分母</div>
+        </div>
+    </div>
+
+    <!-- sfsm -->
+    <div class="module" id="mod-sfsm">
+        <h2>sfsm</h2>
+        <div class="path">gaskill/gaskill/sfsm.py</div>
+        <div class="desc">Finite State Machine with state classes and transition tables.</div>
+        <div class="desc-zh">有限状态机，含状态类和转换表。</div>
+        <div class="class-block">
+            <h3>State</h3>
+            <div class="signature">class State(name)</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">enter</span>
+                    <span class="sig">(old_state)</span>
+                    <div class="desc">Called when entering state.</div>
+                    <div class="desc-zh">进入状态时调用。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">exit</span>
+                    <span class="sig">(new_state)</span>
+                    <div class="desc">Called when exiting state.</div>
+                    <div class="desc-zh">离开状态时调用。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">update</span>
+                    <span class="sig">(dt)</span>
+                    <div class="desc">Called every frame.</div>
+                    <div class="desc-zh">每帧调用。</div>
+                </div>
+                <div class="method-item">
+                    <span class="name">handle_event</span>
+                    <span class="sig">(event) -> str | None</span>
+                    <div class="desc">Handle event, return next state.</div>
+                    <div class="desc-zh">处理事件，返回下一状态。</div>
+                </div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>StateMachine</h3>
+            <div class="signature">class StateMachine(initial_state=None)</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">add_state</span>
+                    <span class="sig">(state)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">remove_state</span>
+                    <span class="sig">(state_name)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">set_state</span>
+                    <span class="sig">(state_name) -> bool</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">update</span>
+                    <span class="sig">(dt)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">handle_event</span>
+                    <span class="sig">(event) -> bool</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">transition_to</span>
+                    <span class="sig">(state_name) -> bool</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">revert_to_previous</span>
+                    <span class="sig">() -> bool</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">lock</span>
+                    <span class="sig">()</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">unlock</span>
+                    <span class="sig">()</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">clear</span>
+                    <span class="sig">()</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">current_state</span> <span class="sig">(property)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">previous_state</span> <span class="sig">(property)</span>
+                </div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>FunctionState</h3>
+            <div class="signature">class FunctionState(name, on_enter=None, on_exit=None, on_update=None, on_event=None)</div>
+            <div class="class-desc">State defined by callbacks.</div>
+            <div class="class-desc-zh">由回调函数定义的状态。</div>
+        </div>
+        <div class="class-block">
+            <h3>StateTransition</h3>
+            <div class="signature">class StateTransition()</div>
+            <div class="method-list">
+                <div class="method-item">
+                    <span class="name">add_transition</span>
+                    <span class="sig">(from_state, to_state, condition=None)</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">get_transition</span>
+                    <span class="sig">(from_state, context=None) -> str | None</span>
+                </div>
+                <div class="method-item">
+                    <span class="name">clear</span>
+                    <span class="sig">()</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- sgeometry -->
+    <div class="module" id="mod-sgeometry">
+        <h2>sgeometry</h2>
+        <div class="path">gaskill/gaskill/sgeometry.py</div>
+        <div class="desc">2D geometry: Polygon, Rect, Circle, Line2, with SAT collision detection.</div>
+        <div class="desc-zh">2D 几何：多边形、矩形、圆、线段，含 SAT 碰撞检测。</div>
+        <div class="class-block">
+            <h3>Polygon</h3>
+            <div class="signature">class Polygon(points)</div>
+            <div class="class-desc">Arbitrary polygon with triangulation, convex hull, AABB, point-in-polygon.</div>
+            <div class="class-desc-zh">任意多边形，含三角剖分、凸包、AABB、点在多边形内检测。</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">get_rects</span> <span class="sig">(step=10) -> list</span><div class="desc">Convert to AABB rectangles.</div><div class="desc-zh">转换为 AABB 矩形列表。</div></div>
+                <div class="method-item"><span class="name">contains_point</span> <span class="sig">(point) -> bool</span><div class="desc">Ray casting point-in-polygon.</div><div class="desc-zh">射线法检测点在多边形内。</div></div>
+                <div class="method-item"><span class="name">contains_point_accurate</span> <span class="sig">(point) -> bool</span><div class="desc">Includes boundary check.</div><div class="desc-zh">包含边界检测。</div></div>
+                <div class="method-item"><span class="name">get_aabb</span> <span class="sig">() -> tuple</span><div class="desc">Axis-aligned bounding box.</div><div class="desc-zh">轴对齐包围盒。</div></div>
+                <div class="method-item"><span class="name">convex_hull</span> <span class="sig">() -> Polygon</span><div class="desc">Monotone chain convex hull.</div><div class="desc-zh">单调链凸包。</div></div>
+                <div class="method-item"><span class="name">triangulate</span> <span class="sig">() -> list</span><div class="desc">Ear clipping triangulation.</div><div class="desc-zh">耳剪裁三角剖分。</div></div>
+                <div class="method-item"><span class="name">collide_rect</span> <span class="sig">(rect) -> bool</span></div>
+                <div class="method-item"><span class="name">collide_polygon</span> <span class="sig">(other) -> bool</span><div class="desc">SAT collision detection.</div><div class="desc-zh">SAT 碰撞检测。</div></div>
+                <div class="method-item"><span class="name">move</span> <span class="sig">(dx, dy) -> Polygon</span></div>
+                <div class="method-item"><span class="name">rotate</span> <span class="sig">(angle, center=None) -> Polygon</span></div>
+                <div class="method-item"><span class="name">scale</span> <span class="sig">(factor, center=None) -> Polygon</span></div>
+                <div class="method-item"><span class="name">edges</span> <span class="sig">(property)</span></div>
+                <div class="method-item"><span class="name">normals</span> <span class="sig">(property)</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Rect</h3>
+            <div class="signature">class Rect(x=0, y=0, w=0, h=0, angle=0)</div>
+            <div class="class-desc">Rectangle with rotation support.</div>
+            <div class="class-desc-zh">矩形，支持旋转。</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">get_rects</span> <span class="sig">(step=10) -> list</span></div>
+                <div class="method-item"><span class="name">collide_point</span> <span class="sig">(x, y=None) -> bool</span></div>
+                <div class="method-item"><span class="name">collide_rect</span> <span class="sig">(other) -> bool</span></div>
+                <div class="method-item"><span class="name">collide_circle</span> <span class="sig">(circle) -> bool</span></div>
+                <div class="method-item"><span class="name">inflate</span> <span class="sig">(dw, dh) -> Rect</span></div>
+                <div class="method-item"><span class="name">expand</span> <span class="sig">(*args) -> Rect</span></div>
+                <div class="method-item"><span class="name">move</span> <span class="sig">(dx, dy) -> Rect</span></div>
+                <div class="method-item"><span class="name">union</span> <span class="sig">(other) -> Rect</span></div>
+                <div class="method-item"><span class="name">left</span>, <span class="name">right</span>, <span class="name">top</span>, <span class="name">bottom</span>, <span class="name">center</span>, <span class="name">area</span> <span class="sig">(properties)</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Circle</h3>
+            <div class="signature">class Circle(center, radius)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">collide_point</span> <span class="sig">(x, y=None) -> bool</span></div>
+                <div class="method-item"><span class="name">collide_circle</span> <span class="sig">(other) -> bool</span></div>
+                <div class="method-item"><span class="name">collide_rect</span> <span class="sig">(rect) -> bool</span></div>
+                <div class="method-item"><span class="name">get_rects</span> <span class="sig">(step=10) -> list</span></div>
+                <div class="method-item"><span class="name">area</span> <span class="sig">(property)</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Line2</h3>
+            <div class="signature">class Line2(p1, p2)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">length</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">closest_point</span> <span class="sig">(p) -> vec2</span></div>
+                <div class="method-item"><span class="name">collide_point</span> <span class="sig">(x, y=None, tolerance=0.1) -> bool</span></div>
+                <div class="method-item"><span class="name">intersect_line</span> <span class="sig">(other) -> vec2 | None</span></div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">raycast_rect</span>
+                <span class="sig">(ray_origin, ray_dir, rect) -> tuple</span>
+                <div class="desc">Ray vs rectangle intersection.</div>
+                <div class="desc-zh">射线与矩形相交检测。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">reflect</span>
+                <span class="sig">(vector, normal) -> vec2</span>
+                <div class="desc">Reflect vector off normal.</div>
+                <div class="desc-zh">向量反射。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">rect</span>
+                <span class="sig">(x=0, y=0, w=0, h=0, angle=0) -> Rect</span>
+            </div>
+            <div class="func-item">
+                <span class="name">circle</span>
+                <span class="sig">(center, radius) -> Circle</span>
+            </div>
+            <div class="func-item">
+                <span class="name">line</span>
+                <span class="sig">(p1, p2) -> Line2</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- sgeometry3d -->
+    <div class="module" id="mod-sgeometry3d">
+        <h2>sgeometry3d</h2>
+        <div class="path">gaskill/gaskill/sgeometry3d.py</div>
+        <div class="desc">3D geometry: AABB, Ray, Sphere, Plane.</div>
+        <div class="desc-zh">3D 几何：AABB、射线、球体、平面。</div>
+        <div class="class-block">
+            <h3>AABB</h3>
+            <div class="signature">class AABB(min_point=None, max_point=None)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">from_center_size</span> <span class="sig">(center, size) -> AABB</span> (classmethod)</div>
+                <div class="method-item"><span class="name">from_points</span> <span class="sig">(points) -> AABB</span> (classmethod)</div>
+                <div class="method-item"><span class="name">expand</span> <span class="sig">(point)</span></div>
+                <div class="method-item"><span class="name">inflate</span> <span class="sig">(amount)</span></div>
+                <div class="method-item"><span class="name">contains_point</span> <span class="sig">(point) -> bool</span></div>
+                <div class="method-item"><span class="name">intersects_aabb</span> <span class="sig">(other) -> bool</span></div>
+                <div class="method-item"><span class="name">intersects_sphere</span> <span class="sig">(center, radius) -> bool</span></div>
+                <div class="method-item"><span class="name">surface_area</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">volume</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">merge</span> <span class="sig">(other) -> AABB</span></div>
+                <div class="method-item"><span class="name">center</span>, <span class="name">size</span>, <span class="name">extents</span> <span class="sig">(properties)</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Ray</h3>
+            <div class="signature">class Ray(origin=None, direction=None)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">point_at</span> <span class="sig">(t) -> vec3</span></div>
+                <div class="method-item"><span class="name">intersect_sphere</span> <span class="sig">(center, radius) -> tuple</span></div>
+                <div class="method-item"><span class="name">intersect_plane</span> <span class="sig">(point, normal) -> tuple</span></div>
+                <div class="method-item"><span class="name">intersect_triangle</span> <span class="sig">(v0, v1, v2) -> tuple</span><div class="desc">Moller-Trumbore.</div></div>
+                <div class="method-item"><span class="name">intersect_aabb</span> <span class="sig">(aabb) -> tuple</span><div class="desc">Slab method.</div></div>
+                <div class="method-item"><span class="name">closest_point_to</span> <span class="sig">(point) -> vec3</span></div>
+                <div class="method-item"><span class="name">distance_to_point</span> <span class="sig">(point) -> float</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Sphere</h3>
+            <div class="signature">class Sphere(center=None, radius=1.0)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">contains_point</span> <span class="sig">(point) -> bool</span></div>
+                <div class="method-item"><span class="name">intersects_sphere</span> <span class="sig">(other) -> bool</span></div>
+                <div class="method-item"><span class="name">intersects_aabb</span> <span class="sig">(aabb) -> bool</span></div>
+                <div class="method-item"><span class="name">surface_area</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">volume</span> <span class="sig">() -> float</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Plane</h3>
+            <div class="signature">class Plane(normal=None, point=None, d=None)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">from_three_points</span> <span class="sig">(p1, p2, p3) -> Plane</span> (classmethod)</div>
+                <div class="method-item"><span class="name">distance_to_point</span> <span class="sig">(point) -> float</span></div>
+                <div class="method-item"><span class="name">project_point</span> <span class="sig">(point) -> vec3</span></div>
+                <div class="method-item"><span class="name">is_on_plane</span> <span class="sig">(point, tolerance=EPSILON) -> bool</span></div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">project_3d_to_2d</span>
+                <span class="sig">(point, camera_pos, camera_angle, fov=60, width=800, height=600)</span>
+                <div class="desc">Project 3D point to 2D screen.</div>
+                <div class="desc-zh">将 3D 点投影到 2D 屏幕。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- shashlib -->
+    <div class="module" id="mod-shashlib">
+        <h2>shashlib</h2>
+        <div class="path">gaskill/gaskill/shashlib.py</div>
+        <div class="desc">Pure Python SHA-256 and DJB2 hash.</div>
+        <div class="desc-zh">纯 Python SHA-256 和 DJB2 哈希。</div>
+        <div class="const-list">
+            <span class="const-item">H0</span> <span class="const-item">H1</span> <span class="const-item">H2</span> <span class="const-item">H3</span> <span class="const-item">H4</span>
+            <span class="const-item">H5</span> <span class="const-item">H6</span> <span class="const-item">H7</span> <span class="const-item">K</span> <span class="val">64 constants</span>
+        </div>
+        <div class="func-list">
+            <div class="func-item">
+                <span class="name">sha256</span>
+                <span class="sig">(message: bytes) -> str</span>
+                <div class="desc">Compute SHA-256 hash, return hex digest.</div>
+                <div class="desc-zh">计算 SHA-256 哈希，返回十六进制摘要。</div>
+            </div>
+            <div class="func-item">
+                <span class="name">DJB2</span>
+                <span class="sig">(s: str, capacity: int = 0xffffffff) -> int</span>
+                <div class="desc">DJB2 hash function.</div>
+                <div class="desc-zh">DJB2 哈希函数。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- sinterp -->
+    <div class="module" id="mod-sinterp">
+        <h2>sinterp</h2>
+        <div class="path">gaskill/gaskill/sinterp.py</div>
+        <div class="desc">Interpolation: lerp, bilinear, trilinear, slerp, smoothstep, hermite, Catmull-Rom, damping, spring.</div>
+        <div class="desc-zh">插值：线性、双线性、三线性、球面线性、平滑步进、Hermite、Catmull-Rom、阻尼、弹簧。</div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">lerp</span> <span class="sig">(a, b, t)</span></div>
+            <div class="func-item"><span class="name">lerp_unclamped</span> <span class="sig">(a, b, t)</span></div>
+            <div class="func-item"><span class="name">bilerp</span> <span class="sig">(v00, v10, v01, v11, x, y)</span></div>
+            <div class="func-item"><span class="name">trilerp</span> <span class="sig">(v000, ..., x, y, z)</span></div>
+            <div class="func-item"><span class="name">slerp</span> <span class="sig">(v1, v2, t)</span><div class="desc">Spherical lerp.</div><div class="desc-zh">球面线性插值。</div></div>
+            <div class="func-item"><span class="name">smoothstep</span> <span class="sig">(edge0, edge1, x)</span></div>
+            <div class="func-item"><span class="name">smootherstep</span> <span class="sig">(edge0, edge1, x)</span></div>
+            <div class="func-item"><span class="name">coserp</span> <span class="sig">(a, b, t)</span></div>
+            <div class="func-item"><span class="name">cubic_bezier</span> <span class="sig">(p0, p1, p2, p3, t)</span></div>
+            <div class="func-item"><span class="name">cubic_bezier_derivative</span> <span class="sig">(p0, p1, p2, p3, t)</span></div>
+            <div class="func-item"><span class="name">catmull_rom</span> <span class="sig">(p0, p1, p2, p3, t)</span></div>
+            <div class="func-item"><span class="name">hermite</span> <span class="sig">(p0, t0, p1, t1, s)</span></div>
+            <div class="func-item"><span class="name">inverse_lerp</span> <span class="sig">(a, b, value) -> float</span></div>
+            <div class="func-item"><span class="name">remap</span> <span class="sig">(value, in_min, in_max, out_min, out_max)</span></div>
+            <div class="func-item"><span class="name">pingpong</span> <span class="sig">(value, length) -> float</span></div>
+            <div class="func-item"><span class="name">damp</span> <span class="sig">(current, target, lambda_val, dt)</span><div class="desc">Exponential damping.</div><div class="desc-zh">指数阻尼。</div></div>
+            <div class="func-item"><span class="name">spring</span> <span class="sig">(current, target, velocity, frequency, damping, dt) -> tuple</span><div class="desc">Spring interpolation.</div><div class="desc-zh">弹簧插值。</div></div>
+        </div>
+    </div>
+
+    <!-- smath -->
+    <div class="module" id="mod-smath">
+        <h2>smath</h2>
+        <div class="path">gaskill/gaskill/smath.py</div>
+        <div class="desc">Core math: constants, trig, complex, log, gamma, primality, number theory.</div>
+        <div class="desc-zh">核心数学：常量、三角函数、复数、对数、Gamma、素数、数论。</div>
+        <div class="const-list">
+            <span class="const-item">pi</span> <span class="const-item">e</span> <span class="const-item">tau</span> <span class="const-item">phi</span> <span class="const-item">EPSILON</span> <span class="const-item">INF</span>
+        </div>
+        <div class="class-block">
+            <h3>Complex</h3>
+            <div class="signature">class Complex(real, imag=None)</div>
+            <div class="class-desc">Complex number with polar coordinates.</div>
+            <div class="class-desc-zh">复数，含极坐标表示。</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">conjugate</span> <span class="sig">() -> Complex</span></div>
+                <div class="method-item"><span class="name">copy</span> <span class="sig">() -> Complex</span></div>
+                <div class="method-item"><span class="name">real</span>, <span class="name">imag</span>, <span class="name">r</span>, <span class="name">theta</span> <span class="sig">(properties)</span></div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">gcd</span> <span class="sig">(a, b) -> int</span></div>
+            <div class="func-item"><span class="name">lcm</span> <span class="sig">(a, b) -> int</span></div>
+            <div class="func-item"><span class="name">factorial</span> <span class="sig">(n) -> int</span></div>
+            <div class="func-item"><span class="name">comb</span> <span class="sig">(n, k) -> int</span></div>
+            <div class="func-item"><span class="name">perm</span> <span class="sig">(n, k) -> int</span></div>
+            <div class="func-item"><span class="name">gamma</span> <span class="sig">(z)</span><div class="desc">Gamma function.</div><div class="desc-zh">Gamma 函数。</div></div>
+            <div class="func-item"><span class="name">log_gamma</span> <span class="sig">(z) -> float</span></div>
+            <div class="func-item"><span class="name">digamma</span> <span class="sig">(z) -> float</span></div>
+            <div class="func-item"><span class="name">beta</span> <span class="sig">(a, b) -> float</span></div>
+            <div class="func-item"><span class="name">sin</span> <span class="sig">(x, fast=False)</span></div>
+            <div class="func-item"><span class="name">cos</span> <span class="sig">(x, fast=False)</span></div>
+            <div class="func-item"><span class="name">tan</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">cot</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">sec</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">csc</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">asin</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">acos</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">atan</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">atan2</span> <span class="sig">(y, x)</span></div>
+            <div class="func-item"><span class="name">sinh</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">cosh</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">tanh</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">coth</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">acosh</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">asinh</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">atanh</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">exp</span> <span class="sig">(z)</span></div>
+            <div class="func-item"><span class="name">log</span> <span class="sig">(z, base=None)</span></div>
+            <div class="func-item"><span class="name">ln</span> <span class="sig">(z)</span></div>
+            <div class="func-item"><span class="name">log10</span> <span class="sig">(z)</span></div>
+            <div class="func-item"><span class="name">log2</span> <span class="sig">(z)</span></div>
+            <div class="func-item"><span class="name">sqrt</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">cbrt</span> <span class="sig">(x)</span></div>
+            <div class="func-item"><span class="name">root</span> <span class="sig">(x, n=2)</span></div>
+            <div class="func-item"><span class="name">hypot</span> <span class="sig">(*args) -> float</span></div>
+            <div class="func-item"><span class="name">floor</span> <span class="sig">(x) -> int</span></div>
+            <div class="func-item"><span class="name">ceil</span> <span class="sig">(x) -> int</span></div>
+            <div class="func-item"><span class="name">trunc</span> <span class="sig">(x) -> int</span></div>
+            <div class="func-item"><span class="name">sign</span> <span class="sig">(x) -> int</span></div>
+            <div class="func-item"><span class="name">rad</span> <span class="sig">(x) -> float</span></div>
+            <div class="func-item"><span class="name">deg</span> <span class="sig">(x) -> float</span></div>
+            <div class="func-item"><span class="name">wrap</span> <span class="sig">(x, a, b) -> float</span></div>
+            <div class="func-item"><span class="name">clamp</span> <span class="sig">(x, min_val, max_val)</span></div>
+            <div class="func-item"><span class="name">is_prime</span> <span class="sig">(n) -> bool</span></div>
+            <div class="func-item"><span class="name">is_prime_fast</span> <span class="sig">(n) -> bool</span><div class="desc">Miller-Rabin.</div></div>
+            <div class="func-item"><span class="name">prime_factors</span> <span class="sig">(n) -> dict</span></div>
+            <div class="func-item"><span class="name">fibonacci</span> <span class="sig">(n) -> int</span></div>
+            <div class="func-item"><span class="name">product</span> <span class="sig">(arr)</span></div>
+            <div class="func-item"><span class="name">normalize_angle</span> <span class="sig">(angle) -> float</span></div>
+            <div class="func-item"><span class="name">distance</span> <span class="sig">(p1, p2) -> float</span></div>
+            <div class="func-item"><span class="name">nearest</span> <span class="sig">(value, candidates)</span></div>
+            <div class="func-item"><span class="name">angle_between</span> <span class="sig">(v1, v2) -> float</span></div>
+            <div class="func-item"><span class="name">egcd</span> <span class="sig">(a, m) -> int</span><div class="desc">Modular inverse.</div><div class="desc-zh">模逆元。</div></div>
+        </div>
+    </div>
+
+    <!-- smatrix -->
+    <div class="module" id="mod-smatrix">
+        <h2>smatrix</h2>
+        <div class="path">gaskill/gaskill/smatrix.py</div>
+        <div class="desc">Matrix class with linear algebra operations.</div>
+        <div class="desc-zh">矩阵类，含线性代数运算。</div>
+        <div class="class-block">
+            <h3>Matrix</h3>
+            <div class="signature">class Matrix(data)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">transpose</span> <span class="sig">() -> Matrix</span></div>
+                <div class="method-item"><span class="name">T</span> <span class="sig">(property)</span></div>
+                <div class="method-item"><span class="name">trace</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">det</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">inverse</span> <span class="sig">() -> Matrix</span></div>
+                <div class="method-item"><span class="name">rank</span> <span class="sig">() -> int</span></div>
+                <div class="method-item"><span class="name">lu_decomposition</span> <span class="sig">() -> tuple</span></div>
+                <div class="method-item"><span class="name">submatrix</span> <span class="sig">(row_start, row_end, col_start, col_end) -> Matrix</span></div>
+                <div class="method-item"><span class="name">minor</span> <span class="sig">(i, j) -> float</span></div>
+                <div class="method-item"><span class="name">cofactor</span> <span class="sig">(i, j) -> float</span></div>
+                <div class="method-item"><span class="name">adjugate</span> <span class="sig">() -> Matrix</span></div>
+                <div class="method-item"><span class="name">frobenius_norm</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">infinity_norm</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">one_norm</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">is_symmetric</span> <span class="sig">() -> bool</span></div>
+                <div class="method-item"><span class="name">is_identity</span> <span class="sig">() -> bool</span></div>
+                <div class="method-item"><span class="name">is_diagonal</span> <span class="sig">() -> bool</span></div>
+                <div class="method-item"><span class="name">diagonal</span> <span class="sig">() -> list</span></div>
+                <div class="method-item"><span class="name">to_vector</span> <span class="sig">() -> list</span></div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">matrix</span> <span class="sig">(data) -> Matrix</span></div>
+            <div class="func-item"><span class="name">rotation_matrix_2d</span> <span class="sig">(theta) -> Matrix</span></div>
+            <div class="func-item"><span class="name">rotation_matrix_x</span> <span class="sig">(theta) -> Matrix</span></div>
+            <div class="func-item"><span class="name">rotation_matrix_y</span> <span class="sig">(theta) -> Matrix</span></div>
+            <div class="func-item"><span class="name">rotation_matrix_z</span> <span class="sig">(theta) -> Matrix</span></div>
+            <div class="func-item"><span class="name">scaling_matrix_2d</span> <span class="sig">(sx, sy=None) -> Matrix</span></div>
+            <div class="func-item"><span class="name">scaling_matrix_3d</span> <span class="sig">(sx, sy=None, sz=None) -> Matrix</span></div>
+            <div class="func-item"><span class="name">translation_matrix_2d</span> <span class="sig">(tx, ty) -> Matrix</span></div>
+            <div class="func-item"><span class="name">translation_matrix_3d</span> <span class="sig">(tx, ty, tz) -> Matrix</span></div>
+            <div class="func-item"><span class="name">solve_linear</span> <span class="sig">(A, b) -> list</span></div>
+            <div class="func-item"><span class="name">eigenvalues_2x2</span> <span class="sig">(matrix) -> list</span></div>
+            <div class="func-item"><span class="name">kronecker</span> <span class="sig">(A, B) -> Matrix</span></div>
+            <div class="func-item"><span class="name">outer_product</span> <span class="sig">(v1, v2) -> Matrix</span></div>
+            <div class="func-item"><span class="name">matrix_from_func</span> <span class="sig">(func, rows, cols=None, start=(0,0)) -> Matrix</span></div>
+        </div>
+    </div>
+
+    <!-- snoise -->
+    <div class="module" id="mod-snoise">
+        <h2>snoise</h2>
+        <div class="path">gaskill/gaskill/snoise.py</div>
+        <div class="desc">Procedural noise: Perlin, Simplex, and point-based noise.</div>
+        <div class="desc-zh">程序化噪声：Perlin、Simplex 和基于点的噪声。</div>
+        <div class="class-block">
+            <h3>PerlinNoise</h3>
+            <div class="signature">class PerlinNoise(seed=None, octaves=4, persistence=0.5, lacunarity=2.0)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">noise2d</span> <span class="sig">(x, y) -> float</span></div>
+                <div class="method-item"><span class="name">fbm2d</span> <span class="sig">(x, y) -> float</span></div>
+                <div class="method-item"><span class="name">terrain_height</span> <span class="sig">(x, y) -> float</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>SimplexNoise</h3>
+            <div class="signature">class SimplexNoise(seed=None, octaves=4, persistence=0.5, lacunarity=2.0)</div>
+            <div class="class-desc">Correct Simplex noise, no square artifacts.</div>
+            <div class="class-desc-zh">正确的 Simplex 噪声，无方块痕迹。</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">noise2d</span> <span class="sig">(x, y) -> float</span></div>
+                <div class="method-item"><span class="name">fbm2d</span> <span class="sig">(x, y) -> float</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Snoise</h3>
+            <div class="signature">class Snoise(falloff=1.0)</div>
+            <div class="class-desc">Point-based noise field (inverse distance weighting).</div>
+            <div class="class-desc-zh">基于点的噪声场（反距离加权）。</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">add_point</span> <span class="sig">(x, y, value) -> self</span></div>
+                <div class="method-item"><span class="name">add_points</span> <span class="sig">(*points) -> self</span></div>
+                <div class="method-item"><span class="name">clear</span> <span class="sig">() -> self</span></div>
+                <div class="method-item"><span class="name">set_falloff</span> <span class="sig">(falloff) -> self</span></div>
+                <div class="method-item"><span class="name">__call__</span> <span class="sig">(x, y, use_cache=True) -> float</span></div>
+                <div class="method-item"><span class="name">sample_rect</span> <span class="sig">(x1, y1, x2, y2, step=1.0) -> list</span></div>
+                <div class="method-item"><span class="name">heatmap</span> <span class="sig">(x1, y1, x2, y2, step=1.0) -> list</span></div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">snoise_from_points</span> <span class="sig">(points, falloff=1.0) -> Snoise</span></div>
+        </div>
+    </div>
+
+    <!-- solver -->
+    <div class="module" id="mod-solver">
+        <h2>solver</h2>
+        <div class="path">gaskill/gaskill/solver.py</div>
+        <div class="desc">Equation solvers: linear, quadratic, cubic, and numerical polynomial (Durand-Kerner).</div>
+        <div class="desc-zh">方程求解器：一次、二次、三次和数值多项式（Durand-Kerner）。</div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">solve_linear</span> <span class="sig">(a, b) -> list | str</span><div class="desc">Returns 'infinite' for infinite solutions.</div><div class="desc-zh">无数解时返回 'infinite'。</div></div>
+            <div class="func-item"><span class="name">solve_quadratic</span> <span class="sig">(a, b, c) -> list</span><div class="desc">Supports complex roots.</div><div class="desc-zh">支持复数根。</div></div>
+            <div class="func-item"><span class="name">solve_cubic</span> <span class="sig">(a, b, c, d) -> list</span></div>
+            <div class="func-item"><span class="name">solve_polynomial</span> <span class="sig">(coefficients) -> list</span><div class="desc">Up to degree 3.</div><div class="desc-zh">最高三次。</div></div>
+            <div class="func-item"><span class="name">solve_polynomial_numerical</span> <span class="sig">(coefficients, max_iter=1000, tol=1e-10) -> list</span></div>
+            <div class="func-item"><span class="name">roots</span> <span class="sig">(coefficients) -> list</span><div class="desc">Alias for numerical solver.</div><div class="desc-zh">数值求解器别名。</div></div>
+            <div class="func-item"><span class="name">poly</span> <span class="sig">(val, coefficients)</span><div class="desc">Evaluate polynomial.</div><div class="desc-zh">计算多项式值。</div></div>
+        </div>
+    </div>
+
+    <!-- spathfinder -->
+    <div class="module" id="mod-spathfinder">
+        <h2>spathfinder</h2>
+        <div class="path">gaskill/gaskill/spathfinder.py</div>
+        <div class="desc">Pathfinding: A*, Dijkstra, BFS, bidirectional BFS, flow field, maze generation.</div>
+        <div class="desc-zh">寻路：A*、Dijkstra、BFS、双向BFS、流场、迷宫生成。</div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">astar</span> <span class="sig">(grid, start, end, heuristic='manhattan', allow_diagonal=False) -> list | None</span></div>
+            <div class="func-item"><span class="name">astar_weighted</span> <span class="sig">(grid, start, end, weight=1.0, ...) -> list | None</span></div>
+            <div class="func-item"><span class="name">dijkstra</span> <span class="sig">(grid, start, end, weights=None, allow_diagonal=False) -> list | None</span></div>
+            <div class="func-item"><span class="name">bidirectional_bfs</span> <span class="sig">(grid, start, end) -> list | None</span></div>
+            <div class="func-item"><span class="name">bfs</span> <span class="sig">(grid, start, end) -> list | None</span></div>
+            <div class="func-item"><span class="name">dfs_maker</span> <span class="sig">(width, height, start=(1,1), seed=None) -> list</span></div>
+            <div class="func-item"><span class="name">astar_cost</span> <span class="sig">(cost_grid, start, end, ...) -> list | None</span></div>
+            <div class="func-item"><span class="name">dijkstra_cost</span> <span class="sig">(cost_grid, start, end, ...) -> list | None</span></div>
+            <div class="func-item"><span class="name">get_path_cost</span> <span class="sig">(cost_grid, path, allow_diagonal=False) -> float</span></div>
+            <div class="func-item"><span class="name">create_cost_grid</span> <span class="sig">(grid, default_cost=1.0, wall_cost=-1.0, custom_costs=None) -> list</span></div>
+            <div class="func-item"><span class="name">compute_flow_field</span> <span class="sig">(grid, goals, allow_diagonal=True, cost_map=None) -> tuple</span></div>
+            <div class="func-item"><span class="name">get_flow_direction</span> <span class="sig">(flow_field, x, y) -> tuple</span></div>
+            <div class="func-item"><span class="name">move_toward_flow</span> <span class="sig">(flow_field, x, y, speed) -> tuple</span></div>
+            <div class="func-item"><span class="name">visualize_flow_field</span> <span class="sig">(flow_field, symbols=None) -> str</span></div>
+            <div class="func-item"><span class="name">sample_flow_path</span> <span class="sig">(flow_field, start_x, start_y, steps=100) -> list</span></div>
+        </div>
+    </div>
+
+    <!-- spickle -->
+    <div class="module" id="mod-spickle">
+        <h2>spickle</h2>
+        <div class="path">gaskill/gaskill/spickle.py</div>
+        <div class="desc">Binary serialization (pickle-like) without dependencies.</div>
+        <div class="desc-zh">二进制序列化（类 pickle），无依赖。</div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">pack_float</span> <span class="sig">(num: float) -> str</span></div>
+            <div class="func-item"><span class="name">unpack_float</span> <span class="sig">(byte_data: bytes) -> float</span></div>
+            <div class="func-item"><span class="name">pack_int</span> <span class="sig">(n: int, bits=None) -> str</span></div>
+            <div class="func-item"><span class="name">pack_str</span> <span class="sig">(n: str) -> str</span></div>
+            <div class="func-item"><span class="name">bits_to_bytes</span> <span class="sig">(bits: str) -> bytes</span></div>
+            <div class="func-item"><span class="name">bytes_to_bits</span> <span class="sig">(data: bytes) -> str</span></div>
+            <div class="func-item"><span class="name">pack</span> <span class="sig">(obj) -> bytes</span></div>
+            <div class="func-item"><span class="name">unpack</span> <span class="sig">(data: bytes, pos: int = 0) -> tuple</span></div>
+            <div class="func-item"><span class="name">dump</span> <span class="sig">(obj, filename: str)</span></div>
+            <div class="func-item"><span class="name">load</span> <span class="sig">(filename: str) -> object</span></div>
+        </div>
+    </div>
+
+    <!-- spool -->
+    <div class="module" id="mod-spool">
+        <h2>spool</h2>
+        <div class="path">gaskill/gaskill/spool.py</div>
+        <div class="desc">Object pool, auto-release pool, and stack allocator.</div>
+        <div class="desc-zh">对象池、自动释放池和栈分配器。</div>
+        <div class="class-block">
+            <h3>ObjectPool</h3>
+            <div class="signature">class ObjectPool(factory=None, reset_func=None, max_size=100)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">acquire</span> <span class="sig">(*args, **kwargs) -> object</span></div>
+                <div class="method-item"><span class="name">release</span> <span class="sig">(obj)</span></div>
+                <div class="method-item"><span class="name">clear</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">available_count</span> <span class="sig">(property)</span></div>
+                <div class="method-item"><span class="name">in_use_count</span> <span class="sig">(property)</span></div>
+                <div class="method-item"><span class="name">total_count</span> <span class="sig">(property)</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>PooledObject</h3>
+            <div class="signature">class PooledObject()</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">recycle</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">on_acquire</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">on_release</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">is_active</span> <span class="sig">(property)</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>AutoReleasePool</h3>
+            <div class="signature">class AutoReleasePool()</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">add</span> <span class="sig">(obj, release_method='recycle')</span></div>
+                <div class="method-item"><span class="name">release_all</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">count</span> <span class="sig">(property)</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>StackAllocator</h3>
+            <div class="signature">class StackAllocator(initial_capacity=100)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">push</span> <span class="sig">(obj)</span></div>
+                <div class="method-item"><span class="name">pop</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">pop_multiple</span> <span class="sig">(count) -> list</span></div>
+                <div class="method-item"><span class="name">clear</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">size</span> <span class="sig">(property)</span></div>
+                <div class="method-item"><span class="name">capacity</span> <span class="sig">(property)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- squaternion -->
+    <div class="module" id="mod-squaternion">
+        <h2>squaternion</h2>
+        <div class="path">gaskill/gaskill/squaternion.py</div>
+        <div class="desc">Quaternion math for 3D rotations.</div>
+        <div class="desc-zh">四元数数学，用于 3D 旋转。</div>
+        <div class="const-list">
+            <span class="const-item">IDENTITY</span> <span class="const-item">ZERO</span>
+        </div>
+        <div class="class-block">
+            <h3>Quaternion</h3>
+            <div class="signature">class Quaternion(w=1.0, x=0.0, y=0.0, z=0.0)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">copy</span> <span class="sig">() -> Quaternion</span></div>
+                <div class="method-item"><span class="name">conjugate</span> <span class="sig">() -> Quaternion</span></div>
+                <div class="method-item"><span class="name">norm</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">norm_squared</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">normalize</span> <span class="sig">() -> Quaternion</span></div>
+                <div class="method-item"><span class="name">inverse</span> <span class="sig">() -> Quaternion</span></div>
+                <div class="method-item"><span class="name">dot</span> <span class="sig">(other) -> float</span></div>
+                <div class="method-item"><span class="name">to_axis_angle</span> <span class="sig">() -> tuple</span></div>
+                <div class="method-item"><span class="name">to_matrix</span> <span class="sig">() -> Matrix</span></div>
+                <div class="method-item"><span class="name">rotate_vector</span> <span class="sig">(v) -> vec3</span></div>
+                <div class="method-item"><span class="name">from_axis_angle</span> <span class="sig">(axis, angle) -> Quaternion</span> (staticmethod)</div>
+                <div class="method-item"><span class="name">from_euler</span> <span class="sig">(roll, pitch, yaw) -> Quaternion</span> (staticmethod)</div>
+                <div class="method-item"><span class="name">from_two_vectors</span> <span class="sig">(v1, v2) -> Quaternion</span> (staticmethod)</div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">slerp</span> <span class="sig">(q1, q2, t) -> Quaternion</span></div>
+            <div class="func-item"><span class="name">nlerp</span> <span class="sig">(q1, q2, t) -> Quaternion</span></div>
+            <div class="func-item"><span class="name">squad</span> <span class="sig">(q0, q1, q2, q3, t) -> Quaternion</span></div>
+            <div class="func-item"><span class="name">angular_velocity</span> <span class="sig">(q1, q2, dt) -> vec3</span></div>
+            <div class="func-item"><span class="name">integrate_angular_velocity</span> <span class="sig">(q, omega, dt) -> Quaternion</span></div>
+            <div class="func-item"><span class="name">look_at</span> <span class="sig">(eye, target, up=None) -> Quaternion</span></div>
+            <div class="func-item"><span class="name">random_quaternion</span> <span class="sig">(rng=None) -> Quaternion</span></div>
+        </div>
+    </div>
+
+    <!-- srandom -->
+    <div class="module" id="mod-srandom">
+        <h2>srandom</h2>
+        <div class="path">gaskill/gaskill/srandom.py</div>
+        <div class="desc">Random number generator with dice rolling, Gaussian, UUID, sampling, shuffling.</div>
+        <div class="desc-zh">随机数生成器，含骰子、高斯分布、UUID、抽样、洗牌。</div>
+        <div class="class-block">
+            <h3>Random</h3>
+            <div class="signature">class Random(seed=None)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">seed</span> <span class="sig">(seed)</span></div>
+                <div class="method-item"><span class="name">next</span> <span class="sig">(a=0, b=9) -> int</span></div>
+                <div class="method-item"><span class="name">roll</span> <span class="sig">(expr: str) -> int</span></div>
+                <div class="method-item"><span class="name">randint</span> <span class="sig">(a, b) -> int</span></div>
+                <div class="method-item"><span class="name">random</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">random_float</span> <span class="sig">(start, end) -> float</span></div>
+                <div class="method-item"><span class="name">choice</span> <span class="sig">(candidates)</span></div>
+                <div class="method-item"><span class="name">shuffle</span> <span class="sig">(items)</span></div>
+                <div class="method-item"><span class="name">shuffle_copy</span> <span class="sig">(items) -> list</span></div>
+                <div class="method-item"><span class="name">sample</span> <span class="sig">(items, k) -> list</span></div>
+                <div class="method-item"><span class="name">choices</span> <span class="sig">(arr, weight=None)</span></div>
+                <div class="method-item"><span class="name">gauss</span> <span class="sig">(mu=0.0, sigma=1.0) -> float</span></div>
+                <div class="method-item"><span class="name">random_from_func</span> <span class="sig">(func, x_min, x_max, step=0.01, y_max=None) -> float</span></div>
+                <div class="method-item"><span class="name">uuid</span> <span class="sig">() -> str</span></div>
+                <div class="method-item"><span class="name">uniform</span> <span class="sig">(a, b) -> float</span></div>
+                <div class="method-item"><span class="name">random_ascii</span> <span class="sig">(length=16, charset='ascii') -> str</span></div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">random</span> <span class="sig">(rng=None) -> float</span></div>
+            <div class="func-item"><span class="name">randint</span> <span class="sig">(a, b, rng=None) -> int</span></div>
+            <div class="func-item"><span class="name">choice</span> <span class="sig">(seq, rng=None)</span></div>
+            <div class="func-item"><span class="name">shuffle</span> <span class="sig">(seq, rng=None)</span></div>
+            <div class="func-item"><span class="name">sample</span> <span class="sig">(seq, k, rng=None)</span></div>
+            <div class="func-item"><span class="name">random_ascii</span> <span class="sig">(length=16, charset='ascii', rng=None) -> str</span></div>
+        </div>
+    </div>
+
+    <!-- ssaver -->
+    <div class="module" id="mod-ssaver">
+        <h2>ssaver</h2>
+        <div class="path">gaskill/gaskill/ssaver.py</div>
+        <div class="desc">Save/Load system (SGT format) with hash verification.</div>
+        <div class="desc-zh">存档/读档系统（SGT 格式），含哈希校验。</div>
+        <div class="class-block">
+            <h3>SGTsaver</h3>
+            <div class="signature">class SGTsaver()</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">set_value</span> <span class="sig">(**kwargs) -> self</span></div>
+                <div class="method-item"><span class="name">add</span> <span class="sig">(key, value) -> self</span></div>
+                <div class="method-item"><span class="name">save</span> <span class="sig">(filename, use_hash=True) -> bool</span></div>
+                <div class="method-item"><span class="name">load</span> <span class="sig">(filename, require_hash=True) -> dict</span></div>
+                <div class="method-item"><span class="name">get</span> <span class="sig">(key, default=None)</span></div>
+                <div class="method-item"><span class="name">__getitem__</span> <span class="sig">(key)</span></div>
+                <div class="method-item"><span class="name">__setitem__</span> <span class="sig">(key, value) -> self</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- sstat -->
+    <div class="module" id="mod-sstat">
+        <h2>sstat</h2>
+        <div class="path">gaskill/gaskill/sstat.py</div>
+        <div class="desc">Statistics: mean, median, mode, variance, correlation, regression, distributions, tests.</div>
+        <div class="desc-zh">统计：均值、中位数、众数、方差、相关性、回归、分布、检验。</div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">erf</span> <span class="sig">(x) -> float</span></div>
+            <div class="func-item"><span class="name">mean</span> <span class="sig">(data) -> float</span></div>
+            <div class="func-item"><span class="name">geometric_mean</span> <span class="sig">(data) -> float</span></div>
+            <div class="func-item"><span class="name">harmonic_mean</span> <span class="sig">(data) -> float</span></div>
+            <div class="func-item"><span class="name">median</span> <span class="sig">(data) -> float</span></div>
+            <div class="func-item"><span class="name">mode</span> <span class="sig">(data) -> list</span></div>
+            <div class="func-item"><span class="name">quantile</span> <span class="sig">(data, p) -> float</span></div>
+            <div class="func-item"><span class="name">quartiles</span> <span class="sig">(data) -> tuple</span></div>
+            <div class="func-item"><span class="name">iqr</span> <span class="sig">(data) -> float</span></div>
+            <div class="func-item"><span class="name">variance</span> <span class="sig">(data, ddof=0) -> float</span></div>
+            <div class="func-item"><span class="name">stdev</span> <span class="sig">(data, ddof=0) -> float</span></div>
+            <div class="func-item"><span class="name">mad</span> <span class="sig">(data) -> float</span></div>
+            <div class="func-item"><span class="name">range_stat</span> <span class="sig">(data) -> float</span></div>
+            <div class="func-item"><span class="name">cv</span> <span class="sig">(data, ddof=0) -> float</span></div>
+            <div class="func-item"><span class="name">skewness</span> <span class="sig">(data, ddof=0) -> float</span></div>
+            <div class="func-item"><span class="name">kurtosis</span> <span class="sig">(data, ddof=0) -> float</span></div>
+            <div class="func-item"><span class="name">covariance</span> <span class="sig">(x, y) -> float</span></div>
+            <div class="func-item"><span class="name">correlation</span> <span class="sig">(x, y) -> float</span></div>
+            <div class="func-item"><span class="name">spearman</span> <span class="sig">(x, y) -> float</span></div>
+            <div class="func-item"><span class="name">linear_regression</span> <span class="sig">(x, y) -> tuple</span></div>
+            <div class="func-item"><span class="name">normal_pdf</span> <span class="sig">(x, mu=0, sigma=1) -> float</span></div>
+            <div class="func-item"><span class="name">normal_cdf</span> <span class="sig">(x, mu=0, sigma=1) -> float</span></div>
+            <div class="func-item"><span class="name">binomial_pmf</span> <span class="sig">(k, n, p) -> float</span></div>
+            <div class="func-item"><span class="name">poisson_pmf</span> <span class="sig">(k, lam) -> float</span></div>
+            <div class="func-item"><span class="name">z_score</span> <span class="sig">(x, mu, sigma) -> float</span></div>
+            <div class="func-item"><span class="name">t_test</span> <span class="sig">(data, mu0) -> tuple</span></div>
+            <div class="func-item"><span class="name">chi_square</span> <span class="sig">(observed, expected) -> float</span></div>
+            <div class="func-item"><span class="name">f_test</span> <span class="sig">(a, b) -> float</span></div>
+            <div class="func-item"><span class="name">normalize</span> <span class="sig">(data, new_min=0, new_max=1) -> list</span></div>
+            <div class="func-item"><span class="name">standardize</span> <span class="sig">(data) -> list</span></div>
+            <div class="func-item"><span class="name">rolling_mean</span> <span class="sig">(data, window) -> list</span></div>
+            <div class="func-item"><span class="name">ewma</span> <span class="sig">(data, alpha) -> list</span></div>
+            <div class="func-item"><span class="name">summary</span> <span class="sig">(data) -> dict</span></div>
+            <div class="func-item"><span class="name">probability_distribution</span> <span class="sig">(data) -> dict</span></div>
+        </div>
+    </div>
+
+    <!-- svector -->
+    <div class="module" id="mod-svector">
+        <h2>svector</h2>
+        <div class="path">gaskill/gaskill/svector.py</div>
+        <div class="desc">Vector classes: vec2, vec3, vec4 with arithmetic, dot, cross, normalization, rotation.</div>
+        <div class="desc-zh">向量类：vec2、vec3、vec4，含算术、点积、叉积、归一化、旋转。</div>
+        <div class="class-block">
+            <h3>vec2</h3>
+            <div class="signature">class vec2(x=0.0, y=0.0)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">copy</span> <span class="sig">() -> vec2</span></div>
+                <div class="method-item"><span class="name">dot</span> <span class="sig">(other) -> float</span></div>
+                <div class="method-item"><span class="name">cross</span> <span class="sig">(other) -> float</span></div>
+                <div class="method-item"><span class="name">length</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">length_squared</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">normalize</span> <span class="sig">() -> vec2</span></div>
+                <div class="method-item"><span class="name">distance</span> <span class="sig">(other) -> float</span></div>
+                <div class="method-item"><span class="name">lerp</span> <span class="sig">(other, t) -> vec2</span></div>
+                <div class="method-item"><span class="name">rotate_around</span> <span class="sig">(center, angle) -> vec2</span></div>
+                <div class="method-item"><span class="name">reflect</span> <span class="sig">(normal) -> vec2</span></div>
+                <div class="method-item"><span class="name">project</span> <span class="sig">(onto) -> vec2</span></div>
+                <div class="method-item"><span class="name">reject</span> <span class="sig">(onto) -> vec2</span></div>
+                <div class="method-item"><span class="name">rotate</span> <span class="sig">(angle) -> vec2</span></div>
+                <div class="method-item"><span class="name">angle</span> <span class="sig">() -> float</span></div>
+                <div class="method-item"><span class="name">angle_to</span> <span class="sig">(other) -> float</span></div>
+                <div class="method-item"><span class="name">perpendicular</span> <span class="sig">() -> vec2</span></div>
+                <div class="method-item"><span class="name">zero</span>, <span class="name">one</span>, <span class="name">up</span>, <span class="name">down</span>, <span class="name">left</span>, <span class="name">right</span> (staticmethods)</div>
+                <div class="method-item"><span class="name">from_angle</span> <span class="sig">(angle) -> vec2</span> (staticmethod)</div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>vec3</h3>
+            <div class="signature">class vec3(x=0.0, y=0.0, z=0.0)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">copy</span>, <span class="name">dot</span>, <span class="name">cross</span>, <span class="name">length</span>, <span class="name">normalize</span>, <span class="name">distance</span>, <span class="name">lerp</span></div>
+                <div class="method-item"><span class="name">rotate_around</span> <span class="sig">(center, axis, angle) -> vec3</span></div>
+                <div class="method-item"><span class="name">rotate_x</span>, <span class="name">rotate_y</span>, <span class="name">rotate_z</span> <span class="sig">(angle) -> vec3</span></div>
+                <div class="method-item"><span class="name">reflect</span>, <span class="name">project</span>, <span class="name">reject</span></div>
+                <div class="method-item"><span class="name">to_tuple</span>, <span class="name">to_list</span></div>
+                <div class="method-item"><span class="name">zero</span>, <span class="name">one</span>, <span class="name">up</span>, <span class="name">down</span>, <span class="name">left</span>, <span class="name">right</span>, <span class="name">forward</span>, <span class="name">back</span> (staticmethods)</div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>vec4</h3>
+            <div class="signature">class vec4(x=0.0, y=0.0, z=0.0, w=0.0)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">copy</span>, <span class="name">dot</span>, <span class="name">length</span>, <span class="name">normalize</span>, <span class="name">distance</span>, <span class="name">lerp</span></div>
+                <div class="method-item"><span class="name">to_vec3</span> <span class="sig">(w_divide=True) -> vec3</span></div>
+                <div class="method-item"><span class="name">to_rgba</span>, <span class="name">to_rgb</span></div>
+                <div class="method-item"><span class="name">zero</span>, <span class="name">one</span>, <span class="name">unit_x</span>, <span class="name">unit_y</span>, <span class="name">unit_z</span>, <span class="name">unit_w</span> (staticmethods)</div>
+                <div class="method-item"><span class="name">from_vec3</span>, <span class="name">from_rgba</span>, <span class="name">from_tuple</span>, <span class="name">from_list</span> (staticmethods)</div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">v2</span> <span class="sig">(x=0, y=0) -> vec2</span></div>
+            <div class="func-item"><span class="name">v3</span> <span class="sig">(x=0, y=0, z=0) -> vec3</span></div>
+            <div class="func-item"><span class="name">v4</span> <span class="sig">(x=0, y=0, z=0, w=0) -> vec4</span></div>
+            <div class="func-item"><span class="name">vlerp</span>, <span class="name">distance</span>, <span class="name">dot</span>, <span class="name">cross</span>, <span class="name">normalize</span>, <span class="name">angle_between</span></div>
+        </div>
+    </div>
+
+    <!-- type -->
+    <div class="module" id="mod-type">
+        <h2>type</h2>
+        <div class="path">gaskill/gaskill/type.py</div>
+        <div class="desc">Type utilities: DefaultDict, Iterable, Callable, Number ABCs.</div>
+        <div class="desc-zh">类型工具：DefaultDict、Iterable、Callable、Number 抽象基类。</div>
+        <div class="class-block">
+            <h3>DefaultDict</h3>
+            <div class="signature">class DefaultDict(default_factory=None, **kwargs)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">update</span> <span class="sig">(other)</span></div>
+                <div class="method-item"><span class="name">get</span> <span class="sig">(key, default=None)</span></div>
+                <div class="method-item"><span class="name">pop</span> <span class="sig">(key, default=None)</span></div>
+                <div class="method-item"><span class="name">keys</span>, <span class="name">values</span>, <span class="name">items</span></div>
+                <div class="method-item"><span class="name">copy</span> <span class="sig">() -> DefaultDict</span></div>
+                <div class="method-item"><span class="name">clear</span> <span class="sig">()</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Iterable</h3>
+            <div class="signature">class Iterable(ABC)</div>
+            <div class="class-desc">Abstract base class for iterables.</div>
+            <div class="class-desc-zh">可迭代对象的抽象基类。</div>
+        </div>
+        <div class="class-block">
+            <h3>Callable</h3>
+            <div class="signature">class Callable(ABC)</div>
+            <div class="class-desc">Abstract base class for callables.</div>
+            <div class="class-desc-zh">可调用对象的抽象基类。</div>
+        </div>
+        <div class="class-block">
+            <h3>Number</h3>
+            <div class="signature">class Number(ABC)</div>
+            <div class="class-desc">Abstract base class for numbers.</div>
+            <div class="class-desc-zh">数值类型的抽象基类。</div>
+        </div>
+    </div>
+
+    <!-- ======================== -->
+    <!-- PLUS MODULES              -->
+    <!-- ======================== -->
+
+    <div class="module" id="mod-plus">
+        <h2>plus</h2>
+        <div class="path">gaskill/plus/__init__.py</div>
+        <div class="desc">Aggregator for plus modules: radical, poly, zip, re, bmp, ecc, decimal, database, tester, fft, csv.</div>
+        <div class="desc-zh">plus 模块聚合器：radical、poly、zip、re、bmp、ecc、decimal、database、tester、fft、csv。</div>
+        <div class="class-block">
+            <h3>Imported Symbols / 导入的符号</h3>
+            <div class="method-list">
+                <div class="method-item"><span class="name">radical</span> <span class="desc">Radical class, real_sqrt, real_root</span><span class="desc-zh">Radical 类、real_sqrt、real_root</span></div>
+                <div class="method-item"><span class="name">poly</span> <span class="desc">Poly class, factors_to_str</span><span class="desc-zh">Poly 类、factors_to_str</span></div>
+                <div class="method-item"><span class="name">zip</span> <span class="desc">compress, decompress</span></div>
+                <div class="method-item"><span class="name">re</span> <span class="desc">Regex class</span><span class="desc-zh">Regex 类</span></div>
+                <div class="method-item"><span class="name">bmp</span> <span class="desc">BMPImage, BMPError</span></div>
+                <div class="method-item"><span class="name">ecc</span> <span class="desc">Point, ECDSA functions</span><span class="desc-zh">Point、ECDSA 函数</span></div>
+                <div class="method-item"><span class="name">decimal</span> <span class="desc">Decimal, prec, dec_* functions</span><span class="desc-zh">Decimal、prec、dec_* 函数</span></div>
+                <div class="method-item"><span class="name">database</span> <span class="desc">DiskKV</span></div>
+                <div class="method-item"><span class="name">tester</span> <span class="desc">TestCase, TestRunner, test, skip</span></div>
+                <div class="method-item"><span class="name">fft</span> <span class="desc">fft, ifft, fftshift, etc.</span></div>
+                <div class="method-item"><span class="name">csv</span> <span class="desc">load_csv, save_csv, etc.</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- bmp -->
+    <div class="module" id="mod-bmp">
+        <h2>bmp</h2>
+        <div class="path">gaskill/plus/bmp.py</div>
+        <div class="desc">Pure Python BMP image reader/writer. Supports 1, 4, 8, 16, 24, 32 bit.</div>
+        <div class="desc-zh">纯 Python BMP 图像读写器。支持 1、4、8、16、24、32 位。</div>
+        <div class="class-block">
+            <h3>BMPError</h3>
+            <div class="signature">class BMPError(Exception)</div>
+        </div>
+        <div class="class-block">
+            <h3>BMPImage</h3>
+            <div class="signature">class BMPImage(width=0, height=0)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">set_pixel</span> <span class="sig">(x, y, color)</span></div>
+                <div class="method-item"><span class="name">get_pixel</span> <span class="sig">(x, y) -> tuple</span></div>
+                <div class="method-item"><span class="name">load</span> <span class="sig">(filename) -> BMPImage</span> (classmethod)</div>
+                <div class="method-item"><span class="name">load_from_bytes</span> <span class="sig">(data) -> BMPImage</span> (classmethod)</div>
+                <div class="method-item"><span class="name">save</span> <span class="sig">(filename)</span></div>
+                <div class="method-item"><span class="name">create_checkerboard</span> <span class="sig">(width, height, size=10) -> BMPImage</span> (classmethod)</div>
+                <div class="method-item"><span class="name">create_gradient</span> <span class="sig">(width, height) -> BMPImage</span> (classmethod)</div>
+                <div class="method-item"><span class="name">to_rgb</span> <span class="sig">()</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- csv -->
+    <div class="module" id="mod-csv">
+        <h2>csv</h2>
+        <div class="path">gaskill/plus/csv.py</div>
+        <div class="desc">CSV reading/writing with quoting and escaping.</div>
+        <div class="desc-zh">CSV 读写，支持引号和转义。</div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">load_csv</span> <span class="sig">(fileobj, delimiter=',', quotechar='"', has_header=True)</span></div>
+            <div class="func-item"><span class="name">save_csv</span> <span class="sig">(fileobj, data, header=None, delimiter=',', quotechar='"')</span></div>
+            <div class="func-item"><span class="name">load_csv_file</span> <span class="sig">(filepath, ...)</span></div>
+            <div class="func-item"><span class="name">save_csv_file</span> <span class="sig">(filepath, ...)</span></div>
+            <div class="func-item"><span class="name">load_csv_str</span> <span class="sig">(content, ...)</span></div>
+            <div class="func-item"><span class="name">save_csv_str</span> <span class="sig">(data, ...) -> str</span></div>
+            <div class="func-item"><span class="name">dict_to_csv</span> <span class="sig">(data, fields=None, ...) -> tuple</span></div>
+            <div class="func-item"><span class="name">csv_to_dict</span> <span class="sig">(header, rows) -> list</span></div>
+        </div>
+    </div>
+
+    <!-- database -->
+    <div class="module" id="mod-database">
+        <h2>database</h2>
+        <div class="path">gaskill/plus/database.py</div>
+        <div class="desc">Disk-based key-value store with hash indexing.</div>
+        <div class="desc-zh">基于磁盘的键值存储，含哈希索引。</div>
+        <div class="class-block">
+            <h3>DiskKV</h3>
+            <div class="signature">class DiskKV(filepath, initial_capacity=131072)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">set</span> <span class="sig">(key, value)</span></div>
+                <div class="method-item"><span class="name">get</span> <span class="sig">(key, default=None)</span></div>
+                <div class="method-item"><span class="name">flush</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">close</span> <span class="sig">()</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- decimal -->
+    <div class="module" id="mod-decimal">
+        <h2>decimal</h2>
+        <div class="path">gaskill/plus/decimal.py</div>
+        <div class="desc">Arbitrary precision decimal arithmetic. Global <code>prec</code> (default 50).</div>
+        <div class="desc-zh">任意精度十进制运算。全局 <code>prec</code>（默认 50）。</div>
+        <div class="const-list">
+            <span class="const-item">prec</span> <span class="val">Global precision setting</span>
+        </div>
+        <div class="class-block">
+            <h3>Decimal</h3>
+            <div class="signature">class Decimal(value, fr_len=None)</div>
+            <div class="class-desc">Arbitrary precision decimal number.</div>
+            <div class="class-desc-zh">任意精度十进制数。</div>
+            <div class="method-list">
+                <div class="method-item">Supports +, -, *, /, //, %, **, comparison, round, int, float</div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">dec_exp</span> <span class="sig">(value) -> Decimal</span></div>
+            <div class="func-item"><span class="name">dec_ln</span> <span class="sig">(value) -> Decimal</span></div>
+            <div class="func-item"><span class="name">dec_pi</span> <span class="sig">() -> Decimal</span></div>
+            <div class="func-item"><span class="name">dec_e</span> <span class="sig">() -> Decimal</span></div>
+            <div class="func-item"><span class="name">dec_ln2</span> <span class="sig">() -> Decimal</span></div>
+            <div class="func-item"><span class="name">dec_sin</span> <span class="sig">(x) -> Decimal</span></div>
+            <div class="func-item"><span class="name">dec_cos</span> <span class="sig">(x) -> Decimal</span></div>
+            <div class="func-item"><span class="name">dec_atan</span> <span class="sig">(x) -> Decimal</span></div>
+            <div class="func-item"><span class="name">asin</span> <span class="sig">(x) -> Decimal</span></div>
+        </div>
+    </div>
+
+    <!-- ecc -->
+    <div class="module" id="mod-ecc">
+        <h2>ecc</h2>
+        <div class="path">gaskill/plus/ecc.py</div>
+        <div class="desc">ECDSA on secp256k1 with user-provided ephemeral key k.</div>
+        <div class="desc-zh">secp256k1 上的 ECDSA，用户提供临时密钥 k。</div>
+        <div class="const-list">
+            <span class="const-item">p</span> <span class="const-item">a</span> <span class="const-item">b</span> <span class="const-item">n</span> <span class="const-item">G</span>
+        </div>
+        <div class="class-block">
+            <h3>Point</h3>
+            <div class="signature">class Point(x, y, a, b, p)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">is_infinity</span> <span class="sig">() -> bool</span></div>
+                <div class="method-item"><span class="name">is_on_curve</span> <span class="sig">() -> bool</span></div>
+                <div class="method-item"><span class="name">__add__</span> <span class="sig">(other) -> Point</span></div>
+                <div class="method-item"><span class="name">__mul__</span> <span class="sig">(k) -> Point</span></div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">sha256_int</span> <span class="sig">(message) -> int</span></div>
+            <div class="func-item"><span class="name">is_valid_private_key</span> <span class="sig">(k) -> bool</span></div>
+            <div class="func-item"><span class="name">is_valid_k</span> <span class="sig">(k) -> bool</span></div>
+            <div class="func-item"><span class="name">ecdsa_sign_with_k</span> <span class="sig">(private_key, message, k) -> tuple</span></div>
+            <div class="func-item"><span class="name">ecdsa_verify</span> <span class="sig">(public_key, message, signature) -> bool</span></div>
+        </div>
+    </div>
+
+    <!-- fft -->
+    <div class="module" id="mod-fft">
+        <h2>fft</h2>
+        <div class="path">gaskill/plus/fft.py</div>
+        <div class="desc">Fast Fourier Transform with arbitrary length (zero-padded to power of 2).</div>
+        <div class="desc-zh">快速傅里叶变换，任意长度（补零到 2 的幂次）。</div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">fft</span> <span class="sig">(x) -> tuple</span></div>
+            <div class="func-item"><span class="name">ifft</span> <span class="sig">(X, original_length=None) -> list</span></div>
+            <div class="func-item"><span class="name">fftfreq</span> <span class="sig">(N, d=1.0) -> list</span></div>
+            <div class="func-item"><span class="name">fftshift</span> <span class="sig">(x) -> list</span></div>
+            <div class="func-item"><span class="name">ifftshift</span> <span class="sig">(x) -> list</span></div>
+            <div class="func-item"><span class="name">magnitude_spectrum</span> <span class="sig">(x, shift=False) -> list</span></div>
+            <div class="func-item"><span class="name">power_spectrum</span> <span class="sig">(x, shift=False) -> list</span></div>
+            <div class="func-item"><span class="name">phase_spectrum</span> <span class="sig">(x, shift=False) -> list</span></div>
+        </div>
+    </div>
+
+    <!-- poly -->
+    <div class="module" id="mod-poly">
+        <h2>poly</h2>
+        <div class="path">gaskill/plus/poly.py</div>
+        <div class="desc">Polynomial algebra: creation, arithmetic, factoring, derivative, evaluation.</div>
+        <div class="desc-zh">多项式代数：创建、运算、因式分解、求导、求值。</div>
+        <div class="class-block">
+            <h3>Poly</h3>
+            <div class="signature">class Poly(terms=None)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">from_string</span> <span class="sig">(poly_str) -> Poly</span> (classmethod)</div>
+                <div class="method-item"><span class="name">degree</span> <span class="sig">(var=None) -> int</span></div>
+                <div class="method-item"><span class="name">extract_gcf</span> <span class="sig">() -> tuple</span></div>
+                <div class="method-item"><span class="name">evaluate</span> <span class="sig">(values) -> float | int</span></div>
+                <div class="method-item"><span class="name">derivative</span> <span class="sig">(var='x') -> Poly</span></div>
+                <div class="method-item"><span class="name">factor</span> <span class="sig">() -> list</span></div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">factors_to_str</span> <span class="sig">(factors) -> str</span></div>
+        </div>
+    </div>
+
+    <!-- radical -->
+    <div class="module" id="mod-radical">
+        <h2>radical</h2>
+        <div class="path">gaskill/plus/radical.py</div>
+        <div class="desc">Symbolic radicals with arithmetic and simplification.</div>
+        <div class="desc-zh">符号根式，含运算和化简。</div>
+        <div class="class-block">
+            <h3>Radical</h3>
+            <div class="signature">class Radical(index, radicand, coeff=1)</div>
+            <div class="class-desc">Represents coeff * (radicand)^(1/index).</div>
+            <div class="class-desc-zh">表示 coeff * (根号内)^(1/index)。</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">conjugate</span> <span class="sig">() -> Radical | None</span></div>
+                <div class="method-item"><span class="name">approx</span> <span class="sig">() -> float</span></div>
+                <div class="method-item">Supports +, -, *, /, **, negation</div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">real_sqrt</span> <span class="sig">(n) -> Radical</span></div>
+            <div class="func-item"><span class="name">real_root</span> <span class="sig">(n, x) -> Radical</span></div>
+        </div>
+    </div>
+
+    <!-- re -->
+    <div class="module" id="mod-re">
+        <h2>re</h2>
+        <div class="path">gaskill/plus/re.py</div>
+        <div class="desc">Pure Python regex engine. Supports ., *, +, ?, |, ^, $, character classes, escapes, {min,max}.</div>
+        <div class="desc-zh">纯 Python 正则引擎。支持 ., *, +, ?, |, ^, $、字符类、转义、{min,max}。</div>
+        <div class="class-block">
+            <h3>Regex</h3>
+            <div class="signature">class Regex(pattern: str)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">match</span> <span class="sig">(text: str) -> bool</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- sql -->
+    <div class="module" id="mod-sql">
+        <h2>sql</h2>
+        <div class="path">gaskill/plus/sql.py</div>
+        <div class="desc">Read-heavy matrix database with ordered indexes and lazy SearchResult.</div>
+        <div class="desc-zh">读多写少的矩阵数据库，含有序索引和惰性 SearchResult。</div>
+        <div class="class-block">
+            <h3>ReadingSQL</h3>
+            <div class="signature">class ReadingSQL(data=None)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">load</span> <span class="sig">(data)</span></div>
+                <div class="method-item"><span class="name">get</span> <span class="sig">(row, col)</span></div>
+                <div class="method-item"><span class="name">set</span> <span class="sig">(row, col, value)</span></div>
+                <div class="method-item"><span class="name">insert_row</span> <span class="sig">(row_data)</span></div>
+                <div class="method-item"><span class="name">insert_col</span> <span class="sig">(col_data)</span></div>
+                <div class="method-item"><span class="name">delete_row</span> <span class="sig">(row_idx)</span></div>
+                <div class="method-item"><span class="name">delete_col</span> <span class="sig">(col_idx)</span></div>
+                <div class="method-item"><span class="name">search</span> <span class="sig">(value_or_condition) -> SearchResult</span></div>
+                <div class="method-item"><span class="name">search_range</span> <span class="sig">(low, high) -> SearchResult</span></div>
+                <div class="method-item"><span class="name">search_less</span> <span class="sig">(value) -> SearchResult</span></div>
+                <div class="method-item"><span class="name">search_greater</span> <span class="sig">(value) -> SearchResult</span></div>
+                <div class="method-item"><span class="name">search_rect</span> <span class="sig">(row_start, row_end, col_start, col_end) -> SearchResult</span></div>
+                <div class="method-item"><span class="name">sum</span> <span class="sig">(col=None) -> float</span></div>
+                <div class="method-item"><span class="name">avg</span> <span class="sig">(col=None) -> float</span></div>
+                <div class="method-item"><span class="name">max</span> <span class="sig">(col=None) -> float</span></div>
+                <div class="method-item"><span class="name">min</span> <span class="sig">(col=None) -> float</span></div>
+                <div class="method-item"><span class="name">count</span> <span class="sig">(col=None) -> int</span></div>
+                <div class="method-item"><span class="name">head</span> <span class="sig">(n=5) -> list</span></div>
+                <div class="method-item"><span class="name">tail</span> <span class="sig">(n=5) -> list</span></div>
+                <div class="method-item"><span class="name">to_list</span> <span class="sig">() -> list</span></div>
+                <div class="method-item"><span class="name">to_matrix</span> <span class="sig">() -> Matrix</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>SearchResult</h3>
+            <div class="signature">class SearchResult(...)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">list</span> <span class="sig">() -> list</span></div>
+                <div class="method-item"><span class="name">first</span> <span class="sig">(n=1) -> list</span></div>
+                <div class="method-item"><span class="name">last</span> <span class="sig">(n=1) -> list</span></div>
+                <div class="method-item"><span class="name">count</span> <span class="sig">() -> int</span></div>
+                <div class="method-item"><span class="name">__add__</span> <span class="sig">(other) -> SearchResult</span></div>
+            </div>
+        </div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">readingsql</span> <span class="sig">(data=None) -> ReadingSQL</span></div>
+        </div>
+    </div>
+
+    <!-- sui -->
+    <div class="module" id="mod-sui">
+        <h2>sui</h2>
+        <div class="path">gaskill/plus/sui.py</div>
+        <div class="desc">Simple UI components: Label, Button, Bar, Entry.</div>
+        <div class="desc-zh">简单 UI 组件：标签、按钮、进度条、输入框。</div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">draw</span> <span class="sig">(cmd_type) -> decorator</span></div>
+            <div class="func-item"><span class="name">render_all</span> <span class="sig">(components) -> list</span></div>
+        </div>
+        <div class="class-block">
+            <h3>UI</h3>
+            <div class="signature">class UI(x, y, width, height)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">render</span> <span class="sig">()</span> (abstract)</div>
+                <div class="method-item"><span class="name">handle_event</span> <span class="sig">(event)</span></div>
+                <div class="method-item"><span class="name">config</span> <span class="sig">(**kwargs)</span></div>
+                <div class="method-item"><span class="name">destroy</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">is_visible</span> <span class="sig">() -> bool</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Label</h3>
+            <div class="signature">class Label(x, y, width, height, text="", **kwargs)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">render</span> <span class="sig">() -> list</span></div>
+                <div class="method-item"><span class="name">config</span> <span class="sig">(**kwargs)</span></div>
+                <div class="method-item"><span class="name">enter</span> <span class="sig">(mouse_x, mouse_y) -> bool</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Button</h3>
+            <div class="signature">class Button(x, y, width, height, text="", **kwargs)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">render</span> <span class="sig">() -> list</span></div>
+                <div class="method-item"><span class="name">handle_event</span> <span class="sig">(mouse_pos, keys) -> bool</span></div>
+                <div class="method-item"><span class="name">press</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">release</span> <span class="sig">() -> bool</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Bar</h3>
+            <div class="signature">class Bar(x, y, width, height, value=1.0, **kwargs)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">render</span> <span class="sig">() -> list</span></div>
+                <div class="method-item"><span class="name">config</span> <span class="sig">(**kwargs)</span></div>
+                <div class="method-item"><span class="name">set_hp</span> <span class="sig">(current, max_hp)</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>Entry</h3>
+            <div class="signature">class Entry(x, y, width, height, text="", **kwargs)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">render</span> <span class="sig">() -> list</span></div>
+                <div class="method-item"><span class="name">handle_event</span> <span class="sig">(mouse_pos, keys, dt) -> bool</span></div>
+                <div class="method-item"><span class="name">config</span> <span class="sig">(**kwargs)</span></div>
+                <div class="method-item"><span class="name">enter</span> <span class="sig">(mouse_x, mouse_y) -> bool</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- tester -->
+    <div class="module" id="mod-tester">
+        <h2>tester</h2>
+        <div class="path">gaskill/plus/tester.py</div>
+        <div class="desc">Unit testing framework with @test, @skip, TestCase, TestRunner.</div>
+        <div class="desc-zh">单元测试框架，含 @test、@skip、TestCase、TestRunner。</div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">test</span> <span class="sig">(func) -> callable</span></div>
+            <div class="func-item"><span class="name">skip</span> <span class="sig">(reason="跳过") -> decorator</span></div>
+        </div>
+        <div class="class-block">
+            <h3>TestCase</h3>
+            <div class="signature">class TestCase()</div>
+            <div class="class-desc">Base test case with setup/teardown and assertions.</div>
+            <div class="class-desc-zh">测试用例基类，含 setup/teardown 和断言。</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">setup</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">teardown</span> <span class="sig">()</span></div>
+                <div class="method-item"><span class="name">setup_class</span> <span class="sig">()</span> (classmethod)</div>
+                <div class="method-item"><span class="name">teardown_class</span> <span class="sig">()</span> (classmethod)</div>
+                <div class="method-item"><span class="name">assert_equal</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_not_equal</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_almost_equal</span> <span class="sig">(a, b, places=7)</span></div>
+                <div class="method-item"><span class="name">assert_not_almost_equal</span> <span class="sig">(a, b, places=7)</span></div>
+                <div class="method-item"><span class="name">assert_greater</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_greater_equal</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_less</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_less_equal</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_true</span> <span class="sig">(x)</span></div>
+                <div class="method-item"><span class="name">assert_false</span> <span class="sig">(x)</span></div>
+                <div class="method-item"><span class="name">assert_is</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_is_not</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_is_none</span> <span class="sig">(x)</span></div>
+                <div class="method-item"><span class="name">assert_is_not_none</span> <span class="sig">(x)</span></div>
+                <div class="method-item"><span class="name">assert_in</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_not_in</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_isinstance</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_not_isinstance</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_issubclass</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_not_issubclass</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_count_equal</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_starts_with</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_not_starts_with</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_ends_with</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_not_ends_with</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_has_attr</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_not_has_attr</span> <span class="sig">(a, b)</span></div>
+                <div class="method-item"><span class="name">assert_raises</span> <span class="sig">(exc_class, func=None, *args, **kwargs)</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>TestRunner</h3>
+            <div class="signature">class TestRunner()</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">run_single_test</span> <span class="sig">(test_instance, method) -> tuple</span></div>
+                <div class="method-item"><span class="name">run_class</span> <span class="sig">(test_class) -> dict</span></div>
+                <div class="method-item"><span class="name">run_all</span> <span class="sig">() -> bool</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- zip -->
+    <div class="module" id="mod-zip">
+        <h2>zip</h2>
+        <div class="path">gaskill/plus/zip.py</div>
+        <div class="desc">Pure Python LZ77 + Huffman compression.</div>
+        <div class="desc-zh">纯 Python LZ77 + Huffman 压缩。</div>
+        <div class="func-list">
+            <div class="func-item"><span class="name">compress</span> <span class="sig">(data) -> tuple</span></div>
+            <div class="func-item"><span class="name">decompress</span> <span class="sig">(data, codes, count) -> bytes</span></div>
+            <div class="func-item"><span class="name">lz77_compress</span> <span class="sig">(data, window_size=32768, max_match=258) -> list</span></div>
+            <div class="func-item"><span class="name">build_huffman_tree</span> <span class="sig">(freq) -> HuffmanNode</span></div>
+            <div class="func-item"><span class="name">generate_huffman_codes</span> <span class="sig">(node, code='', codes={}) -> dict</span></div>
+        </div>
+        <div class="class-block">
+            <h3>BitWriter</h3>
+            <div class="signature">class BitWriter()</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">write_bit</span> <span class="sig">(bit)</span></div>
+                <div class="method-item"><span class="name">write_bits</span> <span class="sig">(bits)</span></div>
+                <div class="method-item"><span class="name">to_bytes</span> <span class="sig">() -> bytes</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>BitReader</h3>
+            <div class="signature">class BitReader(data)</div>
+            <div class="method-list">
+                <div class="method-item"><span class="name">read_bit</span> <span class="sig">() -> int | None</span></div>
+                <div class="method-item"><span class="name">read_bits</span> <span class="sig">(n) -> list</span></div>
+            </div>
+        </div>
+        <div class="class-block">
+            <h3>HuffmanNode</h3>
+            <div class="signature">class HuffmanNode(freq, char=None, left=None, right=None)</div>
+        </div>
+    </div>
+
+</div>
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">Top</button>
+
+<script>
+    function setLang(lang) {
+        document.body.className = 'lang-' + lang;
+        document.querySelectorAll('.lang-toggle button').forEach(function(btn) {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+        localStorage.setItem('mlib-lang', lang);
+    }
+
+    // Load saved language preference
+    document.addEventListener('DOMContentLoaded', function() {
+        var saved = localStorage.getItem('mlib-lang') || 'en';
+        setLang(saved);
+
+        // Smooth scroll for sidebar links
+        document.querySelectorAll('.sidebar a').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                var target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

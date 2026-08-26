@@ -23,7 +23,7 @@ from .scrypt import *
 from .solver import *
 from .sstat import *
 from .sbase64 import *
-from .abc import *
-from .pickle import *
-from .hashlib import sha256, DJB2  # noqa: F401
+from .sabc import *
+from .spickle import *
+from .shashlib import sha256, DJB2  # noqa: F401
 from .type import *

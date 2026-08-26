@@ -179,6 +179,9 @@ class Complex:
         """获取复数的共轭"""
         return Complex(self.real, -self.imag)
 
+    def copy(self):
+        return Complex(self.real, self.imag)
+
     def _to_Complex(self, number):
         if isinstance(number, Complex):
             return number

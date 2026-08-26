@@ -38,11 +38,10 @@ def _lerp(p0, p1, t):
 
 
 # ========== 贝塞尔曲线 ==========
-
-def quadratic_bezier(p0, p1, p2, t):
+def quadratic_bezier(p0: "vec2|vec3|tuple[float, float, float|None]", p1, p2, t):
     """二次贝塞尔曲线"""
     if _is_vec(p0):
-        if hasattr(p0, 'z'):  # vec3
+        if isinstance(p0, vec3):  # vec3
             return vec3(
                 (1-t)**2 * p0.x + 2*(1-t)*t * p1.x + t**2 * p2.x,
                 (1-t)**2 * p0.y + 2*(1-t)*t * p1.y + t**2 * p2.y,

@@ -9,7 +9,6 @@ env/
 
 # 环境变量
 .env
-*/.ruff_cache/
 # 打包相关（忽略构建产物）
 dist/
 build/
@@ -23,3 +22,7 @@ test*.py
 
 # 日志
 *.log
+
+# 测试相关
+*/.ruff_cache/
+*/.mypy_cache/

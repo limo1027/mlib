@@ -2,9 +2,10 @@ from .srandom import Random
 from .sformat import encode, decode
 from .sfrac import Frac
 from .smath import gcd, is_prime_fast, egcd as _modinv
+from .type import Iterable
 
 
-def rsa_generate_keys(bits=512):
+def rsa_generate_keys(bits: int = 512):
     """生成 RSA 密钥对"""
     rng = Random()
 
@@ -28,7 +29,7 @@ def rsa_generate_keys(bits=512):
     }
 
 
-def rsa_encrypt(message, public_key):
+def rsa_encrypt(message: str, public_key: "dict[str, int]") -> int:
     """RSA 加密"""
     m = int(encode(message))
     n = public_key['n']
@@ -36,7 +37,7 @@ def rsa_encrypt(message, public_key):
     return pow(m, e, n)
 
 
-def rsa_decrypt(cipher, private_key):
+def rsa_decrypt(cipher: int, private_key: "dict[str, int]") -> str:
     """RSA 解密"""
     n = private_key['n']
     d = private_key['d']
@@ -44,7 +45,7 @@ def rsa_decrypt(cipher, private_key):
     return decode(str(m))
 
 
-def _generate_prime(bits, rng):
+def _generate_prime(bits: int, rng: Random) -> int:
     """生成指定位数的素数"""
     while True:
         candidate = rng.randint(2**(bits-1), 2**bits - 1)
@@ -55,7 +56,7 @@ def _generate_prime(bits, rng):
             return candidate
 
 
-def simple_encrypt(value, key=None, second=None):
+def simple_encrypt(value: str, key: str = None, second: "list[int] | None" = None) -> "tuple[int, str]":
     """加密"""
     random_key = False
     if key is None:
@@ -87,7 +88,7 @@ def simple_encrypt(value, key=None, second=None):
         return (keys[0] * (value+1)) ^ keys[1] ^ keys[2] ^ keys[3], IV
 
 
-def simple_decrypt(cipher, key, IV, second=None):
+def simple_decrypt(cipher: int, key: str, IV: str, second: "list[int] | None" = None):
     """解密"""
     moduli = second
     if (not hasattr(moduli, "__iter__")) or (not all(isinstance(i, int) for i in moduli)) or len(moduli) == 0:
@@ -119,7 +120,7 @@ def simple_decrypt(cipher, key, IV, second=None):
     return decode(str(value_int))
 
 
-def share_secret(plaintext, keys, threshold):
+def share_secret(plaintext: str, keys: "list[object]", threshold: int):
     """秘密共享 - 加密"""
 
     encoded = encode(plaintext)
@@ -147,7 +148,7 @@ def share_secret(plaintext, keys, threshold):
     return shares
 
 
-def recover_secret(shares_dict, threshold):
+def recover_secret(shares_dict: "dict[object, int]", threshold):
     """秘密共享 - 解密"""
 
     if len(shares_dict) < threshold:
@@ -206,4 +207,3 @@ def gaussian_elimination(A, b):
         result.append(abs(val.n))
 
     return result
-

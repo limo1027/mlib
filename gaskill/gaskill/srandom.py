@@ -1,6 +1,6 @@
 from ._roll import parse_dice, roll_dice
 from .smath import ln
-from .hashlib import DJB2
+from .shashlib import DJB2
 
 
 class Random:

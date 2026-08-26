@@ -2,19 +2,20 @@
 
 from .smath import clamp
 from .sinterp import lerp
+from .type import Color
 
 
-def rgb(r, g, b):
+def rgb(r: int, g: int, b: int) -> Color:
     """RGB 颜色 (0-255)"""
     return (int(r), int(g), int(b))
 
 
-def rgba(r, g, b, a=255):
+def rgba(r: int, g: int, b: int, a: int = 255) -> "tuple[int, int, int, int]":
     """RGBA 颜色"""
     return (int(r), int(g), int(b), int(a))
 
 
-def hex_to_rgb(hex_str):
+def hex_to_rgb(hex_str: str) -> Color:
     """16 进制转 RGB，如 #FF0000 转 (255,0,0)"""
     hex_str = hex_str.lstrip('#')
     r = int(hex_str[0:2], 16)
@@ -23,12 +24,12 @@ def hex_to_rgb(hex_str):
     return (r, g, b)
 
 
-def rgb_to_hex(r, g, b):
+def rgb_to_hex(r: int, g: int, b: int):
     """RGB 转 16 进制"""
     return "#{:02x}{:02x}{:02x}".format(int(r), int(g), int(b))
 
 
-def complementary(color, mode='rgb'):
+def complementary(color: Color, mode='rgb') -> Color:
     """返回互补色"""
     if mode == 'rgb':
         return tuple(255 - c for c in color[:3])
@@ -41,28 +42,28 @@ def complementary(color, mode='rgb'):
         raise ValueError("mode 必须是 'rgb' 或 'hsv'")
 
 
-def color_lerp(c1, c2, t):
+def color_lerp(c1: Color, c2: Color, t: float):
     """颜色线性插值"""
     t = clamp(t, 0, 1)
     return tuple(int(a + (b - a) * t) for a, b in zip(c1, c2))
 
 
-def rgb_to_hsv(r, g, b):
+def rgb_to_hsv(r: int, g: int, b: int) -> "tuple[float, float, float]":
     """RGB 转 HSV"""
 
-    r, g, b = r / 255.0, g / 255.0, b / 255.0
-    cmax = max(r, g, b)
-    cmin = min(r, g, b)
+    _r, _g, _b = r / 255.0, g / 255.0, b / 255.0
+    cmax = max(_r, _g, _b)
+    cmin = min(_r, _g, _b)
     delta = cmax - cmin
 
     if delta == 0:
         h = 0
-    elif cmax == r:
-        h = 60 * (((g - b) / delta) % 6)
-    elif cmax == g:
-        h = 60 * (((b - r) / delta) + 2)
+    elif cmax == _r:
+        h = 60 * (((_g - _b) / delta) % 6)
+    elif cmax == _g:
+        h = 60 * (((_b - _r) / delta) + 2)
     else:
-        h = 60 * (((r - g) / delta) + 4)
+        h = 60 * (((_r - _g) / delta) + 4)
 
     if h < 0:
         h += 360
@@ -77,7 +78,7 @@ def rgb_to_hsv(r, g, b):
     return (h, s, v)
 
 
-def hsv_to_rgb(h, s, v):
+def hsv_to_rgb(h: float, s: float, v: float) -> Color:
     """HSV 转 RGB，返回 (0-255) 的 RGB 值"""
     h = h % 360
     s = clamp(s, 0, 1)
@@ -103,7 +104,7 @@ def hsv_to_rgb(h, s, v):
     return (int((r + m) * 255), int((g + m) * 255), int((b + m) * 255))
 
 
-def blend(c1, c2, mode='normal', alpha=0.5):
+def blend(c1: Color, c2: Color, mode: str = 'normal', alpha: float = 0.5):
     """颜色混合模式"""
     alpha = clamp(alpha, 0, 1)
 
@@ -146,12 +147,12 @@ def blend(c1, c2, mode='normal', alpha=0.5):
         raise ValueError(f"不支持的混合模式：{mode}")
 
 
-def gradient_at(color_dict, t):
+def gradient_at(color_dict: "dict[tuple[int, int, int]: float]", t: float):
     """根据位置获取渐变色"""
     t = clamp(t, 0, 1)
 
-    colors = list(color_dict.keys())
-    positions = list(color_dict.values())
+    items = sorted(color_dict.items(), key=lambda x: x[1])
+    colors, positions = zip(*items)
 
     if not colors:
         return (0, 0, 0)
@@ -178,50 +179,50 @@ def gradient_at(color_dict, t):
     return colors[-1]
 
 
-def gradient_range(color_dict, steps=256):
+def gradient_range(color_dict: "dict[tuple[int, int, int]: float]", steps=256):
     """生成渐变色列表"""
     return [gradient_at(color_dict, i / steps) for i in range(steps + 1)]
 
 
-def grayscale(color):
+def grayscale(color: Color) -> int:
     """转灰度"""
     r, g, b = color[:3]
     gray = int(0.299 * r + 0.587 * g + 0.114 * b)
-    return (gray, gray, gray)
+    return gray
 
 
-def invert(color):
+def invert(color: Color) -> Color:
     """反色"""
     return tuple(255 - c for c in color[:3])
 
 
-def adjust_brightness(color, factor):
+def adjust_brightness(color: Color, factor: int) -> Color:
     """调整亮度"""
     return tuple(clamp(int(c * factor), 0, 255) for c in color[:3])
 
 
-def adjust_saturation(color, factor):
+def adjust_saturation(color: Color, factor: int) -> Color:
     """调整饱和度"""
     h, s, v = rgb_to_hsv(*color[:3])
     s = clamp(s * factor, 0, 1)
     return hsv_to_rgb(h, s, v)
 
 
-def adjust_hue(color, degrees):
+def adjust_hue(color: Color, degrees: int) -> Color:
     """调整色相"""
     h, s, v = rgb_to_hsv(*color[:3])
     h = (h + degrees) % 360
     return hsv_to_rgb(h, s, v)
 
 
-def set_alpha(color, alpha):
+def set_alpha(color: Color, alpha: int) -> "tuple[int, int, int, int]":
     """设置 alpha 通道"""
     if len(color) == 3:
         return (*color, int(alpha))
     return (color[0], color[1], color[2], int(alpha))
 
 
-def premultiply_alpha(color):
+def premultiply_alpha(color: "tuple[int, int, int, int]") -> "tuple[int, int, int, int]":
     """预乘 alpha"""
     if len(color) < 4:
         return color
@@ -230,13 +231,42 @@ def premultiply_alpha(color):
     return (int(r * a_norm), int(g * a_norm), int(b * a_norm), a)
 
 
-def distance(c1, c2):
+def delta_e(c1: Color, c2: Color) -> float:
+    """ΔE 色差 (CIE 1976)"""
+    # RGB → XYZ (D65)
+    def _gamma(c):
+        c = c / 255.0
+        return ((c + 0.055) / 1.055) ** 2.4 if c > 0.04045 else c / 12.92
+
+    def _rgb_to_xyz(r, g, b):
+        r, g, b = _gamma(r), _gamma(g), _gamma(b)
+        return (
+            r * 0.4124564 + g * 0.3575761 + b * 0.1804375,
+            r * 0.2126729 + g * 0.7151522 + b * 0.0721750,
+            r * 0.0193339 + g * 0.1191920 + b * 0.9503041
+        )
+
+    # XYZ → Lab (D65 白点)
+    def _xyz_to_lab(x, y, z):
+        xr, yr, zr = 0.95047, 1.00000, 1.08883
+
+        def f(t):
+            return t ** (1/3) if t > 0.008856 else 7.787 * t + 16/116
+        x, y, z = f(x / xr), f(y / yr), f(z / zr)
+        return (116 * y - 16, 500 * (x - y), 200 * (y - z))
+
+    L1, a1, b1 = _xyz_to_lab(*_rgb_to_xyz(*c1))
+    L2, a2, b2 = _xyz_to_lab(*_rgb_to_xyz(*c2))
+    return ((L1 - L2) ** 2 + (a1 - a2) ** 2 + (b1 - b2) ** 2) ** 0.5
+
+
+def distance(c1: Color, c2: Color) -> float:
     """颜色欧几里得距离"""
     return sum((a - b) ** 2 for a, b in zip(c1[:3], c2[:3])) ** 0.5
 
 
-def luminance(color):
-    """亮度（感知）"""
+def luminance(color: Color) -> float:
+    """亮度"""
     r, g, b = color[:3]
     r, g, b = r / 255.0, g / 255.0, b / 255.0
 
@@ -258,7 +288,7 @@ def luminance(color):
     return 0.2126 * r + 0.7152 * g + 0.0722 * b
 
 
-def contrast_ratio(c1, c2):
+def contrast_ratio(c1: Color, c2: Color) -> float:
     """对比度比率（WCAG）"""
     l1 = luminance(c1)
     l2 = luminance(c2)
@@ -269,22 +299,22 @@ def contrast_ratio(c1, c2):
     return (lighter + 0.05) / (darker + 0.05)
 
 
-def is_dark(color, threshold=0.5):
+def is_dark(color: Color, threshold: float = 0.5) -> bool:
     """判断颜色是否为暗色"""
     return luminance(color) < threshold
 
 
-def is_light(color, threshold=0.5):
+def is_light(color: Color, threshold: float = 0.5) -> bool:
     """判断颜色是否为亮色"""
     return luminance(color) > threshold
 
 
-def mix(c1, c2, amount=0.5):
-    """混合两种颜色（amount: 0=c1, 1=c2）"""
+def mix(c1: Color, c2: Color, amount: float = 0.5) -> Color:
+    """混合两种颜色(lerp别名)"""
     return lerp(c1, c2, clamp(amount, 0, 1))
 
 
-def rgb_to_cymb(r, g, b):
+def rgb_to_cymb(r: int, g: int, b: int) -> Color:
     """RGB 转 CYMB（青色、洋红色、黄色、黑色）"""
     r, g, b = r / 255.0, g / 255.0, b / 255.0
     c = 1 - r

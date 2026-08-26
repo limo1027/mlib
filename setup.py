@@ -4,7 +4,7 @@ import subprocess
 import sys
 import os
 long_description = open("README.md").read() + open("using help.txt").read()
-VERSION = eval(os.getenv('VERSION', '"3.0.0"'))
+VERSION = eval(os.getenv('VERSION', '"3.1.1"'))
 
 
 def run(cmd, check=True):
@@ -32,8 +32,8 @@ class PublishCommand(Command):
     def run(self):
 
         # 上传
-        run(["python", "-m", "twine", "upload", "--verbose", "--disable-progress-bar",
-            "--repository", "testpypi", "--skip-existing", "dist/*", ])
+        run(["python", "-m", "twine", "upload", "--verbose",
+            "--disable-progress-bar", "--skip-existing", "dist/*", ])
 
 
 setup(
