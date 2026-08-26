@@ -139,3 +139,16 @@ class Number(ABC):
             if not any(meth in B.__dict__ for B in C.__mro__):
                 return NotImplemented
         return True
+
+
+class Color(ABC):
+    """颜色类型：支持 RGB 和 RGBA"""
+    @abstractmethod
+    def __getitem__(self, index):
+        ...
+
+    @classmethod
+    def __subclasshook__(cls, C):
+        if any(hasattr(B, "__getitem__") and hasattr(B, "__len__") for B in C.__mro__):
+            return True
+        return NotImplemented

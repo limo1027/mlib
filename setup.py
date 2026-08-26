@@ -3,8 +3,8 @@ from setuptools import Command
 import subprocess
 import sys
 import os
-long_description = open("README.md").read() + open("using help.txt").read()
-VERSION = eval(os.getenv('VERSION', '"3.1.1"'))
+long_description = open("README.md").read()
+VERSION = eval(os.getenv('VERSION', '"3.1.1-post1"'))
 
 
 def run(cmd, check=True):
@@ -44,7 +44,7 @@ setup(
     description="A comprehensive Python library for game development utilities",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/limo1027/gaskill",
+    url="https://github.com/limo1027/mlib",
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

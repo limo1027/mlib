@@ -14,5 +14,4 @@ python -c "from gaskill.test import run_test; run_test()"
 ```
 
 [Learn More?](https://limo1027.github.io/mlib)
-
-# 最新版本差异: 在plus中添加一个新的数据库，读极快，但是写偏慢
+[帮助文档](https://limo1027.github.io/mlib/help.html)
