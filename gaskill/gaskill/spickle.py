@@ -3,27 +3,27 @@ def pack_float(num: float) -> str:
 
     if num == 0:
         if str(num) == "0.0":
-            return '0' * 64
+            return "0" * 64
         else:
-            return '1' + '0' * 63
+            return "1" + "0" * 63
 
     if num == float("inf") or num == float("-inf"):
-        return '0' + '1'*11 + '0'*52 if num > 0 else '1' + '1'*11 + '0'*52
+        return "0" + "1"*11 + "0"*52 if num > 0 else "1" + "1"*11 + "0"*52
 
-    if str(num) == 'nan':
-        return '0' + '1'*11 + '1' + '0'*51
+    if str(num) == "nan":
+        return "0" + "1"*11 + "1" + "0"*51
 
-    sign = '0' if num > 0 else '1'
+    sign = "0" if num > 0 else "1"
     num = abs(num)
 
     int_part = int(num)
     frac_part = num - int_part
 
-    int_bits: "list[str]" = []
+    int_bits: list[str] = []
     if int_part == 0:
-        int_bits = ['0']
+        int_bits = ["0"]
     else:
-        temp: "int | float" = int_part
+        temp: int | float = int_part
         while temp > 0:
             int_bits.append(str(temp % 2))
             temp //= 2
@@ -35,21 +35,21 @@ def pack_float(num: float) -> str:
     while temp > 0 and count < 60:
         temp *= 2
         if temp >= 1:
-            frac_bits.append('1')
+            frac_bits.append("1")
             temp -= 1
         else:
-            frac_bits.append('0')
+            frac_bits.append("0")
         count += 1
     binary = int_bits + frac_bits
 
     first_one = -1
     for i, bit in enumerate(binary):
-        if bit == '1':
+        if bit == "1":
             first_one = i
             break
 
     if first_one == -1:  # 全是0
-        return '0' * 64
+        return "0" * 64
 
     if first_one < len(int_bits):
         exponent = len(int_bits) - first_one - 1
@@ -62,8 +62,8 @@ def pack_float(num: float) -> str:
     mantissa_start = first_one + 1
     mantissa_bits = binary[mantissa_start:mantissa_start + 52]
 
-    mantissa_bits = mantissa_bits + ['0'] * (52 - len(mantissa_bits))
-    mantissa_str_bits = ''.join(mantissa_bits[:52])
+    mantissa_bits = mantissa_bits + ["0"] * (52 - len(mantissa_bits))
+    mantissa_str_bits = "".join(mantissa_bits[:52])
 
     result = sign + exp_bits + mantissa_str_bits
 
@@ -86,7 +86,7 @@ def unpack_float(byte_data: bytes) -> float:
 
     _bytes = byte_data
     # 1. 转成 64 位二进制字符串
-    bits = ''.join(format(b, '08b') for b in _bytes)
+    bits = "".join(format(b, "08b") for b in _bytes)
 
     # 2. 解析符号、指数、尾数
     sign = int(bits[0])
@@ -96,8 +96,8 @@ def unpack_float(byte_data: bytes) -> float:
     # 3. 特殊值
     if exponent == 2047:
         if mantissa == 0:
-            return float('-inf') if sign else float('inf')
-        return float('nan')
+            return float("-inf") if sign else float("inf")
+        return float("nan")
 
     # 4. 零
     if exponent == 0 and mantissa == 0:
@@ -148,7 +148,7 @@ def bits_to_bytes(bits: str) -> bytes:
 
 def bytes_to_bits(data: bytes) -> str:
     """bytes → 二进制字符串"""
-    return ''.join(format(b, '08b') for b in data)
+    return "".join(format(b, "08b") for b in data)
 
 
 def pack_to_file(obj: object, filename: str) -> None:
@@ -157,7 +157,7 @@ def pack_to_file(obj: object, filename: str) -> None:
     packed = pack(obj)  # 返回 b'类型标记 + 二进制字符串 + \x00'
 
     # 2. 写入文件
-    with open(filename, 'wb') as f:
+    with open(filename, "wb") as f:
         f.write(packed)
 
 
@@ -166,7 +166,7 @@ def pack_to_file(obj: object, filename: str) -> None:
 def pack_varint(n: int) -> bytes:
     """变长整数编码（无符号）"""
     if n == 0:
-        return b'\x00'
+        return b"\x00"
     result = []
     while n > 0:
         byte = n & 0x7F
@@ -197,43 +197,43 @@ def pack(obj: object) -> bytes:
     """打包任意对象为二进制"""
     if isinstance(obj, str):
         # 字符串：S + 变长长度 + UTF-8 数据
-        data = obj.encode('utf-8')
-        return b'S' + pack_varint(len(data)) + data
+        data = obj.encode("utf-8")
+        return b"S" + pack_varint(len(data)) + data
 
     elif isinstance(obj, int):
         # 整数：I + 变长编码
         if obj >= 0:
-            return b'I' + pack_varint(obj)
+            return b"I" + pack_varint(obj)
         else:
             # 负数用补码
-            return b'i' + pack_varint(-obj)
+            return b"i" + pack_varint(-obj)
 
     elif isinstance(obj, float):
         # 浮点数：F + 8字节 IEEE 754
         bits = pack_float(obj)
-        return b'F' + bits_to_bytes(bits)
+        return b"F" + bits_to_bytes(bits)
 
     elif isinstance(obj, bool):
         # 布尔值：B + 1字节 (0 或 1)
-        return b'B' + (b'\x01' if obj else b'\x00')
+        return b"B" + (b"\x01" if obj else b"\x00")
 
     elif isinstance(obj, (list, tuple)):
         # 列表：L + 每个元素递归 + E
-        result = b'L'
+        result = b"L"
         for item in obj:
             result += pack(item)
-        return result + b'E'
+        return result + b"E"
 
     elif isinstance(obj, dict):
         # 字典：D + 每个键值对递归 + E
-        result = b'D'
+        result = b"D"
         for key, value in obj.items():
             result += pack(key) + pack(value)
-        return result + b'E'
+        return result + b"E"
 
     elif obj is None:
         # None：N
-        return b'N'
+        return b"N"
 
     else:
         raise TypeError(f"不支持的类型: {type(obj)}")
@@ -250,48 +250,48 @@ def unpack(data: bytes, pos: int = 0):
     pos += 1
     value: object = None
 
-    if type_code == b'S':
+    if type_code == b"S":
         # 字符串
         length, pos = unpack_varint(data, pos)
-        value = data[pos:pos+length].decode('utf-8')
+        value = data[pos:pos+length].decode("utf-8")
         return value, pos + length
 
-    elif type_code == b'I':
+    elif type_code == b"I":
         # 无符号整数
         value, pos = unpack_varint(data, pos)
         return value, pos
 
-    elif type_code == b'i':
+    elif type_code == b"i":
         # 负整数
         value, pos = unpack_varint(data, pos)
         return -value, pos
 
-    elif type_code == b'F':
+    elif type_code == b"F":
         # 浮点数 - 直接传入字节数据
         value = unpack_float(data[pos:pos+8])
         return value, pos + 8
 
-    elif type_code == b'B':
+    elif type_code == b"B":
         # 布尔值
         value = data[pos] == 1
         return value, pos + 1
 
-    elif type_code == b'L':
+    elif type_code == b"L":
         # 列表
         list_result = []
         while pos < len(data):
-            if data[pos:pos+1] == b'E':
+            if data[pos:pos+1] == b"E":
                 pos += 1
                 break
             item, pos = unpack(data, pos)
             list_result.append(item)
         return list_result, pos
 
-    elif type_code == b'D':
+    elif type_code == b"D":
         # 字典
-        dict_result: "dict[object, object]" = {}
+        dict_result: dict[object, object] = {}
         while pos < len(data):
-            if data[pos:pos+1] == b'E':
+            if data[pos:pos+1] == b"E":
                 pos += 1
                 break
             key, pos = unpack(data, pos)
@@ -299,7 +299,7 @@ def unpack(data: bytes, pos: int = 0):
             dict_result[key] = value
         return dict_result, pos
 
-    elif type_code == b'N':
+    elif type_code == b"N":
         # None
         return None, pos
 
@@ -309,12 +309,12 @@ def unpack(data: bytes, pos: int = 0):
 
 def dump(obj: object, filename: str):
     """保存对象到文件"""
-    with open(filename, 'wb') as f:
+    with open(filename, "wb") as f:
         f.write(pack(obj))
 
 
 def load(filename: str):
     """从文件加载对象"""
-    with open(filename, 'rb') as f:
+    with open(filename, "rb") as f:
         data = f.read()
     return unpack(data)[0]

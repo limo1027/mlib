@@ -16,7 +16,7 @@ class Poly:
 
     @staticmethod
     def _parse_polynomial(poly_str):
-        """解析多项式字符串，返回项列表 [(coeff, {var: exp, ...}), ...]"""
+        """解析多项式字符串, 返回项列表 [(coeff, {var: exp, ...}), ...]"""
         terms = []
         poly_str = poly_str.replace(" ", "")
 
@@ -25,10 +25,10 @@ class Poly:
             coeff = 1
             sign = 1
 
-            if poly_str[i] == '+':
+            if poly_str[i] == "+":
                 sign = 1
                 i += 1
-            elif poly_str[i] == '-':
+            elif poly_str[i] == "-":
                 sign = -1
                 i += 1
             elif i == 0:
@@ -37,7 +37,7 @@ class Poly:
                 sign = 1
 
             j = i
-            while j < len(poly_str) and (poly_str[j].isdigit() or poly_str[j] == '.'):
+            while j < len(poly_str) and (poly_str[j].isdigit() or poly_str[j] == "."):
                 j += 1
             if j > i:
                 coeff = int(poly_str[i:j]) * sign
@@ -46,12 +46,12 @@ class Poly:
                 coeff = sign
 
             vars_dict = {}
-            while i < len(poly_str) and (poly_str[i].isalpha() or poly_str[i] == '^'):
+            while i < len(poly_str) and (poly_str[i].isalpha() or poly_str[i] == "^"):
                 if poly_str[i].isalpha():
                     var = poly_str[i]
                     i += 1
                     exp = 1
-                    if i < len(poly_str) and poly_str[i] == '^':
+                    if i < len(poly_str) and poly_str[i] == "^":
                         i += 1
                         j = i
                         while j < len(poly_str) and poly_str[j].isdigit():
@@ -98,14 +98,14 @@ class Poly:
 
         if var is None:
             max_deg = 0
-            for coeff, vars_dict in self.terms:
+            for _coeff, vars_dict in self.terms:
                 deg = sum(vars_dict.values())
                 if deg > max_deg:
                     max_deg = deg
             return max_deg
         else:
             max_deg = 0
-            for coeff, vars_dict in self.terms:
+            for _coeff, vars_dict in self.terms:
                 deg = vars_dict.get(var, 0)
                 if deg > max_deg:
                     max_deg = deg
@@ -190,7 +190,7 @@ class Poly:
         return f"Poly({self.terms})"
 
     def extract_gcf(self):
-        """提取最大公因式，返回 (gcf_poly, remaining_poly)"""
+        """提取最大公因式, 返回 (gcf_poly, remaining_poly)"""
         if not self.terms:
             return Poly([(1, {})]), Poly()
 
@@ -206,13 +206,13 @@ class Poly:
             gcf_coeff = a
 
         all_vars = set()
-        for coeff, vars_dict in self.terms:
+        for _, vars_dict in self.terms:
             all_vars.update(vars_dict.keys())
 
         var_mins = {}
         for var in all_vars:
             min_exp = None
-            for coeff, vars_dict in self.terms:
+            for _, vars_dict in self.terms:
                 exp = vars_dict.get(var, 0)
                 if min_exp is None or exp < min_exp:
                     min_exp = exp
@@ -244,7 +244,7 @@ class Poly:
             result += term_val
         return result
 
-    def derivative(self, var='x'):
+    def derivative(self, var="x"):
         """求导"""
         result = []
         for coeff, vars_dict in self.terms:
@@ -258,7 +258,7 @@ class Poly:
         return Poly(result)
 
     def factor(self):
-        """因式分解，返回因式列表"""
+        """因式分解, 返回因式列表"""
         factors = []
 
         gcf, remaining = self.extract_gcf()
@@ -270,7 +270,7 @@ class Poly:
 
         deg = remaining.degree()
         if deg == 2:
-            quad_factors = remaining._factor_quadratic('x')
+            quad_factors = remaining._factor_quadratic("x")
             if quad_factors:
                 factors.extend(quad_factors)
                 return factors
@@ -280,7 +280,7 @@ class Poly:
                 factors.extend(cubic_factors)
                 return factors
 
-        square_factors = remaining._factor_difference_of_squares('x')
+        square_factors = remaining._factor_difference_of_squares("x")
         if square_factors:
             factors.extend(square_factors)
             return factors
@@ -290,7 +290,7 @@ class Poly:
 
         return factors
 
-    def _factor_quadratic(self, var='x'):
+    def _factor_quadratic(self, var="x"):
         """分解二次三项式"""
         a, b, c = 0, 0, 0
         for coeff, vars_dict in self.terms:
@@ -312,28 +312,28 @@ class Poly:
                             if b > 0:
                                 return [
                                     Poly([(1, {var: 1}), (i, {})]),
-                                    Poly([(1, {var: 1}), (j, {})])
+                                    Poly([(1, {var: 1}), (j, {})]),
                                 ]
                             else:
                                 return [
                                     Poly([(1, {var: 1}), (-i, {})]),
-                                    Poly([(1, {var: 1}), (-j, {})])
+                                    Poly([(1, {var: 1}), (-j, {})]),
                                 ]
                     else:
                         if i - j == b:
                             return [
                                 Poly([(1, {var: 1}), (i, {})]),
-                                Poly([(1, {var: 1}), (-j, {})])
+                                Poly([(1, {var: 1}), (-j, {})]),
                             ]
                         elif -i + j == b:
                             return [
                                 Poly([(1, {var: 1}), (-i, {})]),
-                                Poly([(1, {var: 1}), (j, {})])
+                                Poly([(1, {var: 1}), (j, {})]),
                             ]
 
         return []
 
-    def _factor_difference_of_squares(self, var='x'):
+    def _factor_difference_of_squares(self, var="x"):
         """分解平方差"""
         pos_terms = []
         neg_terms = []
@@ -354,7 +354,7 @@ class Poly:
                 if p_deg == 2 and n_deg == 0:
                     return [
                         Poly([(1, p_vars), (1, {})]),
-                        Poly([(1, p_vars), (-1, {})])
+                        Poly([(1, p_vars), (-1, {})]),
                     ]
 
         return []
@@ -371,13 +371,13 @@ class Poly:
         if a == 1:
             if c == -1:
                 return [
-                    Poly([(1, {'x': 1}), (-1, {})]),
-                    Poly([(1, {'x': 2}), (1, {'x': 1}), (1, {})])
+                    Poly([(1, {"x": 1}), (-1, {})]),
+                    Poly([(1, {"x": 2}), (1, {"x": 1}), (1, {})]),
                 ]
             elif c == 1:
                 return [
-                    Poly([(1, {'x': 1}), (1, {})]),
-                    Poly([(1, {'x': 2}), (-1, {'x': 1}), (1, {})])
+                    Poly([(1, {"x": 1}), (1, {})]),
+                    Poly([(1, {"x": 2}), (-1, {"x": 1}), (1, {})]),
                 ]
 
         return []
@@ -399,28 +399,3 @@ def factors_to_str(factors):
         else:
             parts.append(str(factor))
     return " * ".join(parts)
-
-
-if __name__ == "__main__":
-    print("=== 多项式创建 ===")
-    p = Poly.from_string("x^2 + 2x + 1")
-    print(f"'x^2 + 2x + 1' -> {p}")
-
-    print("\n=== 多项式运算 ===")
-    p1 = Poly.from_string("x + 1")
-    p2 = Poly.from_string("x - 1")
-    print(f"{p1} + {p2} = {p1 + p2}")
-    print(f"{p1} * {p2} = {p1 * p2}")
-
-    print("\n=== 因式分解 ===")
-    p = Poly.from_string("x^2 - 1")
-    factors = p.factor()
-    print(f"{p} = {factors_to_str(factors)}")
-
-    print("\n=== 求导 ===")
-    p = Poly.from_string("x^3 + 3x^2 + 2x")
-    print(f"d/dx {p} = {p.derivative()}")
-
-    print("\n=== 求值 ===")
-    p = Poly.from_string("x^2 + 2x + 1")
-    print(f"p(2) = {p.evaluate({'x': 2})}")

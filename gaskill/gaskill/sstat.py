@@ -1,4 +1,4 @@
-from .smath import sqrt, exp, pi, comb, factorial
+from .smath import comb, exp, factorial, pi, sqrt
 
 
 def erf(x):
@@ -357,7 +357,7 @@ def chi_square(observed, expected):
     if len(observed) != len(expected):
         raise ValueError("观察值和期望值长度必须相同")
     chi2 = 0
-    for obs, _exp in zip(observed, expected):
+    for obs, _exp in zip(observed, expected, strict=False):
         if _exp == 0:
             raise ValueError("期望值不能为0")
         chi2 += (obs - _exp) ** 2 / _exp
@@ -436,20 +436,20 @@ def summary(data):
     """返回完整统计摘要"""
     _validate(data)
     return {
-        'count': len(data),
-        'mean': mean(data),
-        'median': median(data),
-        'mode': mode(data),
-        'variance': variance(data, ddof=0),
-        'stdev': stdev(data, ddof=0),
-        'min': min(data),
-        'max': max(data),
-        'range': max(data) - min(data),
-        'q1': quantile(data, 0.25),
-        'q3': quantile(data, 0.75),
-        'iqr': iqr(data),
-        'skewness': skewness(data),
-        'kurtosis': kurtosis(data)
+        "count": len(data),
+        "mean": mean(data),
+        "median": median(data),
+        "mode": mode(data),
+        "variance": variance(data, ddof=0),
+        "stdev": stdev(data, ddof=0),
+        "min": min(data),
+        "max": max(data),
+        "range": max(data) - min(data),
+        "q1": quantile(data, 0.25),
+        "q3": quantile(data, 0.75),
+        "iqr": iqr(data),
+        "skewness": skewness(data),
+        "kurtosis": kurtosis(data),
     }
 
 

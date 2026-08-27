@@ -1,5 +1,4 @@
 # 纯 Python BMP 读写器
-from gaskill import type
 
 
 class BMPError(Exception):
@@ -20,7 +19,7 @@ def int32_to_bytes(n: int) -> bytes:
         n & 0xFF,
         (n >> 8) & 0xFF,
         (n >> 16) & 0xFF,
-        (n >> 24) & 0xFF
+        (n >> 24) & 0xFF,
     ])
 
 
@@ -99,9 +98,9 @@ class BMPImage:
         self.width = width
         self.height = height
         # [row][col] = (R, G, B, A) 或 (R, G, B)
-        self.pixels: "list[list[tuple[int, int, int | int, int, int, int]]]" = []
+        self.pixels: list[list[tuple[int, int, int | int, int, int, int]]] = []
         self.header = BMPHeader()
-        self.palette: "list[tuple[int, int, int]]" = []  # 调色板 [(R, G, B), ...]
+        self.palette: list[tuple[int, int, int]] = []  # 调色板 [(R, G, B), ...]
         self.bit_count = 24
         self.has_alpha = False
 
@@ -122,7 +121,7 @@ class BMPImage:
     @classmethod
     def load(cls, filename: str):
         """从文件加载 BMP"""
-        with open(filename, 'rb') as f:
+        with open(filename, "rb") as f:
             data = f.read()
         return cls.load_from_bytes(data)
 
@@ -133,7 +132,7 @@ class BMPImage:
             raise BMPError("文件太小，不是有效的BMP")
 
         # 检查签名
-        if data[0:2] != b'BM':
+        if data[0:2] != b"BM":
             raise BMPError(f"不是BMP文件 (签名: {data[0:2].decode('ascii')})")
 
         # 解析文件头
@@ -371,9 +370,9 @@ class BMPImage:
                     pixel_data[offset + 3] = color[3] & 0xFF  # A
 
         # 写入文件
-        with open(filename, 'wb') as f:
+        with open(filename, "wb") as f:
             # 文件头
-            f.write(b'BM')
+            f.write(b"BM")
             f.write(int32_to_bytes(file_size))
             f.write(int16_to_bytes(0))
             f.write(int16_to_bytes(0))

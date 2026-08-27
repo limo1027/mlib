@@ -1,10 +1,11 @@
-from setuptools import setup, find_packages
-from setuptools import Command
+import os
 import subprocess
 import sys
-import os
+
+from setuptools import Command, find_packages, setup
+
 long_description = open("README.md").read()
-VERSION = eval(os.getenv('VERSION', '"3.1.2"'))
+VERSION = eval(os.getenv("VERSION", '"3.1.2"'))
 
 
 def run(cmd, check=True):

@@ -28,16 +28,16 @@ class DiskKV:
 
         # 打开文件
         try:
-            self.f = open(filepath, 'r+b')
+            self.f = open(filepath, "r+b")
             self._rebuild_index()
         except FileNotFoundError:
-            self.f = open(filepath, 'w+b')
+            self.f = open(filepath, "w+b")
             self._init_file()
 
     def _init_file(self):
         """初始化空文件"""
         self.f.seek(0)
-        self.f.write(b'\x00' * (self.capacity * self.slot_size))
+        self.f.write(b"\x00" * (self.capacity * self.slot_size))
         self.f.flush()
         self.index = {}
         self.count = 0
@@ -57,7 +57,7 @@ class DiskKV:
             flag = data[offset]
             if flag == self.FLAG_OCCUPIED:
                 key_len = data[offset + 1]
-                key = data[offset + 2:offset + 2 + key_len].decode('utf-8')
+                key = data[offset + 2:offset + 2 + key_len].decode("utf-8")
                 self.index[key] = i
                 self.count += 1
 
@@ -68,20 +68,20 @@ class DiskKV:
 
         flag = data[0]
         if flag != self.FLAG_OCCUPIED:
-            return (flag, '', '')
+            return (flag, "", "")
 
         key_len = data[1]
-        key = data[2:2+key_len].decode('utf-8')
+        key = data[2:2+key_len].decode("utf-8")
 
         val_len = data[2+self.key_max]
-        val = data[3+self.key_max:3+self.key_max+val_len].decode('utf-8')
+        val = data[3+self.key_max:3+self.key_max+val_len].decode("utf-8")
 
         return (flag, key, val)
 
     def _write_slot_fast(self, index, flag, key, value):
         """快速写入槽位 - 复用缓冲区"""
-        key_bytes = key.encode('utf-8')
-        val_bytes = value.encode('utf-8')
+        key_bytes = key.encode("utf-8")
+        val_bytes = value.encode("utf-8")
 
         # 复用缓冲区，减少分配
         slot = bytearray(self.slot_size)
@@ -153,8 +153,8 @@ class DiskKV:
         # 扩容
         self.capacity *= 16
         self.f.close()
-        self.f = open(self.filepath, 'w+b')
-        self.f.write(b'\x00' * (self.capacity * self.slot_size))
+        self.f = open(self.filepath, "w+b")
+        self.f.write(b"\x00" * (self.capacity * self.slot_size))
 
         # 重建
         self.index = {}

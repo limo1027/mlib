@@ -33,8 +33,8 @@ class EventSystem:
             self._once_listeners[event_name] = {}
         listener_id = self._generate_id()
         self._once_listeners[event_name][listener_id] = {
-            'handler': handler,
-            'active': True
+            "handler": handler,
+            "active": True,
         }
         return listener_id
 
@@ -44,10 +44,10 @@ class EventSystem:
             self._times_listeners[event_name] = {}
         listener_id = self._generate_id()
         self._times_listeners[event_name][listener_id] = {
-            'handler': handler,
-            'remaining': count,
-            'total': count,
-            'active': True
+            "handler": handler,
+            "remaining": count,
+            "total": count,
+            "active": True,
         }
         return listener_id
 
@@ -57,9 +57,9 @@ class EventSystem:
             self._conditional_listeners[event_name] = {}
         listener_id = self._generate_id()
         self._conditional_listeners[event_name][listener_id] = {
-            'condition': condition,
-            'handler': handler,
-            'active': True
+            "condition": condition,
+            "handler": handler,
+            "active": True,
         }
         return listener_id
 
@@ -69,10 +69,10 @@ class EventSystem:
             self._conditional_listeners[event_name] = {}
         listener_id = self._generate_id()
         self._conditional_listeners[event_name][listener_id] = {
-            'condition': condition,
-            'handler': handler,
-            'active': True,
-            'once': True
+            "condition": condition,
+            "handler": handler,
+            "active": True,
+            "once": True,
         }
         return listener_id
 
@@ -80,13 +80,13 @@ class EventSystem:
         """延迟触发事件"""
         listener_id = self._generate_id()
         self._delayed_events.append({
-            'id': listener_id,
-            'event_name': event_name,
-            'handler': handler,
-            'remaining_time': delay_time,
-            'original_delay': delay_time,
-            'triggered': False,
-            'active': True
+            "id": listener_id,
+            "event_name": event_name,
+            "handler": handler,
+            "remaining_time": delay_time,
+            "original_delay": delay_time,
+            "triggered": False,
+            "active": True,
         })
         return listener_id
 
@@ -99,29 +99,29 @@ class EventSystem:
 
         # 触发 once 监听器，然后标记为 inactive
         if event_name in self._once_listeners:
-            for listener_id, data in self._once_listeners[event_name].items():
-                if data['active']:
-                    data['handler'](*args, **kwargs)
-                    data['active'] = False
+            for _listener_id, data in self._once_listeners[event_name].items():
+                if data["active"]:
+                    data["handler"](*args, **kwargs)
+                    data["active"] = False
 
         # 触发 times 监听器
         if event_name in self._times_listeners:
-            for listener_id, data in self._times_listeners[event_name].items():
-                if data['active']:
-                    data['handler'](*args, **kwargs)
-                    data['remaining'] -= 1
-                    if data['remaining'] <= 0:
-                        data['active'] = False
+            for _listener_id, data in self._times_listeners[event_name].items():
+                if data["active"]:
+                    data["handler"](*args, **kwargs)
+                    data["remaining"] -= 1
+                    if data["remaining"] <= 0:
+                        data["active"] = False
 
         # 触发条件监听器
         if event_name in self._conditional_listeners:
-            for listener_id, data in self._conditional_listeners[event_name].items():
+            for _listener_id, data in self._conditional_listeners[event_name].items():
                 try:
-                    if data['active'] and data['condition'](*args, **kwargs):
-                        data['handler'](*args, **kwargs)
+                    if data["active"] and data["condition"](*args, **kwargs):
+                        data["handler"](*args, **kwargs)
                         # wheel_once 触发后自动标记为 inactive
-                        if data.get('once', False):
-                            data['active'] = False
+                        if data.get("once", False):
+                            data["active"] = False
                 except Exception:
                     pass
 
@@ -132,12 +132,12 @@ class EventSystem:
 
         # 处理延迟事件
         for event in self._delayed_events:
-            if not event['triggered'] and event['active']:
-                event['remaining_time'] -= dt
-                if event['remaining_time'] <= 0:
-                    event['triggered'] = True
-                    event['active'] = False
-                    event['handler']()
+            if not event["triggered"] and event["active"]:
+                event["remaining_time"] -= dt
+                if event["remaining_time"] <= 0:
+                    event["triggered"] = True
+                    event["active"] = False
+                    event["handler"]()
 
     def remove(self, event_name, listener_id):
         """移除指定的监听器"""
@@ -168,29 +168,29 @@ class EventSystem:
         # 重新激活 once 监听器
         if event_name in self._once_listeners:
             if listener_id in self._once_listeners[event_name]:
-                self._once_listeners[event_name][listener_id]['active'] = True
+                self._once_listeners[event_name][listener_id]["active"] = True
                 return True
 
         # 重新激活 times 监听器
         if event_name in self._times_listeners:
             if listener_id in self._times_listeners[event_name]:
                 data = self._times_listeners[event_name][listener_id]
-                data['active'] = True
-                data['remaining'] = data['total']
+                data["active"] = True
+                data["remaining"] = data["total"]
                 return True
 
         # 重新激活延迟事件
         for event in self._delayed_events:
-            if event['id'] == listener_id and event['event_name'] == event_name:
-                event['active'] = True
-                event['triggered'] = False
-                event['remaining_time'] = event['original_delay']
+            if event["id"] == listener_id and event["event_name"] == event_name:
+                event["active"] = True
+                event["triggered"] = False
+                event["remaining_time"] = event["original_delay"]
                 return True
 
         # 重新激活 wheel_once 监听器
         if event_name in self._conditional_listeners:
             if listener_id in self._conditional_listeners[event_name]:
-                self._conditional_listeners[event_name][listener_id]['active'] = True
+                self._conditional_listeners[event_name][listener_id]["active"] = True
                 return True
 
         return False
@@ -212,7 +212,7 @@ class EventSystem:
                 del self._times_listeners[event_name]
             if event_name in self._conditional_listeners:
                 del self._conditional_listeners[event_name]
-            self._delayed_events = [e for e in self._delayed_events if e['event_name'] != event_name]
+            self._delayed_events = [e for e in self._delayed_events if e["event_name"] != event_name]
 
 
 event = EventSystem()

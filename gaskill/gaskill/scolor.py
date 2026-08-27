@@ -1,7 +1,7 @@
 # scolor.py - 颜色处理模块
 
-from .smath import clamp
 from .sinterp import lerp
+from .smath import clamp
 from .type import Color
 
 
@@ -17,7 +17,7 @@ def rgba(r: int, g: int, b: int, a: int = 255) -> "tuple[int, int, int, int]":
 
 def hex_to_rgb(hex_str: str) -> Color:
     """16 进制转 RGB，如 #FF0000 转 (255,0,0)"""
-    hex_str = hex_str.lstrip('#')
+    hex_str = hex_str.lstrip("#")
     r = int(hex_str[0:2], 16)
     g = int(hex_str[2:4], 16)
     b = int(hex_str[4:6], 16)
@@ -26,15 +26,15 @@ def hex_to_rgb(hex_str: str) -> Color:
 
 def rgb_to_hex(r: int, g: int, b: int):
     """RGB 转 16 进制"""
-    return "#{:02x}{:02x}{:02x}".format(int(r), int(g), int(b))
+    return f"#{int(r):02x}{int(g):02x}{int(b):02x}"
 
 
-def complementary(color: Color, mode='rgb') -> Color:
+def complementary(color: Color, mode="rgb") -> Color:
     """返回互补色"""
-    if mode == 'rgb':
+    if mode == "rgb":
         return tuple(255 - c for c in color[:3])
 
-    elif mode == 'hsv':
+    elif mode == "hsv":
         h, s, v = color
         return ((h + 180) % 360, s, v)
 
@@ -45,7 +45,7 @@ def complementary(color: Color, mode='rgb') -> Color:
 def color_lerp(c1: Color, c2: Color, t: float):
     """颜色线性插值"""
     t = clamp(t, 0, 1)
-    return tuple(int(a + (b - a) * t) for a, b in zip(c1, c2))
+    return tuple(int(a + (b - a) * t) for a, b in zip(c1, c2, strict=False))
 
 
 def rgb_to_hsv(r: int, g: int, b: int) -> "tuple[float, float, float]":
@@ -104,44 +104,44 @@ def hsv_to_rgb(h: float, s: float, v: float) -> Color:
     return (int((r + m) * 255), int((g + m) * 255), int((b + m) * 255))
 
 
-def blend(c1: Color, c2: Color, mode: str = 'normal', alpha: float = 0.5):
+def blend(c1: Color, c2: Color, mode: str = "normal", alpha: float = 0.5):
     """颜色混合模式"""
     alpha = clamp(alpha, 0, 1)
 
-    if mode == 'normal':
+    if mode == "normal":
         result = []
-        for a, b in zip(c1[:3], c2[:3]):
+        for a, b in zip(c1[:3], c2[:3], strict=False):
             result.append(int(a + (b - a) * alpha))
         if len(c1) > 3:
             result.append(c1[3])
         return tuple(result)
 
-    elif mode == 'multiply':
-        return tuple(int(a * b / 255) for a, b in zip(c1[:3], c2[:3]))
+    elif mode == "multiply":
+        return tuple(int(a * b / 255) for a, b in zip(c1[:3], c2[:3], strict=False))
 
-    elif mode == 'screen':
-        return tuple(255 - int((255 - a) * (255 - b) / 255) for a, b in zip(c1[:3], c2[:3]))
+    elif mode == "screen":
+        return tuple(255 - int((255 - a) * (255 - b) / 255) for a, b in zip(c1[:3], c2[:3], strict=False))
 
-    elif mode == 'overlay':
+    elif mode == "overlay":
         result = []
-        for a, b in zip(c1[:3], c2[:3]):
+        for a, b in zip(c1[:3], c2[:3], strict=False):
             if a < 128:
                 result.append(int(2 * a * b / 255))
             else:
                 result.append(int(255 - 2 * (255 - a) * (255 - b) / 255))
         return tuple(result)
 
-    elif mode == 'add':
-        return tuple(min(255, a + b) for a, b in zip(c1[:3], c2[:3]))
+    elif mode == "add":
+        return tuple(min(255, a + b) for a, b in zip(c1[:3], c2[:3], strict=False))
 
-    elif mode == 'subtract':
-        return tuple(max(0, a - b) for a, b in zip(c1[:3], c2[:3]))
+    elif mode == "subtract":
+        return tuple(max(0, a - b) for a, b in zip(c1[:3], c2[:3], strict=False))
 
-    elif mode == 'difference':
-        return tuple(abs(a - b) for a, b in zip(c1[:3], c2[:3]))
+    elif mode == "difference":
+        return tuple(abs(a - b) for a, b in zip(c1[:3], c2[:3], strict=False))
 
-    elif mode == 'average':
-        return tuple((a + b) // 2 for a, b in zip(c1[:3], c2[:3]))
+    elif mode == "average":
+        return tuple((a + b) // 2 for a, b in zip(c1[:3], c2[:3], strict=False))
 
     else:
         raise ValueError(f"不支持的混合模式：{mode}")
@@ -152,7 +152,7 @@ def gradient_at(color_dict: "dict[tuple[int, int, int]: float]", t: float):
     t = clamp(t, 0, 1)
 
     items = sorted(color_dict.items(), key=lambda x: x[1])
-    colors, positions = zip(*items)
+    colors, positions = zip(*items, strict=False)
 
     if not colors:
         return (0, 0, 0)
@@ -243,7 +243,7 @@ def delta_e(c1: Color, c2: Color) -> float:
         return (
             r * 0.4124564 + g * 0.3575761 + b * 0.1804375,
             r * 0.2126729 + g * 0.7151522 + b * 0.0721750,
-            r * 0.0193339 + g * 0.1191920 + b * 0.9503041
+            r * 0.0193339 + g * 0.1191920 + b * 0.9503041,
         )
 
     # XYZ → Lab (D65 白点)
@@ -262,7 +262,7 @@ def delta_e(c1: Color, c2: Color) -> float:
 
 def distance(c1: Color, c2: Color) -> float:
     """颜色欧几里得距离"""
-    return sum((a - b) ** 2 for a, b in zip(c1[:3], c2[:3])) ** 0.5
+    return sum((a - b) ** 2 for a, b in zip(c1[:3], c2[:3], strict=False)) ** 0.5
 
 
 def luminance(color: Color) -> float:
@@ -358,7 +358,7 @@ def random_color(rng=None):
     return (
         rng.randint(0, 255),
         rng.randint(0, 255),
-        rng.randint(0, 255)
+        rng.randint(0, 255),
     )
 
 

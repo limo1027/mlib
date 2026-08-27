@@ -6,7 +6,7 @@
 # 内部解析器
 # ============================================================
 
-def _parse_line(line, delimiter=',', quotechar='"'):
+def _parse_line(line, delimiter=",", quotechar='"'):
     """
     解析一行 CSV，返回字段列表
     支持引号包裹、引号转义（""）
@@ -39,33 +39,33 @@ def _parse_line(line, delimiter=',', quotechar='"'):
                 in_quotes = True
                 i += 1
             elif c == delimiter:
-                result.append(''.join(current))
+                result.append("".join(current))
                 current = []
                 i += 1
-            elif c == '\r':
+            elif c == "\r":
                 i += 1
-            elif c == '\n':
+            elif c == "\n":
                 i += 1
             else:
                 current.append(c)
                 i += 1
 
-    result.append(''.join(current))
+    result.append("".join(current))
     return result
 
 
-def _escape_field(field, delimiter=',', quotechar='"'):
+def _escape_field(field, delimiter=",", quotechar='"'):
     """
     转义一个字段
     """
     if not field:
-        return ''
+        return ""
 
     needs_quote = (
         delimiter in field or
         quotechar in field or
-        '\n' in field or
-        '\r' in field
+        "\n" in field or
+        "\r" in field
     )
 
     if not needs_quote:
@@ -79,7 +79,7 @@ def _escape_field(field, delimiter=',', quotechar='"'):
 # 公共 API（文件对象版）
 # ============================================================
 
-def load_csv(fileobj, delimiter=',', quotechar='"', has_header=True):
+def load_csv(fileobj, delimiter=",", quotechar='"', has_header=True):
     """
     从文件对象加载 CSV
 
@@ -94,8 +94,8 @@ def load_csv(fileobj, delimiter=',', quotechar='"', has_header=True):
     """
     lines = []
     for line in fileobj:
-        line = line.rstrip('\n\r')
-        if line.strip() == '':
+        line = line.rstrip("\n\r")
+        if line.strip() == "":
             continue
         lines.append(line)
 
@@ -114,7 +114,7 @@ def load_csv(fileobj, delimiter=',', quotechar='"', has_header=True):
         return rows
 
 
-def save_csv(fileobj, data, header=None, delimiter=',', quotechar='"'):
+def save_csv(fileobj, data, header=None, delimiter=",", quotechar='"'):
     """
     保存 CSV 到文件对象
 
@@ -127,27 +127,27 @@ def save_csv(fileobj, data, header=None, delimiter=',', quotechar='"'):
     """
     if header:
         escaped = [_escape_field(str(h), delimiter, quotechar) for h in header]
-        fileobj.write(delimiter.join(escaped) + '\n')
+        fileobj.write(delimiter.join(escaped) + "\n")
 
     for row in data:
         escaped = [_escape_field(str(cell), delimiter, quotechar)
                    for cell in row]
-        fileobj.write(delimiter.join(escaped) + '\n')
+        fileobj.write(delimiter.join(escaped) + "\n")
 
 
 # ============================================================
 # 便捷函数（直接从文件路径）
 # ============================================================
 
-def load_csv_file(filepath, delimiter=',', quotechar='"', has_header=True, encoding='utf-8'):
+def load_csv_file(filepath, delimiter=",", quotechar='"', has_header=True, encoding="utf-8"):
     """从文件路径加载 CSV"""
-    with open(filepath, 'r', encoding=encoding) as f:
+    with open(filepath, encoding=encoding) as f:
         return load_csv(f, delimiter, quotechar, has_header)
 
 
-def save_csv_file(filepath, data, header=None, delimiter=',', quotechar='"', encoding='utf-8'):
+def save_csv_file(filepath, data, header=None, delimiter=",", quotechar='"', encoding="utf-8"):
     """保存 CSV 到文件路径"""
-    with open(filepath, 'w', encoding=encoding) as f:
+    with open(filepath, "w", encoding=encoding) as f:
         save_csv(f, data, header, delimiter, quotechar)
 
 
@@ -155,9 +155,9 @@ def save_csv_file(filepath, data, header=None, delimiter=',', quotechar='"', enc
 # 字符串操作（方便测试和内存操作）
 # ============================================================
 
-def load_csv_str(content, delimiter=',', quotechar='"', has_header=True):
+def load_csv_str(content, delimiter=",", quotechar='"', has_header=True):
     """从字符串加载 CSV"""
-    lines = content.strip().split('\n')
+    lines = content.strip().split("\n")
     lines = [line.strip() for line in lines if line.strip()]
     rows = [_parse_line(line, delimiter, quotechar) for line in lines]
 
@@ -171,7 +171,7 @@ def load_csv_str(content, delimiter=',', quotechar='"', has_header=True):
     return rows
 
 
-def save_csv_str(data, header=None, delimiter=',', quotechar='"'):
+def save_csv_str(data, header=None, delimiter=",", quotechar='"'):
     """保存 CSV 为字符串"""
     lines = []
     if header:
@@ -183,14 +183,14 @@ def save_csv_str(data, header=None, delimiter=',', quotechar='"'):
                    for cell in row]
         lines.append(delimiter.join(escaped))
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 # ============================================================
 # 字典转换
 # ============================================================
 
-def dict_to_csv(data, fields=None, delimiter=',', quotechar='"'):
+def dict_to_csv(data, fields=None, delimiter=",", quotechar='"'):
     """list[dict] → (header, rows)"""
     if not data:
         return [], []
@@ -200,7 +200,7 @@ def dict_to_csv(data, fields=None, delimiter=',', quotechar='"'):
 
     rows = []
     for item in data:
-        row = [str(item.get(field, '')) for field in fields]
+        row = [str(item.get(field, "")) for field in fields]
         rows.append(row)
 
     return fields, rows
@@ -212,7 +212,7 @@ def csv_to_dict(header, rows):
     for row in rows:
         item = {}
         for i, field in enumerate(header):
-            item[field] = row[i] if i < len(row) else ''
+            item[field] = row[i] if i < len(row) else ""
         result.append(item)
     return result
 
@@ -222,12 +222,12 @@ def csv_to_dict(header, rows):
 # ============================================================
 
 __all__ = [
-    'load_csv',
-    'save_csv',
-    'load_csv_file',
-    'save_csv_file',
-    'load_csv_str',
-    'save_csv_str',
-    'dict_to_csv',
-    'csv_to_dict',
+    "load_csv",
+    "save_csv",
+    "load_csv_file",
+    "save_csv_file",
+    "load_csv_str",
+    "save_csv_str",
+    "dict_to_csv",
+    "csv_to_dict",
 ]

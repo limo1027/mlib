@@ -1,4 +1,5 @@
-from .smath import pi, sin, cos
+from .smath import cos, pi, sin
+
 # ========== 基本缓动 ==========
 
 
@@ -221,39 +222,39 @@ def sine_in_out(t):
 
 
 EASING = {
-    'linear': linear,
-    'quad_in': quad_in,
-    'quad_out': quad_out,
-    'quad_in_out': quad_in_out,
-    'cubic_in': cubic_in,
-    'cubic_out': cubic_out,
-    'cubic_in_out': cubic_in_out,
-    'back_in': back_in,
-    'back_out': back_out,
-    'bounce_out': bounce_out,
+    "linear": linear,
+    "quad_in": quad_in,
+    "quad_out": quad_out,
+    "quad_in_out": quad_in_out,
+    "cubic_in": cubic_in,
+    "cubic_out": cubic_out,
+    "cubic_in_out": cubic_in_out,
+    "back_in": back_in,
+    "back_out": back_out,
+    "bounce_out": bounce_out,
     # 指数
-    'expo_in': expo_in,
-    'expo_out': expo_out,
-    'expo_in_out': expo_in_out,
+    "expo_in": expo_in,
+    "expo_out": expo_out,
+    "expo_in_out": expo_in_out,
     # 圆形
-    'circ_in': circ_in,
-    'circ_out': circ_out,
-    'circ_in_out': circ_in_out,
+    "circ_in": circ_in,
+    "circ_out": circ_out,
+    "circ_in_out": circ_in_out,
     # 正弦
-    'sine_in': sine_in,
-    'sine_out': sine_out,
-    'sine_in_out': sine_in_out,
+    "sine_in": sine_in,
+    "sine_out": sine_out,
+    "sine_in_out": sine_in_out,
     # 弹性增强版
-    'elastic_out': elastic_out,
-    'elastic_in': elastic_in,
+    "elastic_out": elastic_out,
+    "elastic_in": elastic_in,
     # 反弹完整版
-    'bounce_in': bounce_in,
-    'bounce_in_out': bounce_in_out
+    "bounce_in": bounce_in,
+    "bounce_in_out": bounce_in_out,
 }
 
 # ========== 快捷函数 ==========
 
 
-def ease(t, type='linear'):
+def ease(t, type_="linear"):
     """用字符串指定缓动类型"""
-    return EASING.get(type, linear)(t)
+    return EASING.get(type_, linear)(t)

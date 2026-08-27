@@ -1,5 +1,5 @@
+from .smath import EPSILON, cos, pi, sin, sqrt, tan
 from .svector import vec3
-from .smath import sqrt, EPSILON, pi, cos, sin, tan
 
 
 class AABB:
@@ -29,8 +29,8 @@ class AABB:
         if not points:
             return cls()
 
-        min_x = min_y = min_z = float('inf')
-        max_x = max_y = max_z = float('-inf')
+        min_x = min_y = min_z = float("inf")
+        max_x = max_y = max_z = float("-inf")
 
         for p in points:
             min_x = min(min_x, p.x)
@@ -88,7 +88,7 @@ class AABB:
         closest = vec3(
             max(self.min.x, min(center.x, self.max.x)),
             max(self.min.y, min(center.y, self.max.y)),
-            max(self.min.z, min(center.z, self.max.z))
+            max(self.min.z, min(center.z, self.max.z)),
         )
 
         dx = center.x - closest.x
@@ -115,7 +115,7 @@ class AABB:
                  min(self.min.z, other.min.z)),
             vec3(max(self.max.x, other.max.x),
                  max(self.max.y, other.max.y),
-                 max(self.max.z, other.max.z))
+                 max(self.max.z, other.max.z)),
         )
 
     def __repr__(self):
@@ -206,7 +206,7 @@ class Ray:
     def intersect_aabb(self, aabb):
         """与 AABB 相交检测（slab 方法）"""
         tmin = 0.0
-        tmax = float('inf')
+        tmax = float("inf")
 
         for i in range(3):
             origin_i = self.origin[i]
@@ -329,7 +329,7 @@ def project_3d_to_2d(point, camera_pos, camera_angle, fov=60, width=800, height=
     local = vec3(
         point.x - camera_pos.x,
         point.y - camera_pos.y,
-        point.z - camera_pos.z
+        point.z - camera_pos.z,
     )
 
     pitch, yaw, roll = camera_angle.x, camera_angle.y, camera_angle.z

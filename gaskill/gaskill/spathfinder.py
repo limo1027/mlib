@@ -1,27 +1,26 @@
-from .svector import vec2
 from .srandom import Random
-
+from .svector import vec2
 
 # ========== A* 寻路算法 ==========
 
-def _heuristic(a, b, method='manhattan'):
+def _heuristic(a, b, method="manhattan"):
     """计算启发式距离"""
     dx = abs(a[0] - b[0])
     dy = abs(a[1] - b[1])
 
-    if method == 'manhattan':
+    if method == "manhattan":
         return dx + dy
-    elif method == 'euclidean':
+    elif method == "euclidean":
         return (dx**2 + dy**2) ** 0.5
-    elif method == 'chebyshev':
+    elif method == "chebyshev":
         return max(dx, dy)
-    elif method == 'octile':
+    elif method == "octile":
         return max(dx, dy) + (1.41421356 - 1) * min(dx, dy)
     else:
         return dx + dy
 
 
-def astar(grid, start, end, heuristic='manhattan', allow_diagonal=False):
+def astar(grid, start, end, heuristic="manhattan", allow_diagonal=False):
     """A* 寻路算法 - 启发式最短路径搜索"""
     start = (int(start[0]), int(start[1]))
     end = (int(end[0]), int(end[1]))
@@ -36,7 +35,7 @@ def astar(grid, start, end, heuristic='manhattan', allow_diagonal=False):
     f_score = {start: _heuristic(start, end, heuristic)}
 
     while open_set:
-        current = min(open_set, key=lambda x: f_score.get(x, float('inf')))
+        current = min(open_set, key=lambda x: f_score.get(x, float("inf")))
 
         if current == end:
             return _reconstruct_path(came_from, start, end)
@@ -48,7 +47,7 @@ def astar(grid, start, end, heuristic='manhattan', allow_diagonal=False):
         if allow_diagonal:
             neighbors = [
                 (x+1, y), (x-1, y), (x, y+1), (x, y-1),
-                (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1)
+                (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1),
             ]
         else:
             neighbors = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
@@ -79,7 +78,7 @@ def astar(grid, start, end, heuristic='manhattan', allow_diagonal=False):
     return None
 
 
-def astar_weighted(grid, start, end, weight=1.0, heuristic='manhattan', allow_diagonal=False):
+def astar_weighted(grid, start, end, weight=1.0, heuristic="manhattan", allow_diagonal=False):
     """加权 A*算法 - 通过权重平衡速度和最优性"""
     start = (int(start[0]), int(start[1]))
     end = (int(end[0]), int(end[1]))
@@ -95,7 +94,7 @@ def astar_weighted(grid, start, end, weight=1.0, heuristic='manhattan', allow_di
                _heuristic(start, end, heuristic)}
 
     while open_set:
-        current = min(open_set, key=lambda x: f_score.get(x, float('inf')))
+        current = min(open_set, key=lambda x: f_score.get(x, float("inf")))
 
         if current == end:
             return _reconstruct_path(came_from, start, end)
@@ -107,7 +106,7 @@ def astar_weighted(grid, start, end, weight=1.0, heuristic='manhattan', allow_di
         if allow_diagonal:
             neighbors = [
                 (x+1, y), (x-1, y), (x, y+1), (x, y-1),
-                (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1)
+                (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1),
             ]
         else:
             neighbors = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
@@ -153,7 +152,7 @@ def dijkstra(grid, start, end, weights=None, allow_diagonal=False):
     dist = {start: 0}
 
     while open_set:
-        current = min(open_set, key=lambda x: dist.get(x, float('inf')))
+        current = min(open_set, key=lambda x: dist.get(x, float("inf")))
 
         if current == end:
             return _reconstruct_path(came_from, start, end)
@@ -165,7 +164,7 @@ def dijkstra(grid, start, end, weights=None, allow_diagonal=False):
         if allow_diagonal:
             neighbors = [
                 (x+1, y), (x-1, y), (x, y+1), (x, y-1),
-                (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1)
+                (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1),
             ]
         else:
             neighbors = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
@@ -364,10 +363,10 @@ def _get_cost(cost_grid, pos):
     """获取位置的移动成本（-1表示不可通行，0表示无成本）"""
     x, y = pos
     if y < 0 or y >= len(cost_grid) or x < 0 or x >= len(cost_grid[0]):
-        return float('inf')
+        return float("inf")
     cost = cost_grid[y][x]
     if cost == -1:
-        return float('inf')
+        return float("inf")
     return max(0.0, float(cost))
 
 
@@ -389,7 +388,7 @@ def _reconstruct_path(came_from, start, end):
 
 # ========== 成本网络寻路算法 ==========
 
-def astar_cost(cost_grid, start, end, heuristic='manhattan', allow_diagonal=False):
+def astar_cost(cost_grid, start, end, heuristic="manhattan", allow_diagonal=False):
     """A* 算法 - 支持成本网络（2维矩阵）输入"""
     start = (int(start[0]), int(start[1]))
     end = (int(end[0]), int(end[1]))
@@ -397,7 +396,7 @@ def astar_cost(cost_grid, start, end, heuristic='manhattan', allow_diagonal=Fals
     start_cost = _get_cost(cost_grid, start)
     end_cost = _get_cost(cost_grid, end)
 
-    if start_cost == float('inf') or end_cost == float('inf'):
+    if start_cost == float("inf") or end_cost == float("inf"):
         return None
 
     open_set = [start]
@@ -407,7 +406,7 @@ def astar_cost(cost_grid, start, end, heuristic='manhattan', allow_diagonal=Fals
     f_score = {start: _heuristic(start, end, heuristic)}
 
     while open_set:
-        current = min(open_set, key=lambda x: f_score.get(x, float('inf')))
+        current = min(open_set, key=lambda x: f_score.get(x, float("inf")))
 
         if current == end:
             return _reconstruct_path(came_from, start, end)
@@ -419,14 +418,14 @@ def astar_cost(cost_grid, start, end, heuristic='manhattan', allow_diagonal=Fals
         if allow_diagonal:
             neighbors = [
                 (x+1, y), (x-1, y), (x, y+1), (x, y-1),
-                (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1)
+                (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1),
             ]
         else:
             neighbors = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
 
         for neighbor in neighbors:
             move_cost = _get_cost(cost_grid, neighbor)
-            if move_cost == float('inf'):
+            if move_cost == float("inf"):
                 continue
 
             dx = abs(neighbor[0] - current[0])
@@ -458,7 +457,7 @@ def dijkstra_cost(cost_grid, start, end, allow_diagonal=False):
     start_cost = _get_cost(cost_grid, start)
     end_cost = _get_cost(cost_grid, end)
 
-    if start_cost == float('inf') or end_cost == float('inf'):
+    if start_cost == float("inf") or end_cost == float("inf"):
         return None
 
     open_set = [start]
@@ -466,7 +465,7 @@ def dijkstra_cost(cost_grid, start, end, allow_diagonal=False):
     dist = {start: 0}
 
     while open_set:
-        current = min(open_set, key=lambda x: dist.get(x, float('inf')))
+        current = min(open_set, key=lambda x: dist.get(x, float("inf")))
 
         if current == end:
             return _reconstruct_path(came_from, start, end)
@@ -478,14 +477,14 @@ def dijkstra_cost(cost_grid, start, end, allow_diagonal=False):
         if allow_diagonal:
             neighbors = [
                 (x+1, y), (x-1, y), (x, y+1), (x, y-1),
-                (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1)
+                (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1),
             ]
         else:
             neighbors = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
 
         for neighbor in neighbors:
             move_cost = _get_cost(cost_grid, neighbor)
-            if move_cost == float('inf'):
+            if move_cost == float("inf"):
                 continue
 
             dx = abs(neighbor[0] - current[0])
@@ -652,8 +651,6 @@ def compute_flow_field(grid, goals, allow_diagonal=True, cost_map=None):
             # 地形额外成本
             terrain_cost = 1.0
             if cost_map is not None:
-                key = (nx, ny)
-                # 手动遍历字典（避免依赖 dict.get）
                 for k, v in cost_map:
                     if k[0] == nx and k[1] == ny:
                         terrain_cost = v

@@ -1,6 +1,6 @@
 from ._roll import parse_dice, roll_dice
-from .smath import ln
 from .shashlib import DJB2
+from .smath import ln
 
 
 class Random:
@@ -9,7 +9,7 @@ class Random:
     def __init__(self, seed=None):
         """初始化随机数生成器"""
         if seed is None:
-            if not hasattr(Random, '_seed_counter'):
+            if not hasattr(Random, "_seed_counter"):
                 Random._seed_counter = 0
             else:
                 Random._seed_counter = Random._seed_counter + 1
@@ -35,7 +35,7 @@ class Random:
 
         s = str(seed) + type(seed).__name__
         parts = [str(ord(c) * place) for place, c in enumerate(s, start=1)]
-        big_str = ''.join(parts)
+        big_str = "".join(parts)
 
         result = []
         for m in moduli:
@@ -87,11 +87,11 @@ class Random:
         parsed = parse_dice(expr)
         total = 0
 
-        for part in parsed['parts']:
-            if part['type'] == 'dice':
+        for part in parsed["parts"]:
+            if part["type"] == "dice":
                 total += roll_dice(part, self.randint)
             else:
-                total += part['value']
+                total += part["value"]
 
         return total
 
@@ -212,33 +212,33 @@ class Random:
         length = len(strings) - 1
 
         parts = [
-            ''.join(strings[self.randint(0, length)] for _ in range(8)),
-            ''.join(strings[self.randint(0, length)] for _ in range(4)),
-            '4' + ''.join(strings[self.randint(0, length)] for _ in range(3)),
-            self.choice(('8', '9', 'a', 'b')) +
-            ''.join(strings[self.randint(0, length)] for _ in range(3)),
-            ''.join(strings[self.randint(0, length)] for _ in range(12))
+            "".join(strings[self.randint(0, length)] for _ in range(8)),
+            "".join(strings[self.randint(0, length)] for _ in range(4)),
+            "4" + "".join(strings[self.randint(0, length)] for _ in range(3)),
+            self.choice(("8", "9", "a", "b")) +
+            "".join(strings[self.randint(0, length)] for _ in range(3)),
+            "".join(strings[self.randint(0, length)] for _ in range(12)),
         ]
 
-        return '-'.join(parts)
+        return "-".join(parts)
 
     def uniform(self, a, b):
         """均匀分布随机浮点数"""
         return self.random_float(a, b)
 
-    def random_ascii(self, length=16, charset='ascii'):
+    def random_ascii(self, length=16, charset="ascii"):
         """生成随机 ASCII 字符串"""
         charsets = {
-            'ascii': "".join(chr(i) for i in range(33, 127)),
-            'alnum': "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-            'alpha': "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-            'digit': "0123456789",
-            'hex': "0123456789abcdef",
-            'base64': "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
-            'all': "".join(chr(i) for i in range(256))
+            "ascii": "".join(chr(i) for i in range(33, 127)),
+            "alnum": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+            "alpha": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+            "digit": "0123456789",
+            "hex": "0123456789abcdef",
+            "base64": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+            "all": "".join(chr(i) for i in range(256)),
         }
-        chars = charsets.get(charset, charsets['ascii'])
-        return ''.join(self.choice(chars) for _ in range(length))
+        chars = charsets.get(charset, charsets["ascii"])
+        return "".join(self.choice(chars) for _ in range(length))
 
 
 def random(rng=None):
@@ -276,7 +276,7 @@ def sample(seq, k, rng=None):
     return rng.sample(seq, k)
 
 
-def random_ascii(length=16, charset='ascii', rng=None):
+def random_ascii(length=16, charset="ascii", rng=None):
     if rng is None:
         rng = Random()
     return rng.random_ascii(length, charset)

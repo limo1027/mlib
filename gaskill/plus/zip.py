@@ -95,15 +95,17 @@ def build_huffman_tree(freq):
     return nodes[0] if nodes else None
 
 
-def generate_huffman_codes(node, code='', codes={}):
+def generate_huffman_codes(node, code="", codes=None):
     """生成哈夫曼编码"""
+    if codes is None:
+        codes = {}
     if node.char is not None:
-        codes[node.char] = code if code else '0'
+        codes[node.char] = code if code else "0"
     else:
         if node.left:
-            generate_huffman_codes(node.left, code + '0', codes)
+            generate_huffman_codes(node.left, code + "0", codes)
         if node.right:
-            generate_huffman_codes(node.right, code + '1', codes)
+            generate_huffman_codes(node.right, code + "1", codes)
     return codes
 
 
@@ -132,10 +134,10 @@ def lz77_compress(data, window_size=32768, max_match=258):
                 best_dist = i - j
 
         if best_len >= 3:
-            result.append(('R', best_dist, best_len))
+            result.append(("R", best_dist, best_len))
             i += best_len
         else:
-            result.append(('L', data[i]))
+            result.append(("L", data[i]))
             i += 1
 
     return result
@@ -154,7 +156,7 @@ def huffman_compress(symbols):
     for sym in symbols:
         code = codes[sym]
         for bit in code:
-            writer.write_bit(1 if bit == '1' else 0)
+            writer.write_bit(1 if bit == "1" else 0)
 
     return writer.to_bytes(), codes, len(symbols)
 
@@ -179,7 +181,7 @@ def huffman_decompress(data, codes, expected_count):
             break
         buffer.append(bit)
 
-        code_str = ''.join(str(b) for b in buffer)
+        code_str = "".join(str(b) for b in buffer)
         if code_str in reverse_codes:
             result.append(reverse_codes[code_str])
             buffer = []
@@ -195,9 +197,9 @@ def compress(data):
 
     symbols = []
     for token in tokens:
-        if token[0] == 'R':
+        if token[0] == "R":
             # 把距离和长度打包成一个整数
-            symbols.append(('R', token[1], token[2]))
+            symbols.append(("R", token[1], token[2]))
         else:
             # 直接使用整数，不用包装成元组
             symbols.append(token[1])  # 直接是整数
@@ -214,7 +216,7 @@ def decompress(data, codes, count):
     i = 0
     while i < len(symbols):
         sym = symbols[i]
-        if isinstance(sym, tuple) and sym[0] == 'R':
+        if isinstance(sym, tuple) and sym[0] == "R":
             _, dist, length = sym
             start = len(result) - dist
             for j in range(length):

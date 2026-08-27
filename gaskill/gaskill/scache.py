@@ -10,7 +10,7 @@ class LFUCache:
 
     def __init__(self, max_size: int = 100) -> None:
         self._max_size = max_size
-        self._cache: "dict" = {}
+        self._cache: dict = {}
 
     def get(self, key: object, default: object = None) -> object:
         """获取缓存值"""
@@ -90,8 +90,8 @@ class LRUCache:
     def __init__(self, max_size: int = 100) -> None:
         """初始化 LRU 缓存"""
         self._max_size = max_size
-        self._cache: "dict[str, object]" = {}
-        self._order: "list[object]" = []
+        self._cache: dict[str, object] = {}
+        self._order: list[object] = []
 
     def get(self, key: object, default: object = None) -> object:
         """获取缓存值"""
@@ -193,7 +193,7 @@ class TTLCache:
         """初始化 TTL 缓存"""
         self._max_size = max_size
         self._default_ttl = default_ttl
-        self._cache: "dict[str, CacheEntry]" = {}
+        self._cache: dict[str, CacheEntry] = {}
 
     def get(self, key: object, default: object = None, current_time: int = 0) -> object:
         """获取缓存值"""
@@ -304,7 +304,7 @@ class _MemoizeMethod:
         # 2. 尝试 __slots__
         result = []
         for cls in type(obj).__mro__:
-            slots = getattr(cls, '__slots__', ())
+            slots = getattr(cls, "__slots__", ())
             if slots:
                 for slot in slots:
                     if hasattr(obj, slot):
@@ -342,7 +342,7 @@ class RingBuffer:
     def __init__(self, capacity: int) -> None:
         """初始化环形缓冲区"""
         self._capacity = capacity
-        self._buffer: "list[object]" = [None] * capacity
+        self._buffer: list[object] = [None] * capacity
         self._head = 0
         self._tail = 0
         self._size = 0

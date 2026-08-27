@@ -6,7 +6,7 @@ tau = 2 * pi
 phi = 1.618033988749895
 
 EPSILON = 1e-18
-INF = float('inf')
+INF = float("inf")
 
 
 class MathError(BaseException):
@@ -200,40 +200,40 @@ class Complex:
                 real, imag = self._parse_complex_str(number)
                 return Complex(real, imag)
             except ValueError as e:
-                raise TypeError(f"无法从字符串创建复数: {e}")
+                raise TypeError(f"无法从字符串创建复数: {e}") from e
         raise TypeError(f"Unknown type: {type(number)}")
 
     def _parse_complex_str(self, s):
         """解析复数字符串"""
-        s = s.strip().replace(' ', '')
+        s = s.strip().replace(" ", "")
 
         if not s:
             raise ValueError("空字符串不能解析为复数")
 
         # 特殊值
-        if s in ('i', 'j', '+i', '+j'):
+        if s in ("i", "j", "+i", "+j"):
             return (0, 1)
-        if s in ('-i', '-j'):
+        if s in ("-i", "-j"):
             return (0, -1)
 
         # 找到虚部标记
         imag_pos = -1
         for i, char in enumerate(s):
-            if char in 'ij':
+            if char in "ij":
                 imag_pos = i
                 break
 
         if imag_pos == -1:
             try:
                 return (float(s), 0)
-            except ValueError:
-                raise ValueError(f"无法解析复数字符串: {s}")
+            except ValueError as e:
+                raise ValueError(f"无法解析复数字符串: {s}") from e
 
         # 🔥 修复：找到最后一个运算符的位置
         # 从 imag_pos 往前找 '+' 或 '-'
         op_pos = -1
         for i in range(imag_pos - 1, -1, -1):
-            if s[i] in '+-':
+            if s[i] in "+-":
                 op_pos = i
                 break
 
@@ -246,26 +246,26 @@ class Complex:
             imag_str = s[op_pos:imag_pos]
 
             # 处理实部
-            if real_str == '' or real_str == '+':
+            if real_str == "" or real_str == "+":
                 real = 0.0
-            elif real_str == '-':
+            elif real_str == "-":
                 real = 0.0
             else:
                 try:
                     real = float(real_str)
-                except ValueError:
-                    raise ValueError(f"无法解析实数部分: {real_str}")
+                except ValueError as e:
+                    raise ValueError(f"无法解析实数部分: {real_str}") from e
 
         # 处理虚部系数
-        if imag_str == '' or imag_str == '+':
+        if imag_str == "" or imag_str == "+":
             imag = 1.0
-        elif imag_str == '-':
+        elif imag_str == "-":
             imag = -1.0
         else:
             try:
                 imag = float(imag_str)
-            except ValueError:
-                raise ValueError(f"无法解析虚数部分: {imag_str}")
+            except ValueError as e:
+                raise ValueError(f"无法解析虚数部分: {imag_str}") from e
 
         return (real, imag)
 
@@ -288,7 +288,7 @@ def gcd(a, b):
 
 def log_fast(n, base=10):
     if n <= 0:
-        return -float('inf')
+        return -float("inf")
     k = 1
     while True:
         try:
@@ -412,7 +412,7 @@ def _lanczos_coefficients(g=7):
         12.507343278686905,
         -0.13857109526572012,
         9.9843695780195716e-6,
-        1.5056327351493116e-7
+        1.5056327351493116e-7,
     ]
 
 
@@ -441,7 +441,7 @@ def gamma(z):
     try:
         return sqrt(2 * pi) * (t ** (z - 0.5)) * exp(-t) * sum_p * mul
     except OverflowError:
-        return float('inf')
+        return float("inf")
 
 
 def log_gamma(z):
@@ -473,10 +473,10 @@ def beta(a, b):
 def _log_complex(z):
     """复数自然对数 ln(z)"""
     if not isinstance(z, Complex):
-        if z == float('inf'):
-            return float('inf')
-        if z == float('-inf'):
-            return float('-inf')
+        if z == float("inf"):
+            return float("inf")
+        if z == float("-inf"):
+            return float("-inf")
         if z > 0:
             result = 0
             while z > e:
@@ -555,7 +555,7 @@ def exp(z):
     if isinstance(z, Complex):
         return Complex(
             exp(z.real) * cos(z.imag),   # 实部
-            exp(z.real) * sin(z.imag)    # 虚部
+            exp(z.real) * sin(z.imag),    # 虚部
         )
     return _exp(z)
 
@@ -642,7 +642,7 @@ def tan(x):
     x = float(x)
     c = cos(x)
     if abs(c) < EPSILON:
-        raise UndeFinedError("tan(x) 在 x = {:.6f} 处无定义".format(x))
+        raise UndeFinedError(f"tan(x) 在 x = {x:.6f} 处无定义")
     return float(Frac(sin(x)) / Frac(c))
 
 
@@ -650,7 +650,7 @@ def cot(x):
     """余切函数"""
     s = sin(x)
     if abs(s) < EPSILON:
-        raise UndeFinedError("cot(x) 在 x = {:.6f} 处无定义".format(x))
+        raise UndeFinedError(f"cot(x) 在 x = {x:.6f} 处无定义")
     return cos(x) / s
 
 
@@ -658,7 +658,7 @@ def sec(x):
     """正割函数"""
     c = cos(x)
     if abs(c) < EPSILON:
-        raise UndeFinedError("sec(x) 在 x = {:.6f} 处无定义".format(x))
+        raise UndeFinedError(f"sec(x) 在 x = {x:.6f} 处无定义")
     return 1.0 / c
 
 
@@ -666,7 +666,7 @@ def csc(x):
     """余割函数"""
     s = sin(x)
     if abs(s) < EPSILON:
-        raise UndeFinedError("csc(x) 在 x = {:.6f} 处无定义".format(x))
+        raise UndeFinedError(f"csc(x) 在 x = {x:.6f} 处无定义")
     return 1.0 / s
 
 
@@ -918,7 +918,7 @@ def inv_lerp(a, b, v):
     return (v - a) / (b - a)
 
 
-def map(x, in_min, in_max, out_min, out_max, clamp_result=False):
+def remap(x, in_min, in_max, out_min, out_max, clamp_result=False):
     """将 x 从 [in_min, in_max] 映射到 [out_min, out_max]"""
     if in_max == in_min:
         raise UndeFinedError("in_max 不能等于 in_min")
@@ -1054,7 +1054,7 @@ def distance(p1, p2):
     """两点间距离"""
     if len(p1) != len(p2):
         raise UndeFinedError("点的维度必须相同")
-    return sum((a - b) ** 2 for a, b in zip(p1, p2)) ** 0.5
+    return sum((a - b) ** 2 for a, b in zip(p1, p2, strict=False)) ** 0.5
 
 
 def nearest(value, candidates):
@@ -1076,7 +1076,7 @@ def nearest(value, candidates):
 
 def angle_between(v1, v2):
     """两向量间夹角（弧度）"""
-    dot = sum(a * b for a, b in zip(v1, v2))
+    dot = sum(a * b for a, b in zip(v1, v2, strict=False))
     norm1 = sum(a * a for a in v1) ** 0.5
     norm2 = sum(b * b for b in v2) ** 0.5
     if norm1 < EPSILON or norm2 < EPSILON:
@@ -1110,5 +1110,5 @@ def egcd(a, m):
 def relative_error(self_val, real_val):
     """计算相对误差：|self - real| / |real|"""
     if abs(real_val) < EPSILON:
-        return float('inf')  # 避免除以零
+        return float("inf")  # 避免除以零
     return abs(self_val - real_val) / abs(real_val)

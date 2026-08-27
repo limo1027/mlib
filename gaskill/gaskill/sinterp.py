@@ -1,4 +1,4 @@
-from .smath import clamp, pi, cos, sin, acos, EPSILON
+from .smath import EPSILON, acos, clamp, cos, pi, sin
 
 
 def lerp(a, b, t):

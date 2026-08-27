@@ -1,6 +1,6 @@
-from .svector import vec2
-from .smath import pi, cos, sin, acos, EPSILON, sqrt
 from .scache import memoize
+from .smath import EPSILON, acos, cos, pi, sin, sqrt
+from .svector import vec2
 
 
 class Polygon:
@@ -181,7 +181,7 @@ class Polygon:
             vec2(rect.x, rect.y),
             vec2(rect.x + rect.w, rect.y),
             vec2(rect.x + rect.w, rect.y + rect.h),
-            vec2(rect.x, rect.y + rect.h)
+            vec2(rect.x, rect.y + rect.h),
         ])
         return self.collide_polygon(rect_poly)
 
@@ -255,7 +255,7 @@ class Polygon:
             dy = v.y - center.y
             new_vertices.append(vec2(
                 center.x + dx * c - dy * s,
-                center.y + dx * s + dy * c
+                center.y + dx * s + dy * c,
             ))
         return Polygon(new_vertices)
 
@@ -350,7 +350,7 @@ class Rect:
                 vec2(self.x, self.y),
                 vec2(self.x + self.w, self.y),
                 vec2(self.x + self.w, self.y + self.h),
-                vec2(self.x, self.y + self.h)
+                vec2(self.x, self.y + self.h),
             ]
 
         cx, cy = self.x + self.w/2, self.y + self.h/2
@@ -362,7 +362,7 @@ class Rect:
                  cy + (-half_w)*s + (-half_h)*c),
             vec2(cx + (half_w)*c - (-half_h)*s, cy + (half_w)*s + (-half_h)*c),
             vec2(cx + (half_w)*c - (half_h)*s, cy + (half_w)*s + (half_h)*c),
-            vec2(cx + (-half_w)*c - (half_h)*s, cy + (-half_w)*s + (half_h)*c)
+            vec2(cx + (-half_w)*c - (half_h)*s, cy + (-half_w)*s + (half_h)*c),
         ]
 
     @memoize(method=True)
@@ -513,7 +513,7 @@ class Rect:
             self.y - dh/2,
             self.w + dw,
             self.h + dh,
-            self._angle
+            self._angle,
         )
 
     def expand(self, *args):
@@ -526,7 +526,7 @@ class Rect:
             arg = args[0]
             if isinstance(arg, Rect):
                 verts.extend(arg._rotated_verts())
-            elif hasattr(arg, 'x') and hasattr(arg, 'y'):
+            elif hasattr(arg, "x") and hasattr(arg, "y"):
                 verts.append(vec2(arg.x, arg.y))
             else:
                 verts.append(vec2(arg[0], arg[1]))
@@ -561,7 +561,7 @@ class Rect:
             world_cy - new_h/2,
             new_w,
             new_h,
-            self._angle
+            self._angle,
         )
 
     def move(self, dx, dy):
@@ -685,7 +685,7 @@ class Line2:
 
         return vec2(
             self.p1.x + t * ab.x,
-            self.p1.y + t * ab.y
+            self.p1.y + t * ab.y,
         )
 
     def collide_point(self, x, y=None, tolerance=0.1):
@@ -725,8 +725,8 @@ class Line2:
 
 def raycast_rect(ray_origin, ray_dir, rect):
     """射线与矩形碰撞检测（返回碰撞点、距离、法线、入射角）"""
-    t_min = -float('inf')
-    t_max = float('inf')
+    t_min = -float("inf")
+    t_max = float("inf")
     hit_normal = None
 
     for i in range(2):
@@ -754,7 +754,7 @@ def raycast_rect(ray_origin, ray_dir, rect):
         t = t_min if t_min > 0 else t_max
         hit_point = vec2(
             ray_origin.x + t * ray_dir.x,
-            ray_origin.y + t * ray_dir.y
+            ray_origin.y + t * ray_dir.y,
         )
 
         ray_dir_norm = ray_dir.normalize()
@@ -771,7 +771,7 @@ def reflect(vector, normal):
     dot = vector.x * normal.x + vector.y * normal.y
     return vec2(
         vector.x - 2 * dot * normal.x,
-        vector.y - 2 * dot * normal.y
+        vector.y - 2 * dot * normal.y,
     )
 
 

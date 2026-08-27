@@ -185,8 +185,8 @@ class StateTransition:
             self._transitions[from_state] = []
 
         self._transitions[from_state].append({
-            'to': to_state,
-            'condition': condition
+            "to": to_state,
+            "condition": condition,
         })
 
     def get_transition(self, from_state, context=None):
@@ -195,9 +195,9 @@ class StateTransition:
             return None
 
         for transition in self._transitions[from_state]:
-            condition = transition['condition']
+            condition = transition["condition"]
             if condition is None or condition(context):
-                return transition['to']
+                return transition["to"]
 
         return None
 

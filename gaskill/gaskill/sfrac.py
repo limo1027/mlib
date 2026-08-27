@@ -1,4 +1,4 @@
-from .smath import gcd, log_fast, EPSILON
+from .smath import EPSILON, gcd, log_fast
 
 
 def _is_int(floater):
@@ -69,7 +69,7 @@ class Frac:
 
         # 小数部分
         result = f"{whole}."
-        for i in range(precision):
+        for _i in range(precision):
             remainder *= 10
             digit = remainder // self.d
             result += str(digit)
@@ -107,7 +107,7 @@ class Frac:
         # 不能开尽
         raise UserWarning(
             f"({self})^{other} 不是有理数，"
-            f"请使用近似值: {float(self) ** (p/q)}"
+            f"请使用近似值: {float(self) ** (p/q)}",
         )
 
     def __rpow__(self, other):
@@ -142,7 +142,7 @@ class Frac:
             return NotImplemented
         return Frac(
             self.n * other.d + other.n * self.d,
-            self.d * other.d
+            self.d * other.d,
         )
 
     def __sub__(self, other):
@@ -152,7 +152,7 @@ class Frac:
             return NotImplemented
         return Frac(
             self.n * other.d - other.n * self.d,
-            self.d * other.d
+            self.d * other.d,
         )
 
     def __mul__(self, other):
@@ -246,35 +246,35 @@ class Frac:
 
         spec = spec.strip()
 
-        if spec.endswith('%'):
+        if spec.endswith("%"):
             length = spec[:-1].replace(".", "")
             length = int(length) if length else 0
             return self.as_percent(length)
 
-        if spec == 'l' or spec == 'latex':
+        if spec == "l" or spec == "latex":
             if self.d == 1:
                 return str(self.n)
             return f"\\frac{{{self.n}}}{{{self.d}}}"
 
-        if spec == 'm' or spec == 'mixed':
+        if spec == "m" or spec == "mixed":
             if abs(self.n) >= self.d:
                 whole = self.n // self.d
                 remainder = abs(self.n % self.d)
                 if remainder == 0:
                     return str(whole)
-                sign = '-' if self.n < 0 else ''
+                sign = "-" if self.n < 0 else ""
                 return f"{sign}{abs(whole)} + {remainder}/{self.d}"
             return str(self)
 
-        if spec == '/' or spec == 'frac':
+        if spec == "/" or spec == "frac":
             return f"{self.n}/{self.d}"
 
-        if spec.endswith('f'):
+        if spec.endswith("f"):
             length = spec[:-1].replace(".", "")
             precision = int(length) if length else 6
             return f"{self.n / self.d:.{precision}f}"
 
-        if spec.endswith('e') or spec.endswith('E'):
+        if spec.endswith("e") or spec.endswith("E"):
             precision = int(spec[:-1].replace(".")) if spec[:-1] else 6
             return f"{self.n / self.d:.{precision}{spec[-1]}}"
 
@@ -337,7 +337,7 @@ class Frac:
             pass
 
         # 科学计数法情况：不再返回嵌套的 Frac，而是直接返回浮点数的字符串
-        if not hasattr(self, '_exp'):
+        if not hasattr(self, "_exp"):
             # 强制计算科学计数法表示
             str(self)  # 这会设置 self._exp 和 self._mantissa
 
@@ -346,7 +346,7 @@ class Frac:
         if isinstance(mantissa, Frac):
             # 转为浮点数或分数形式
             mantissa_str = f"{mantissa.n / mantissa.d:.10f}".rstrip(
-                '0').rstrip('.')
+                "0").rstrip(".")
         else:
             mantissa_str = str(mantissa)
 
@@ -371,8 +371,8 @@ class Frac:
                 # 转成整数处理 (1.23 -> 123/100)
                 s = str(other)
 
-                if 'e' not in s.lower():  # 暂不考虑科学计数法
-                    parts = s.split('.')
+                if "e" not in s.lower():  # 暂不考虑科学计数法
+                    parts = s.split(".")
                     if len(parts) == 2:
                         whole, dec = parts
                         n = int(whole + dec)
@@ -380,12 +380,12 @@ class Frac:
                         return Frac(n, d)
                 else:
                     # 直接解析
-                    coeff, exp = s.lower().split('e')
+                    coeff, exp = s.lower().split("e")
                     exp = int(exp)
 
                     # 把系数转成整数分子分母
-                    if '.' in coeff:
-                        whole, dec = coeff.split('.')
+                    if "." in coeff:
+                        whole, dec = coeff.split(".")
                         n = int(whole + dec)
                         d = 10 ** len(dec)
                     else:

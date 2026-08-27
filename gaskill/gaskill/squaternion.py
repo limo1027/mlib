@@ -1,7 +1,8 @@
-from .smath import sqrt, cos, sin, pi, acos, EPSILON
-from .svector import vec3
-from .srandom import Random
+from .smath import EPSILON, acos, cos, pi, sin, sqrt
 from .smatrix import Matrix
+from .srandom import Random
+from .svector import vec3
+
 
 class Quaternion:
     """四元数类 - 用于 3D 旋转"""
@@ -42,7 +43,7 @@ class Quaternion:
             self.w + other.w,
             self.x + other.x,
             self.y + other.y,
-            self.z + other.z
+            self.z + other.z,
         )
 
     def __radd__(self, other):
@@ -57,7 +58,7 @@ class Quaternion:
             self.w - other.w,
             self.x - other.x,
             self.y - other.y,
-            self.z - other.z
+            self.z - other.z,
         )
 
     def __rsub__(self, other):
@@ -73,7 +74,7 @@ class Quaternion:
                 self.w * other,
                 self.x * other,
                 self.y * other,
-                self.z * other
+                self.z * other,
             )
 
         if isinstance(other, Quaternion):
@@ -176,7 +177,7 @@ class Quaternion:
         axis = vec3(
             q.x / sin_half_angle,
             q.y / sin_half_angle,
-            q.z / sin_half_angle
+            q.z / sin_half_angle,
         ).normalize()
 
         return axis, angle
@@ -190,7 +191,7 @@ class Quaternion:
         return Matrix([
             [1 - 2*y*y - 2*z*z,     2*x*y - 2*z*w,     2*x*z + 2*y*w],
             [2*x*y + 2*z*w,     1 - 2*x*x - 2*z*z,     2*y*z - 2*x*w],
-            [2*x*z - 2*y*w,     2*y*z + 2*x*w,     1 - 2*x*x - 2*y*y]
+            [2*x*z - 2*y*w,     2*y*z + 2*x*w,     1 - 2*x*x - 2*y*y],
         ])
 
     def rotate_vector(self, v):
@@ -220,7 +221,7 @@ class Quaternion:
             cos(half_angle),
             axis.x * sin_half,
             axis.y * sin_half,
-            axis.z * sin_half
+            axis.z * sin_half,
         )
 
     @staticmethod
@@ -358,7 +359,7 @@ def integrate_angular_velocity(q, omega, dt):
         cos(half_omega_dt),
         omega.x / omega_norm * sin(half_omega_dt),
         omega.y / omega_norm * sin(half_omega_dt),
-        omega.z / omega_norm * sin(half_omega_dt)
+        omega.z / omega_norm * sin(half_omega_dt),
     )
 
     return (dq * q).normalize()

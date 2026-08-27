@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-from gaskill import Frac
-from gaskill import comb, prime_factors as factorize
-from gaskill import superscript
+from gaskill import Frac, comb, superscript
+from gaskill import prime_factors as factorize
 
 
 class Radical:
@@ -470,7 +468,7 @@ class Radical:
             return self
 
         result = self
-        for i in range(exp-1):
+        for _i in range(exp-1):
             result *= self
 
         return result
@@ -510,7 +508,7 @@ class Radical:
                 s = self._to_str(x)
                 if i == 0:
                     parts.append(s)
-                elif s.startswith('-'):
+                elif s.startswith("-"):
                     parts.append(" - " + s[1:])
                 else:
                     parts.append(" + " + s)

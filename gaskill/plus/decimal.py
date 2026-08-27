@@ -1,4 +1,5 @@
 from gaskill import factorial
+
 prec = 50
 
 
@@ -55,7 +56,7 @@ def dec_pi():
     _prec = prec + 10
 
     # 常数: 12 / 640320^(3/2)
-    C = Decimal(640320) ** Decimal('1.5')
+    C = Decimal(640320) ** Decimal("1.5")
     constant = Decimal(12) / C
 
     series_sum = Decimal(0)
@@ -256,12 +257,12 @@ class Decimal:
             return
 
         if isinstance(value, str):
-            if '.' in value:
-                if value[0] == '-':
-                    int_part, frac_part = value[1:].split('.')
+            if "." in value:
+                if value[0] == "-":
+                    int_part, frac_part = value[1:].split(".")
                     self.value = -int(int_part + frac_part)
                 else:
-                    int_part, frac_part = value.split('.')
+                    int_part, frac_part = value.split(".")
                     self.value = int(int_part + frac_part)
                 self.fr_len = len(frac_part)
             else:
@@ -280,14 +281,14 @@ class Decimal:
                 self.fr_len = 0
                 return
 
-            if str(value) in ('inf', '-inf', 'nan'):
+            if str(value) in ("inf", "-inf", "nan"):
                 raise ValueError("Cannot convert NaN or Infinity to Decimal")
 
             try:
                 str_val = str(value)
-                if '.' in str_val:
-                    int_part, frac_part = str_val.split('.')
-                    frac_part = frac_part.rstrip('0')
+                if "." in str_val:
+                    int_part, frac_part = str_val.split(".")
+                    frac_part = frac_part.rstrip("0")
                     if frac_part:
                         self.fr_len = len(frac_part)
                         self.value = int(
@@ -414,6 +415,8 @@ class Decimal:
         result.fr_len = self.fr_len
         result.value = self.value
         neg = False
+        if value < 0:
+            raise ValueError("round不能有负数")
         try:
             if result.fr_len > value:
                 string_value = str(result.value).zfill(
@@ -435,7 +438,7 @@ class Decimal:
                         result.value += 1
                 result.fr_len = value
 
-        except:
+        except IndexError:  # 捕获在第 425 行的int(string_value[value])在value超出的时候
             return self
         else:
             result._simplify()
@@ -482,11 +485,11 @@ class Decimal:
             remainder = remainder % v2
             frac_digits.append(str(digit))
 
-        while frac_digits and frac_digits[-1] == '0':
+        while frac_digits and frac_digits[-1] == "0":
             frac_digits.pop()
 
         if frac_digits:
-            frac_str = ''.join(frac_digits)
+            frac_str = "".join(frac_digits)
             frac_len = len(frac_str)
             result_value = int_part * (10 ** frac_len) + int(frac_str)
             if sign < 0:
@@ -573,7 +576,7 @@ class Decimal:
         neg = self.value < 0
 
         if self.fr_len >= len(result):
-            result = ['0'] * (self.fr_len - len(result) + 1) + result
+            result = ["0"] * (self.fr_len - len(result) + 1) + result
 
         result.insert(-self.fr_len, ".")
 

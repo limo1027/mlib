@@ -1,6 +1,7 @@
-from .smath import floor, sin, cos, pi, sqrt
 from .sinterp import lerp
+from .smath import cos, floor, pi, sin, sqrt
 from .srandom import Random
+
 
 class PerlinNoise:
     """Perlin 噪声 - 平滑连续的梯度噪声，适合地形"""

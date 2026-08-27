@@ -29,9 +29,9 @@ class SGTsaver:
             return str(value)
         elif isinstance(value, (list, tuple)):
             return "[" + ",".join(f'"{v}"' for v in value) + "]"
-        elif hasattr(value, 'x') and hasattr(value, 'y') and hasattr(value, 'z'):
+        elif hasattr(value, "x") and hasattr(value, "y") and hasattr(value, "z"):
             return f"({value.x},{value.y},{value.z})"
-        elif hasattr(value, 'x') and hasattr(value, 'y'):
+        elif hasattr(value, "x") and hasattr(value, "y"):
             return f"({value.x},{value.y})"
         elif isinstance(value, dict):
             # 递归处理嵌套字典
@@ -51,7 +51,7 @@ class SGTsaver:
             return None, pos
 
         # 跳过空格
-        while pos < len(s) and s[pos] == ' ':
+        while pos < len(s) and s[pos] == " ":
             pos += 1
 
         if pos >= len(s):
@@ -71,20 +71,20 @@ class SGTsaver:
             return value, pos
 
         # 字典
-        if ch == '{':
+        if ch == "{":
             return self._parse_dict_from_pos(s, pos)
 
         # 列表
-        if ch == '[':
+        if ch == "[":
             return self._parse_list_from_pos(s, pos)
 
         # 元组
-        if ch == '(':
+        if ch == "(":
             return self._parse_tuple_from_pos(s, pos)
 
         # 数字、布尔、None 等
         start = pos
-        while pos < len(s) and s[pos] not in (',', '}', ']', ')'):
+        while pos < len(s) and s[pos] not in (",", "}", "]", ")"):
             pos += 1
         token = s[start:pos].strip()
 
@@ -106,7 +106,7 @@ class SGTsaver:
 
     def _parse_dict_from_pos(self, s, pos):
         """从位置 pos 开始解析字典，返回 (dict, new_pos)"""
-        if pos >= len(s) or s[pos] != '{':
+        if pos >= len(s) or s[pos] != "{":
             return None, pos
 
         pos += 1  # 跳过 '{'
@@ -114,14 +114,14 @@ class SGTsaver:
 
         while pos < len(s):
             # 跳过空格
-            while pos < len(s) and s[pos] == ' ':
+            while pos < len(s) and s[pos] == " ":
                 pos += 1
 
             if pos >= len(s):
                 break
 
             # 遇到 '}' 结束
-            if s[pos] == '}':
+            if s[pos] == "}":
                 pos += 1
                 break
 
@@ -131,9 +131,9 @@ class SGTsaver:
                 break
 
             # 跳过 ':'
-            while pos < len(s) and s[pos] == ' ':
+            while pos < len(s) and s[pos] == " ":
                 pos += 1
-            if pos < len(s) and s[pos] == ':':
+            if pos < len(s) and s[pos] == ":":
                 pos += 1
 
             # 解析 value
@@ -142,67 +142,67 @@ class SGTsaver:
             result[key] = val
 
             # 跳过逗号
-            while pos < len(s) and s[pos] == ' ':
+            while pos < len(s) and s[pos] == " ":
                 pos += 1
-            if pos < len(s) and s[pos] == ',':
+            if pos < len(s) and s[pos] == ",":
                 pos += 1
 
         return result, pos
 
     def _parse_list_from_pos(self, s, pos):
         """从位置 pos 开始解析列表，返回 (list, new_pos)"""
-        if pos >= len(s) or s[pos] != '[':
+        if pos >= len(s) or s[pos] != "[":
             return None, pos
 
         pos += 1
         result = []
 
         while pos < len(s):
-            while pos < len(s) and s[pos] == ' ':
+            while pos < len(s) and s[pos] == " ":
                 pos += 1
 
             if pos >= len(s):
                 break
 
-            if s[pos] == ']':
+            if s[pos] == "]":
                 pos += 1
                 break
 
             val, pos = self._parse_value(s, pos)
             result.append(val)
 
-            while pos < len(s) and s[pos] == ' ':
+            while pos < len(s) and s[pos] == " ":
                 pos += 1
-            if pos < len(s) and s[pos] == ',':
+            if pos < len(s) and s[pos] == ",":
                 pos += 1
 
         return result, pos
 
     def _parse_tuple_from_pos(self, s, pos):
         """从位置 pos 开始解析元组，返回 (tuple, new_pos)"""
-        if pos >= len(s) or s[pos] != '(':
+        if pos >= len(s) or s[pos] != "(":
             return None, pos
 
         pos += 1
         result = []
 
         while pos < len(s):
-            while pos < len(s) and s[pos] == ' ':
+            while pos < len(s) and s[pos] == " ":
                 pos += 1
 
             if pos >= len(s):
                 break
 
-            if s[pos] == ')':
+            if s[pos] == ")":
                 pos += 1
                 break
 
             val, pos = self._parse_value(s, pos)
             result.append(val)
 
-            while pos < len(s) and s[pos] == ' ':
+            while pos < len(s) and s[pos] == " ":
                 pos += 1
-            if pos < len(s) and s[pos] == ',':
+            if pos < len(s) and s[pos] == ",":
                 pos += 1
 
         return tuple(result), pos
@@ -230,14 +230,14 @@ class SGTsaver:
 
         if use_hash:
             content = "\n".join(
-                [line for line in lines if line.startswith('#')])
+                [line for line in lines if line.startswith("#")])
             hash_value = self.hasher.hash(content)
-            if hasattr(hash_value, '__iter__') and not isinstance(hash_value, (str, int)):
-                hash_value = ''.join(str(h) for h in hash_value)
+            if hasattr(hash_value, "__iter__") and not isinstance(hash_value, (str, int)):
+                hash_value = "".join(str(h) for h in hash_value)
             lines.append(f"hash={hash_value}")
 
         if isinstance(filename, str):
-            with open(filename, 'w') as f:
+            with open(filename, "w") as f:
                 f.write("\n".join(lines))
         else:
             filename.write("\n".join(lines))
@@ -249,7 +249,7 @@ class SGTsaver:
         self.saver_dicts = {}
 
         if isinstance(filename, str):
-            with open(filename, 'r') as f:
+            with open(filename) as f:
                 lines = f.readlines()
         else:
             lines = filename.read().split("\n")
@@ -261,16 +261,16 @@ class SGTsaver:
             line = line.strip()
             if line.startswith("hash"):
                 saved_hash = line[5:]
-            if not line.startswith('#'):
+            if not line.startswith("#"):
                 continue
 
             hash_lines.append(line)
             line = line[1:]
 
-            if '=' not in line:
+            if "=" not in line:
                 continue
 
-            key, value = line.split('=', 1)
+            key, value = line.split("=", 1)
             key = key.strip()
             value = value.strip()
 
@@ -283,7 +283,7 @@ class SGTsaver:
 
         content = "\n".join([line for line in hash_lines])
         calc_hash = self.hasher.hash(content)
-        calc_hash = ''.join(str(h) for h in calc_hash)
+        calc_hash = "".join(str(h) for h in calc_hash)
 
         if str(calc_hash) != str(saved_hash):
             raise ValueError("文件被修改过")

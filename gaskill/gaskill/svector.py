@@ -1,4 +1,4 @@
-from .smath import sqrt, clamp, cos, sin, acos, atan2, EPSILON
+from .smath import EPSILON, acos, atan2, clamp, cos, sin, sqrt
 
 
 class vec2:
@@ -123,7 +123,7 @@ class vec2:
         """线性插值"""
         return vec2(
             self.x + (other.x - self.x) * t,
-            self.y + (other.y - self.y) * t
+            self.y + (other.y - self.y) * t,
         )
     def rotate_around(self, center, angle):
         """绕某点旋转 angle 弧度"""
@@ -132,7 +132,7 @@ class vec2:
         c, s = cos(angle), sin(angle)
         return vec2(
             center.x + dx * c - dy * s,
-            center.y + dx * s + dy * c
+            center.y + dx * s + dy * c,
         )
 
     def reflect(self, normal):
@@ -157,7 +157,7 @@ class vec2:
         c, s = cos(angle), sin(angle)
         return vec2(
             self.x * c - self.y * s,
-            self.x * s + self.y * c
+            self.x * s + self.y * c,
         )
 
     def angle(self):
@@ -320,7 +320,7 @@ class vec3:
         return vec3(
             center.x + rotated.x,
             center.y + rotated.y,
-            center.z + rotated.z
+            center.z + rotated.z,
         )
 
     def dot(self, other):
@@ -332,7 +332,7 @@ class vec3:
         return vec3(
             self.y * other.z - self.z * other.y,
             self.z * other.x - self.x * other.z,
-            self.x * other.y - self.y * other.x
+            self.x * other.y - self.y * other.x,
         )
 
     def length(self):
@@ -367,7 +367,7 @@ class vec3:
         return vec3(
             self.x + (other.x - self.x) * t,
             self.y + (other.y - self.y) * t,
-            self.z + (other.z - self.z) * t
+            self.z + (other.z - self.z) * t,
         )
 
     def reflect(self, normal):
@@ -393,7 +393,7 @@ class vec3:
         return vec3(
             self.x,
             self.y * c - self.z * s,
-            self.y * s + self.z * c
+            self.y * s + self.z * c,
         )
 
     def rotate_y(self, angle):
@@ -402,7 +402,7 @@ class vec3:
         return vec3(
             self.x * c + self.z * s,
             self.y,
-            -self.x * s + self.z * c
+            -self.x * s + self.z * c,
         )
 
     def rotate_z(self, angle):
@@ -411,7 +411,7 @@ class vec3:
         return vec3(
             self.x * c - self.y * s,
             self.x * s + self.y * c,
-            self.z
+            self.z,
         )
 
     def scale(self, sx, sy=None, sz=None):
@@ -579,7 +579,7 @@ class vec4:
         return vec3(
             self.y * other.z - self.z * other.y,
             self.z * other.x - self.x * other.z,
-            self.x * other.y - self.y * other.x
+            self.x * other.y - self.y * other.x,
         )
 
     def length(self):
@@ -615,7 +615,7 @@ class vec4:
             self.x + (other.x - self.x) * t,
             self.y + (other.y - self.y) * t,
             self.z + (other.z - self.z) * t,
-            self.w + (other.w - self.w) * t
+            self.w + (other.w - self.w) * t,
         )
 
     def reflect(self, normal):
@@ -655,7 +655,7 @@ class vec4:
             int(clamp(self.x * 255, 0, 255)),
             int(clamp(self.y * 255, 0, 255)),
             int(clamp(self.z * 255, 0, 255)),
-            int(clamp(self.w * 255, 0, 255))
+            int(clamp(self.w * 255, 0, 255)),
         )
 
     def to_rgb(self):
@@ -663,7 +663,7 @@ class vec4:
         return (
             int(clamp(self.x * 255, 0, 255)),
             int(clamp(self.y * 255, 0, 255)),
-            int(clamp(self.z * 255, 0, 255))
+            int(clamp(self.z * 255, 0, 255)),
         )
 
     @staticmethod

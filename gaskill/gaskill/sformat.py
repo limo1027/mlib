@@ -19,7 +19,7 @@ def superscript(n):
 
 def visual_len(t):
     t = str(t)
-    return sum(2 if '\u4e00' <= c <= '\u9fff' else 1 for c in t)
+    return sum(2 if "\u4e00" <= c <= "\u9fff" else 1 for c in t)
 
 
 def center(s, width):
@@ -29,11 +29,13 @@ def center(s, width):
     padding = width - s_len
     left = padding // 2
     right = padding - left
-    return ' ' * left + s + ' ' * right
+    return " " * left + s + " " * right
 
 
-def table(data, border_style="unicode", shows={"left": 5, "right": 5, "top": 5, "bottom": 5}):
+def table(data, border_style="unicode", shows=None):
     """精美表格"""
+    if shows is None:
+        shows = {"left": 5, "right": 5, "top": 5, "bottom": 5}
     shows = {"left": shows["left"], "right": shows["right"],
              "top": shows["top"]-1, "bottom": shows["bottom"]+1}
     if not data:
@@ -53,26 +55,26 @@ def table(data, border_style="unicode", shows={"left": 5, "right": 5, "top": 5, 
             "top_left": "┌", "top_mid": "┬", "top_right": "┐",
             "mid_left": "├", "mid_mid": "┼", "mid_right": "┤",
             "bottom_left": "└", "bottom_mid": "┴", "bottom_right": "┘",
-            "hline": "─", "vline": "│", "header_mid": "┼"
+            "hline": "─", "vline": "│", "header_mid": "┼",
         },
         "ascii": {
             "top_left": "+", "top_mid": "+", "top_right": "+",
             "mid_left": "+", "mid_mid": "+", "mid_right": "+",
             "bottom_left": "+", "bottom_mid": "+", "bottom_right": "+",
-            "hline": "-", "vline": "|", "header_mid": "+"
+            "hline": "-", "vline": "|", "header_mid": "+",
         },
         "double": {
             "top_left": "╔", "top_mid": "╦", "top_right": "╗",
             "mid_left": "╠", "mid_mid": "╬", "mid_right": "╣",
             "bottom_left": "╚", "bottom_mid": "╩", "bottom_right": "╝",
-            "hline": "═", "vline": "║", "header_mid": "╬"
+            "hline": "═", "vline": "║", "header_mid": "╬",
         },
         "rounded": {
             "top_left": "╭", "top_mid": "┬", "top_right": "╮",
             "mid_left": "├", "mid_mid": "┼", "mid_right": "┤",
             "bottom_left": "╰", "bottom_mid": "┴", "bottom_right": "╯",
-            "hline": "─", "vline": "│", "header_mid": "┼"
-        }
+            "hline": "─", "vline": "│", "header_mid": "┼",
+        },
     }
 
     s = styles.get(border_style, styles["unicode"])
@@ -135,8 +137,8 @@ def ordinal(number):
     """数字转序数字符串"""
     try:
         number = int(number)
-    except ValueError:
-        raise ValueError(f"不支持的类型: {type(number)}")
+    except ValueError as e:
+        raise ValueError(f"不支持的类型: {type(number)}") from e
 
     # 先处理 11,12,13
     if 10 <= number % 100 <= 20:
@@ -165,10 +167,10 @@ def to_poly(expr, use_star=False):
     terms = []
     current = ""
     for char in expr:
-        if char == '+' and current:
+        if char == "+" and current:
             terms.append(current)
             current = ""
-        elif char == '-' and current:
+        elif char == "-" and current:
             terms.append(current)
             current = "-"
         else:
@@ -189,18 +191,18 @@ def to_poly(expr, use_star=False):
                 break
 
         if var_start == -1:
-            coeff = float(term) if '.' in term else int(term)
+            coeff = float(term) if "." in term else int(term)
             parsed_terms[""] = parsed_terms.get("", 0) + coeff
             continue
 
         # 系数部分
         coeff_str = term[:var_start]
-        if not coeff_str or coeff_str == '+':
+        if not coeff_str or coeff_str == "+":
             coeff = 1
-        elif coeff_str == '-':
+        elif coeff_str == "-":
             coeff = -1
         else:
-            coeff = float(coeff_str) if '.' in coeff_str else int(coeff_str)
+            coeff = float(coeff_str) if "." in coeff_str else int(coeff_str)
 
         # 变量部分
         var_part = term[var_start:]
@@ -250,7 +252,7 @@ def to_poly(expr, use_star=False):
 
     result = result_terms[0]
     for term in result_terms[1:]:
-        if term.startswith('-'):
+        if term.startswith("-"):
             result += term
         else:
             result += "+" + term
@@ -332,12 +334,12 @@ def english_to_number(s):
         "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9,
         "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13,
         "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17,
-        "eighteen": 18, "nineteen": 19
+        "eighteen": 18, "nineteen": 19,
     }
 
     tens = {
         "twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
-        "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90
+        "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90,
     }
 
     scales = {
@@ -352,7 +354,7 @@ def english_to_number(s):
         "septillion": 10**24,
         "octillion": 10**27,
         "nonillion": 10**30,
-        "decillion": 10**33
+        "decillion": 10**33,
     }
 
     words = s.split()
@@ -406,7 +408,7 @@ def encode(string):
         length_param = len(code_str)
         codes.append(str(length_param))
         codes.append(code_str)
-    return ''.join(codes)
+    return "".join(codes)
 
 
 def decode(encoded):
@@ -445,7 +447,7 @@ def decode(encoded):
         return result
 
 
-def time_format(seconds, mode='auto'):
+def time_format(seconds, mode="auto"):
     if seconds < 0:
         sign = "-"
         seconds = -seconds
@@ -457,10 +459,10 @@ def time_format(seconds, mode='auto'):
     minutes = (seconds % 3600) // 60
     secs = seconds % 60
 
-    if mode == 'full' or mode == 'colons':
+    if mode == "full" or mode == "colons":
         return f"{sign}{hours:02d}:{minutes:02d}:{secs:02d}"
 
-    if mode == 'short':
+    if mode == "short":
         parts = []
         if hours > 0:
             parts.append(f"{hours}h")
@@ -470,7 +472,7 @@ def time_format(seconds, mode='auto'):
             parts.append(f"{secs}s")
         return sign + " ".join(parts)
 
-    if mode == 'words':
+    if mode == "words":
         parts = []
         if hours == 1:
             parts.append("1 hour")
@@ -509,7 +511,7 @@ def time_format(seconds, mode='auto'):
         return sign + f"{days}d {hours}h"
 
 
-def file_size(size_bytes, mode='auto', decimal=False):
+def file_size(size_bytes, mode="auto", decimal=False):
     """将字节数转换为可读的文件大小格式"""
     if size_bytes < 0:
         sign = "-"
@@ -517,36 +519,36 @@ def file_size(size_bytes, mode='auto', decimal=False):
     else:
         sign = ""
 
-    if mode == 'bits':
+    if mode == "bits":
         size_bits = size_bytes * 8
-        units = ['b', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb']
+        units = ["b", "Kb", "Mb", "Gb", "Tb", "Pb", "Eb", "Zb", "Yb"]
         divisor = 1000
         size_val = size_bits
-    elif mode == 'si':
-        units = ['B', 'KB', 'MB(ten)', 'GB(ten)', 'TB(ten)',
-                 'PB(ten)', 'EB(ten)', 'ZB(ten)', 'YB(ten)']
+    elif mode == "si":
+        units = ["B", "KB", "MB(ten)", "GB(ten)", "TB(ten)",
+                 "PB(ten)", "EB(ten)", "ZB(ten)", "YB(ten)"]
         divisor = 1000
         size_val = size_bytes
-    elif mode == 'binary':
-        units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+    elif mode == "binary":
+        units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
         divisor = 1024
         size_val = size_bytes
-    elif mode == 'short':
-        units = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
+    elif mode == "short":
+        units = ["B", "K", "M", "G", "T", "P", "E", "Z", "Y"]
         divisor = 1024
         size_val = size_bytes
-    elif mode == 'full':
-        units = ['bytes', 'kilobytes', 'megabytes', 'gigabytes', 'terabytes',
-                 'petabytes', 'exabytes', 'zettabytes', 'yottabytes']
+    elif mode == "full":
+        units = ["bytes", "kilobytes", "megabytes", "gigabytes", "terabytes",
+                 "petabytes", "exabytes", "zettabytes", "yottabytes"]
         divisor = 1024
         size_val = size_bytes
     else:  # auto
-        return file_size(size_bytes, 'binary' if decimal else 'si', decimal)
+        return file_size(size_bytes, "binary" if decimal else "si", decimal)
 
     if size_val == 0:
-        if mode == 'short':
+        if mode == "short":
             return sign + "0"
-        elif mode == 'full':
+        elif mode == "full":
             return sign + "0 bytes"
         else:
             return sign + f"0 {units[0]}"
@@ -559,7 +561,7 @@ def file_size(size_bytes, mode='auto', decimal=False):
 
     # 确定小数位数
     if decimal is False:
-        if mode == 'short':
+        if mode == "short":
             dec = 0
         else:
             dec = 0 if size_val >= 10 else (1 if size_val >= 1 else 2)
@@ -571,20 +573,20 @@ def file_size(size_bytes, mode='auto', decimal=False):
         val_str = str(int(size_val))
     else:
         format_str = f"{{:.{dec}f}}"
-        val_str = format_str.format(size_val).rstrip('0').rstrip('.')
+        val_str = format_str.format(size_val).rstrip("0").rstrip(".")
 
     # 根据不同模式返回格式
-    if mode == 'short':
+    if mode == "short":
         return sign + val_str + units[unit_index]
-    elif mode == 'full':
+    elif mode == "full":
         unit_name = units[unit_index]
-        if val_str == '1' and unit_name != 'bytes':
+        if val_str == "1" and unit_name != "bytes":
             unit_name = unit_name[:-1]  # 单数形式
         return sign + val_str + " " + unit_name
-    elif mode == 'bits' and unit_index > 0:
+    elif mode == "bits" and unit_index > 0:
         # 比特单位通常用小写 b
         unit = units[unit_index]
-        if unit.endswith('b'):
+        if unit.endswith("b"):
             unit = unit[0].upper() + unit[1] if len(unit) > 1 else unit
         return sign + val_str + " " + unit
     else:

@@ -1,8 +1,8 @@
-from .srandom import Random
-from .sformat import encode, decode
+from .sformat import decode, encode
 from .sfrac import Frac
-from .smath import gcd, is_prime_fast, egcd as _modinv
-from .type import Iterable
+from .smath import egcd as _modinv
+from .smath import gcd, is_prime_fast
+from .srandom import Random
 
 
 def rsa_generate_keys(bits: int = 512):
@@ -24,23 +24,23 @@ def rsa_generate_keys(bits: int = 512):
     d = _modinv(e, phi)
 
     return {
-        'e': e, 'd': d, 'n': n,
-        'p': p, 'q': q, 'phi': phi
+        "e": e, "d": d, "n": n,
+        "p": p, "q": q, "phi": phi,
     }
 
 
 def rsa_encrypt(message: str, public_key: "dict[str, int]") -> int:
     """RSA 加密"""
     m = int(encode(message))
-    n = public_key['n']
-    e = public_key['e']
+    n = public_key["n"]
+    e = public_key["e"]
     return pow(m, e, n)
 
 
 def rsa_decrypt(cipher: int, private_key: "dict[str, int]") -> str:
     """RSA 解密"""
-    n = private_key['n']
-    d = private_key['d']
+    n = private_key["n"]
+    d = private_key["d"]
     m = pow(cipher, d, n)
     return decode(str(m))
 
@@ -75,7 +75,7 @@ def simple_encrypt(value: str, key: str = None, second: "list[int] | None" = Non
     for i in range(4):
         hash_value = Random().hash(hash_value, hash_list)
         hash_list = [i for i in hash_value if not i == 0]
-        hash_value = int(''.join(str(h) for h in hash_value))
+        hash_value = int("".join(str(h) for h in hash_value))
         keys.append(real_key ^ (hash_value << 1))
 
     for i in range(10000):
@@ -102,7 +102,7 @@ def simple_decrypt(cipher: int, key: str, IV: str, second: "list[int] | None" = 
     for i in range(4):
         hash_value = Random().hash(hash_value, hash_list)
         hash_list = [i for i in hash_value if not i == 0]
-        hash_value = int(''.join(str(h) for h in hash_value))
+        hash_value = int("".join(str(h) for h in hash_value))
         keys.append(real_key ^ (hash_value << 1))
 
     for i in range(10000):
@@ -139,7 +139,7 @@ def share_secret(plaintext: str, keys: "list[object]", threshold: int):
     rng = Random()
 
     for key in keys:
-        x = int(''.join(str(h) for h in rng.hash(key)))
+        x = int("".join(str(h) for h in rng.hash(key)))
         y = 0
         for i, coeff in enumerate(coeffs):
             y += coeff * (x ** i)
@@ -157,11 +157,11 @@ def recover_secret(shares_dict: "dict[object, int]", threshold):
     points = []
     rng = Random()
     for key, y in list(shares_dict.items())[:threshold]:
-        x = int(''.join(str(h) for h in rng.hash(key)))
+        x = int("".join(str(h) for h in rng.hash(key)))
         points.append((x, y))
 
     A = []
-    for x, y in points:
+    for x, _ in points:
         row = [x**i for i in range(threshold)]
         A.append(row)
 
@@ -170,7 +170,7 @@ def recover_secret(shares_dict: "dict[object, int]", threshold):
     while coeffs and coeffs[-1] == 71114112:
         coeffs.pop()
 
-    encoded = ''.join(str(c)[1:] for c in coeffs)
+    encoded = "".join(str(c)[1:] for c in coeffs)
     return decode(encoded)
 
 

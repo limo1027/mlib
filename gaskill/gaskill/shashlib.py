@@ -108,8 +108,8 @@ def compress_block(block_bytes, h_vals):
         w.append(
             add_mod32(
                 add_mod32(gamma1(w[t-2]), w[t-7]),
-                add_mod32(gamma0(w[t-15]), w[t-16])
-            )
+                add_mod32(gamma0(w[t-15]), w[t-16]),
+            ),
         )
 
     a, b, c, d = h_vals[0], h_vals[1], h_vals[2], h_vals[3]
@@ -120,11 +120,11 @@ def compress_block(block_bytes, h_vals):
             add_mod32(
                 add_mod32(
                     add_mod32(h, sigma1(e)),
-                    ch(e, f, g)
+                    ch(e, f, g),
                 ),
-                K[t]
+                K[t],
             ),
-            w[t]
+            w[t],
         )
         t2 = add_mod32(sigma0(a), maj(a, b, c))
 
@@ -164,12 +164,12 @@ def sha256(message: bytes) -> str:
         h_vals = compress_block(block, h_vals)
 
     # 拼接最终摘要
-    result = ''
+    result = ""
     for val in h_vals:
         # 转 8 位十六进制（补零）
         hex_str = hex(val)[2:]  # 去掉 '0x'
         if len(hex_str) < 8:
-            hex_str = '0' * (8 - len(hex_str)) + hex_str
+            hex_str = "0" * (8 - len(hex_str)) + hex_str
         result += hex_str
 
     return result
@@ -177,6 +177,6 @@ def sha256(message: bytes) -> str:
 
 def DJB2(s: str, capacity: int = 0xffffffff) -> int:
     h = 5381
-    for byte in s.encode('utf-8'):
+    for byte in s.encode("utf-8"):
         h = ((h * 33) + byte) % capacity
     return h % capacity

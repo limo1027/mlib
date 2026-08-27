@@ -1,39 +1,38 @@
-from .svector import vec2, vec3
 from .smath import EPSILON
-
+from .svector import vec2, vec3
 
 # ========== 辅助函数 ==========
 
 def _is_vec(p):
     """检查是否是向量类型"""
-    return hasattr(p, 'x') and hasattr(p, 'y')
+    return hasattr(p, "x") and hasattr(p, "y")
 
 
 def _lerp(p0, p1, t):
     """线性插值"""
     if _is_vec(p0):
-        if hasattr(p0, 'z'):  # vec3
+        if hasattr(p0, "z"):  # vec3
             return vec3(
                 (1-t) * p0.x + t * p1.x,
                 (1-t) * p0.y + t * p1.y,
-                (1-t) * p0.z + t * p1.z
+                (1-t) * p0.z + t * p1.z,
             )
         else:  # vec2
             return vec2(
                 (1-t) * p0.x + t * p1.x,
-                (1-t) * p0.y + t * p1.y
+                (1-t) * p0.y + t * p1.y,
             )
     else:  # 元组
         if len(p0) == 3:
             return (
                 (1-t) * p0[0] + t * p1[0],
                 (1-t) * p0[1] + t * p1[1],
-                (1-t) * p0[2] + t * p1[2]
+                (1-t) * p0[2] + t * p1[2],
             )
         else:
             return (
                 (1-t) * p0[0] + t * p1[0],
-                (1-t) * p0[1] + t * p1[1]
+                (1-t) * p0[1] + t * p1[1],
             )
 
 
@@ -45,12 +44,12 @@ def quadratic_bezier(p0: "vec2|vec3|tuple[float, float, float|None]", p1, p2, t)
             return vec3(
                 (1-t)**2 * p0.x + 2*(1-t)*t * p1.x + t**2 * p2.x,
                 (1-t)**2 * p0.y + 2*(1-t)*t * p1.y + t**2 * p2.y,
-                (1-t)**2 * p0.z + 2*(1-t)*t * p1.z + t**2 * p2.z
+                (1-t)**2 * p0.z + 2*(1-t)*t * p1.z + t**2 * p2.z,
             )
         else:  # vec2
             return vec2(
                 (1-t)**2 * p0.x + 2*(1-t)*t * p1.x + t**2 * p2.x,
-                (1-t)**2 * p0.y + 2*(1-t)*t * p1.y + t**2 * p2.y
+                (1-t)**2 * p0.y + 2*(1-t)*t * p1.y + t**2 * p2.y,
             )
     else:  # 元组
         return tuple(
@@ -62,21 +61,21 @@ def quadratic_bezier(p0: "vec2|vec3|tuple[float, float, float|None]", p1, p2, t)
 def cubic_bezier(p0, p1, p2, p3, t):
     """三次贝塞尔曲线"""
     if _is_vec(p0):
-        if hasattr(p0, 'z'):  # vec3
+        if hasattr(p0, "z"):  # vec3
             return vec3(
                 (1-t)**3 * p0.x + 3*(1-t)**2*t * p1.x +
                 3*(1-t)*t**2 * p2.x + t**3 * p3.x,
                 (1-t)**3 * p0.y + 3*(1-t)**2*t * p1.y +
                 3*(1-t)*t**2 * p2.y + t**3 * p3.y,
                 (1-t)**3 * p0.z + 3*(1-t)**2*t *
-                p1.z + 3*(1-t)*t**2 * p2.z + t**3 * p3.z
+                p1.z + 3*(1-t)*t**2 * p2.z + t**3 * p3.z,
             )
         else:  # vec2
             return vec2(
                 (1-t)**3 * p0.x + 3*(1-t)**2*t * p1.x +
                 3*(1-t)*t**2 * p2.x + t**3 * p3.x,
                 (1-t)**3 * p0.y + 3*(1-t)**2*t *
-                p1.y + 3*(1-t)*t**2 * p2.y + t**3 * p3.y
+                p1.y + 3*(1-t)*t**2 * p2.y + t**3 * p3.y,
             )
     else:  # 元组
         return tuple(
@@ -114,22 +113,22 @@ def bezier_derivative(points, t, order=1):
 
     if n == 0:
         if _is_vec(points[0]):
-            return type(points[0])(0, 0, 0) if hasattr(points[0], 'z') else type(points[0])(0, 0)
+            return type(points[0])(0, 0, 0) if hasattr(points[0], "z") else type(points[0])(0, 0)
         return tuple(0 for _ in points[0])
 
     new_points = []
     for i in range(n):
         if _is_vec(points[i]):
-            if hasattr(points[i], 'z'):
+            if hasattr(points[i], "z"):
                 new_points.append(vec3(
                     n * (points[i+1].x - points[i].x),
                     n * (points[i+1].y - points[i].y),
-                    n * (points[i+1].z - points[i].z)
+                    n * (points[i+1].z - points[i].z),
                 ))
             else:
                 new_points.append(vec2(
                     n * (points[i+1].x - points[i].x),
-                    n * (points[i+1].y - points[i].y)
+                    n * (points[i+1].y - points[i].y),
                 ))
         else:
             new_points.append(tuple(
@@ -166,7 +165,7 @@ def b_spline(control_points, knots, degree, t):
     n = len(control_points) - 1
 
     if _is_vec(control_points[0]):
-        if hasattr(control_points[0], 'z'):
+        if hasattr(control_points[0], "z"):
             result = vec3(0, 0, 0)
         else:
             result = vec2(0, 0)
@@ -177,16 +176,16 @@ def b_spline(control_points, knots, degree, t):
         basis = _cox_de_boor(knots, i, degree, t)
 
         if _is_vec(result):
-            if hasattr(result, 'z'):
+            if hasattr(result, "z"):
                 result = vec3(
                     result.x + control_points[i].x * basis,
                     result.y + control_points[i].y * basis,
-                    result.z + control_points[i].z * basis
+                    result.z + control_points[i].z * basis,
                 )
             else:
                 result = vec2(
                     result.x + control_points[i].x * basis,
-                    result.y + control_points[i].y * basis
+                    result.y + control_points[i].y * basis,
                 )
         else:
             result = tuple(
@@ -251,31 +250,31 @@ def nurbs(control_points, weights, knots, degree, t):
 
         if _is_vec(control_points[0]):
             weighted_point = None
-            if hasattr(control_points[0], 'z'):
+            if hasattr(control_points[0], "z"):
                 weighted_point = vec3(
                     control_points[i].x * w * basis,
                     control_points[i].y * w * basis,
-                    control_points[i].z * w * basis
+                    control_points[i].z * w * basis,
                 )
             else:
                 weighted_point = vec2(
                     control_points[i].x * w * basis,
-                    control_points[i].y * w * basis
+                    control_points[i].y * w * basis,
                 )
 
             if numerator is None:
                 numerator = weighted_point
             else:
-                if hasattr(numerator, 'z'):
+                if hasattr(numerator, "z"):
                     numerator = vec3(
                         numerator.x + weighted_point.x,
                         numerator.y + weighted_point.y,
-                        numerator.z + weighted_point.z
+                        numerator.z + weighted_point.z,
                     )
                 else:
                     numerator = vec2(
                         numerator.x + weighted_point.x,
-                        numerator.y + weighted_point.y
+                        numerator.y + weighted_point.y,
                     )
         else:
             if numerator is None:
@@ -295,16 +294,16 @@ def nurbs(control_points, weights, knots, degree, t):
         return control_points[0] if control_points else None
 
     if _is_vec(numerator):
-        if hasattr(numerator, 'z'):
+        if hasattr(numerator, "z"):
             return vec3(
                 numerator.x / denominator,
                 numerator.y / denominator,
-                numerator.z / denominator
+                numerator.z / denominator,
             )
         else:
             return vec2(
                 numerator.x / denominator,
-                numerator.y / denominator
+                numerator.y / denominator,
             )
     else:
         return tuple(
@@ -326,7 +325,7 @@ def bezier_length(points, steps=100):
     for i in range(len(path)-1):
         p0, p1 = path[i], path[i+1]
         if _is_vec(p0):
-            if hasattr(p0, 'z'):
+            if hasattr(p0, "z"):
                 dx = p1.x - p0.x
                 dy = p1.y - p0.y
                 dz = p1.z - p0.z
@@ -352,7 +351,7 @@ def curve_length(points_func, steps=100):
     for i in range(len(path)-1):
         p0, p1 = path[i], path[i+1]
         if _is_vec(p0):
-            if hasattr(p0, 'z'):
+            if hasattr(p0, "z"):
                 dx = p1.x - p0.x
                 dy = p1.y - p0.y
                 dz = p1.z - p0.z

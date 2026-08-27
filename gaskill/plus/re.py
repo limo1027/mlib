@@ -21,8 +21,8 @@ class TokenType:
 
 
 class Token:
-    def __init__(self, type, value):
-        self.type = type
+    def __init__(self, type_, value):
+        self.type = type_
         self.value = value
 
 
@@ -39,67 +39,67 @@ class Lexer:
         n = len(pattern)
         while i < n:
             c = pattern[i]
-            if c == '\\' and i + 1 < n:
+            if c == "\\" and i + 1 < n:
                 i += 1
                 escaped = pattern[i]
-                if escaped in 'wdDsS':
+                if escaped in "wdDsS":
                     self.tokens.append(Token(TokenType.ESCAPE_SEQ, escaped))
                 else:
                     self.tokens.append(Token(TokenType.CHAR, escaped))
                 i += 1
-            elif c == '.':
-                self.tokens.append(Token(TokenType.DOT, '.'))
+            elif c == ".":
+                self.tokens.append(Token(TokenType.DOT, "."))
                 i += 1
-            elif c == '*':
-                self.tokens.append(Token(TokenType.STAR, '*'))
+            elif c == "*":
+                self.tokens.append(Token(TokenType.STAR, "*"))
                 i += 1
-            elif c == '+':
-                self.tokens.append(Token(TokenType.PLUS, '+'))
+            elif c == "+":
+                self.tokens.append(Token(TokenType.PLUS, "+"))
                 i += 1
-            elif c == '?':
-                self.tokens.append(Token(TokenType.QUESTION, '?'))
+            elif c == "?":
+                self.tokens.append(Token(TokenType.QUESTION, "?"))
                 i += 1
-            elif c == '(':
-                self.tokens.append(Token(TokenType.LPAREN, '('))
+            elif c == "(":
+                self.tokens.append(Token(TokenType.LPAREN, "("))
                 i += 1
-            elif c == ')':
-                self.tokens.append(Token(TokenType.RPAREN, ')'))
+            elif c == ")":
+                self.tokens.append(Token(TokenType.RPAREN, ")"))
                 i += 1
-            elif c == '|':
-                self.tokens.append(Token(TokenType.PIPE, '|'))
+            elif c == "|":
+                self.tokens.append(Token(TokenType.PIPE, "|"))
                 i += 1
-            elif c == '^':
-                self.tokens.append(Token(TokenType.CARET, '^'))
+            elif c == "^":
+                self.tokens.append(Token(TokenType.CARET, "^"))
                 i += 1
-            elif c == '$':
-                self.tokens.append(Token(TokenType.DOLLAR, '$'))
+            elif c == "$":
+                self.tokens.append(Token(TokenType.DOLLAR, "$"))
                 i += 1
-            elif c == '[':
-                self.tokens.append(Token(TokenType.LBRACKET, '['))
+            elif c == "[":
+                self.tokens.append(Token(TokenType.LBRACKET, "["))
                 i += 1
-            elif c == ']':
-                self.tokens.append(Token(TokenType.RBRACKET, ']'))
+            elif c == "]":
+                self.tokens.append(Token(TokenType.RBRACKET, "]"))
                 i += 1
-            elif c == '{':
-                self.tokens.append(Token(TokenType.LBRACE, '{'))
+            elif c == "{":
+                self.tokens.append(Token(TokenType.LBRACE, "{"))
                 i += 1
-            elif c == '}':
-                self.tokens.append(Token(TokenType.RBRACE, '}'))
+            elif c == "}":
+                self.tokens.append(Token(TokenType.RBRACE, "}"))
                 i += 1
-            elif c == ',':
-                self.tokens.append(Token(TokenType.COMMA, ','))
+            elif c == ",":
+                self.tokens.append(Token(TokenType.COMMA, ","))
                 i += 1
             else:
                 self.tokens.append(Token(TokenType.CHAR, c))
                 i += 1
-        self.tokens.append(Token(TokenType.EOF, ''))
+        self.tokens.append(Token(TokenType.EOF, ""))
 
 
 # ==================== 2. 解析器 ====================
 
 class ASTNode:
-    def __init__(self, type, value=None, children=None):
-        self.type = type
+    def __init__(self, type_, value=None, children=None):
+        self.type = type_
         self.value = value
         self.children = children if children is not None else []
 
@@ -134,7 +134,7 @@ class Parser:
         if self.peek() and self.peek().type == TokenType.PIPE:
             self.next()
             right = self._parse_union()
-            return ASTNode('union', None, [left, right])
+            return ASTNode("union", None, [left, right])
         return left
 
     def _parse_concat(self):
@@ -151,10 +151,10 @@ class Parser:
             else:
                 break
         if len(nodes) == 0:
-            return ASTNode('char', '')
+            return ASTNode("char", "")
         if len(nodes) == 1:
             return nodes[0]
-        return ASTNode('concat', None, nodes)
+        return ASTNode("concat", None, nodes)
 
     def _parse_atom(self):
         tok = self.peek()
@@ -163,13 +163,13 @@ class Parser:
         node = None
         if tok.type == TokenType.CHAR:
             self.next()
-            node = ASTNode('char', tok.value)
+            node = ASTNode("char", tok.value)
         elif tok.type == TokenType.DOT:
             self.next()
-            node = ASTNode('dot', '.')
+            node = ASTNode("dot", ".")
         elif tok.type == TokenType.ESCAPE_SEQ:
             self.next()
-            node = ASTNode('escape_seq', tok.value)
+            node = ASTNode("escape_seq", tok.value)
         elif tok.type == TokenType.LPAREN:
             self.next()
             node = self._parse_union()
@@ -187,7 +187,7 @@ class Parser:
         self.next()  # consume '['
         chars = []
         negated = False
-        if self.peek() and self.peek().value == '^':
+        if self.peek() and self.peek().value == "^":
             self.next()
             negated = True
         while True:
@@ -198,7 +198,7 @@ class Parser:
                 self.next()
                 start = tok.value
                 # 检查范围：当前是 '-' 且下一个是 CHAR？
-                if self.peek() and self.peek().value == '-' and self.peek().type == TokenType.CHAR:
+                if self.peek() and self.peek().value == "-" and self.peek().type == TokenType.CHAR:
                     self.next()  # consume '-'
                     if self.peek() and self.peek().type == TokenType.CHAR:
                         end_tok = self.next()
@@ -213,7 +213,7 @@ class Parser:
                                 chars.append(chr(code))
                     else:
                         chars.append(start)
-                        chars.append('-')
+                        chars.append("-")
                 else:
                     chars.append(start)
             elif tok.type == TokenType.ESCAPE_SEQ:
@@ -227,32 +227,32 @@ class Parser:
                 chars.append(tok.value)
         if self.peek() and self.peek().type == TokenType.RBRACKET:
             self.next()
-        return ASTNode('char_class', {'negated': negated, 'chars': chars})
+        return ASTNode("char_class", {"negated": negated, "chars": chars})
 
     def _expand_escape_seq(self, seq):
-        if seq == 'w':
+        if seq == "w":
             chars = []
-            for code in range(ord('A'), ord('Z')+1):
+            for code in range(ord("A"), ord("Z")+1):
                 chars.append(chr(code))
-            for code in range(ord('a'), ord('z')+1):
+            for code in range(ord("a"), ord("z")+1):
                 chars.append(chr(code))
-            for code in range(ord('0'), ord('9')+1):
+            for code in range(ord("0"), ord("9")+1):
                 chars.append(chr(code))
-            chars.append('_')
+            chars.append("_")
             return chars
-        elif seq == 'W':
-            return ['__NON_WORD__']
-        elif seq == 'd':
+        elif seq == "W":
+            return ["__NON_WORD__"]
+        elif seq == "d":
             chars = []
-            for code in range(ord('0'), ord('9')+1):
+            for code in range(ord("0"), ord("9")+1):
                 chars.append(chr(code))
             return chars
-        elif seq == 'D':
-            return ['__NON_DIGIT__']
-        elif seq == 's':
-            return [' ', '\t', '\n', '\r', '\v', '\f']
-        elif seq == 'S':
-            return ['__NON_SPACE__']
+        elif seq == "D":
+            return ["__NON_DIGIT__"]
+        elif seq == "s":
+            return [" ", "\t", "\n", "\r", "\v", "\f"]
+        elif seq == "S":
+            return ["__NON_SPACE__"]
         return []
 
     def _parse_quantifier(self, node):
@@ -261,13 +261,13 @@ class Parser:
             return node
         if tok.type == TokenType.STAR:
             self.next()
-            return ASTNode('repeat', {'min': 0, 'max': None}, [node])
+            return ASTNode("repeat", {"min": 0, "max": None}, [node])
         elif tok.type == TokenType.PLUS:
             self.next()
-            return ASTNode('repeat', {'min': 1, 'max': None}, [node])
+            return ASTNode("repeat", {"min": 1, "max": None}, [node])
         elif tok.type == TokenType.QUESTION:
             self.next()
-            return ASTNode('repeat', {'min': 0, 'max': 1}, [node])
+            return ASTNode("repeat", {"min": 0, "max": 1}, [node])
         elif tok.type == TokenType.LBRACE:
             self.next()
             return self._parse_brace_quantifier(node)
@@ -277,7 +277,7 @@ class Parser:
         tok = self.peek()
         if not tok or tok.type != TokenType.CHAR:
             return node
-        num1 = ''
+        num1 = ""
         while self.peek() and self.peek().type == TokenType.CHAR and self.peek().value.isdigit():
             num1 += self.next().value
         if not num1:
@@ -287,7 +287,7 @@ class Parser:
         if self.peek() and self.peek().type == TokenType.COMMA:
             self.next()
             if self.peek() and self.peek().type == TokenType.CHAR and self.peek().value.isdigit():
-                num2 = ''
+                num2 = ""
                 while self.peek() and self.peek().type == TokenType.CHAR and self.peek().value.isdigit():
                     num2 += self.next().value
                 max_count = int(num2)
@@ -297,7 +297,7 @@ class Parser:
             self.next()
         else:
             return node
-        return ASTNode('repeat', {'min': min_count, 'max': max_count}, [node])
+        return ASTNode("repeat", {"min": min_count, "max": max_count}, [node])
 
 
 # ==================== 3. 匹配引擎 ====================
@@ -307,65 +307,65 @@ class Matcher:
         self.ast = ast
         self.has_start_anchor = has_start_anchor
         self.has_end_anchor = has_end_anchor
-        self.text = ''
+        self.text = ""
 
     def _is_word_char(self, char):
-        return ('a' <= char <= 'z') or ('A' <= char <= 'Z') or ('0' <= char <= '9') or char == '_'
+        return ("a" <= char <= "z") or ("A" <= char <= "Z") or ("0" <= char <= "9") or char == "_"
 
     def _is_digit(self, char):
-        return '0' <= char <= '9'
+        return "0" <= char <= "9"
 
     def _is_space(self, char):
-        return char in ' \t\n\r\v\f'
+        return char in " \t\n\r\v\f"
 
     def _match_atom(self, node, pos):
         if pos > len(self.text):
             return -1
-        if node.type == 'char':
+        if node.type == "char":
             if pos < len(self.text) and self.text[pos] == node.value:
                 return pos + 1
             return -1
-        elif node.type == 'dot':
+        elif node.type == "dot":
             if pos < len(self.text):
                 return pos + 1
             return -1
-        elif node.type == 'escape_seq':
+        elif node.type == "escape_seq":
             if pos >= len(self.text):
                 return -1
             char = self.text[pos]
             seq = node.value
-            if seq == 'w' and self._is_word_char(char):
+            if seq == "w" and self._is_word_char(char):
                 return pos + 1
-            elif seq == 'W' and not self._is_word_char(char):
+            elif seq == "W" and not self._is_word_char(char):
                 return pos + 1
-            elif seq == 'd' and self._is_digit(char):
+            elif seq == "d" and self._is_digit(char):
                 return pos + 1
-            elif seq == 'D' and not self._is_digit(char):
+            elif seq == "D" and not self._is_digit(char):
                 return pos + 1
-            elif seq == 's' and self._is_space(char):
+            elif seq == "s" and self._is_space(char):
                 return pos + 1
-            elif seq == 'S' and not self._is_space(char):
+            elif seq == "S" and not self._is_space(char):
                 return pos + 1
             return -1
-        elif node.type == 'char_class':
+        elif node.type == "char_class":
             if pos >= len(self.text):
                 return -1
             char = self.text[pos]
             data = node.value
-            chars = data['chars']
-            negated = data['negated']
+            chars = data["chars"]
+            negated = data["negated"]
             matched = False
             for elem in chars:
                 if isinstance(elem, str):
-                    if elem == '__NON_WORD__':
+                    if elem == "__NON_WORD__":
                         if not self._is_word_char(char):
                             matched = True
                             break
-                    elif elem == '__NON_DIGIT__':
+                    elif elem == "__NON_DIGIT__":
                         if not self._is_digit(char):
                             matched = True
                             break
-                    elif elem == '__NON_SPACE__':
+                    elif elem == "__NON_SPACE__":
                         if not self._is_space(char):
                             matched = True
                             break
@@ -381,11 +381,11 @@ class Matcher:
 
     def _match(self, node, pos):
         """返回所有可能的结束位置列表（从长到短排序）"""
-        if node.type in ('char', 'dot', 'escape_seq', 'char_class'):
+        if node.type in ("char", "dot", "escape_seq", "char_class"):
             result = self._match_atom(node, pos)
             return [result] if result != -1 else []
 
-        elif node.type == 'concat':
+        elif node.type == "concat":
             results = [pos]
             for child in node.children:
                 new_results = []
@@ -404,7 +404,7 @@ class Matcher:
                     unique.append(p)
             return unique
 
-        elif node.type == 'union':
+        elif node.type == "union":
             left = self._match(node.children[0], pos)
             right = self._match(node.children[1], pos)
             merged = left + right
@@ -416,10 +416,10 @@ class Matcher:
                     unique.append(p)
             return unique
 
-        elif node.type == 'repeat':
+        elif node.type == "repeat":
             data = node.value
-            min_count = data['min']
-            max_count = data['max']
+            min_count = data["min"]
+            max_count = data["max"]
             child = node.children[0]
 
             # 使用迭代方式生成所有可能的重复次数

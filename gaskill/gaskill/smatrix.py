@@ -1,4 +1,4 @@
-from .smath import sqrt, sin, cos, EPSILON
+from .smath import EPSILON, cos, sin, sqrt
 
 
 class Matrix:
@@ -431,7 +431,7 @@ def rotation_matrix_x(theta):
     return Matrix([
         [1, 0, 0],
         [0, c, -s],
-        [0, s, c]
+        [0, s, c],
     ])
 
 
@@ -441,7 +441,7 @@ def rotation_matrix_y(theta):
     return Matrix([
         [c, 0, s],
         [0, 1, 0],
-        [-s, 0, c]
+        [-s, 0, c],
     ])
 
 
@@ -451,7 +451,7 @@ def rotation_matrix_z(theta):
     return Matrix([
         [c, -s, 0],
         [s, c, 0],
-        [0, 0, 1]
+        [0, 0, 1],
     ])
 
 
@@ -471,7 +471,7 @@ def scaling_matrix_3d(sx, sy=None, sz=None):
     return Matrix([
         [sx, 0, 0],
         [0, sy, 0],
-        [0, 0, sz]
+        [0, 0, sz],
     ])
 
 
@@ -480,7 +480,7 @@ def translation_matrix_2d(tx, ty):
     return Matrix([
         [1, 0, tx],
         [0, 1, ty],
-        [0, 0, 1]
+        [0, 0, 1],
     ])
 
 
@@ -490,7 +490,7 @@ def translation_matrix_3d(tx, ty, tz):
         [1, 0, 0, tx],
         [0, 1, 0, ty],
         [0, 0, 1, tz],
-        [0, 0, 0, 1]
+        [0, 0, 0, 1],
     ])
 
 

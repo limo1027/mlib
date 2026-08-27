@@ -428,7 +428,6 @@ class ReadingSQL:
 
         result = []
         for i in range(rs, re):
-            row = self._data[i]          # ← 直接读矩阵
             for j in range(cs, ce):
                 result.append((i, j))     # 位置列表
         return SearchResult(positions=result)
@@ -525,7 +524,7 @@ def readingsql(data=None):
 # ============================================================
 
 __all__ = [
-    'ReadingSQL',
-    'readingsql',
-    'SearchResult',
+    "ReadingSQL",
+    "readingsql",
+    "SearchResult",
 ]

@@ -1,5 +1,5 @@
-from gaskill import Rect
-from gaskill import ABC, abstractmethod
+from gaskill import ABC, Rect, abstractmethod
+
 _render_handlers = {}
 
 
@@ -18,7 +18,7 @@ def render_all(components):
         cmds = comp.render()
         if cmds:
             for cmd in cmds:
-                handler = _render_handlers.get(cmd['type'])
+                handler = _render_handlers.get(cmd["type"])
                 if handler:
                     handler(cmd)
                 all_cmds.append(cmd)
@@ -43,7 +43,7 @@ class UI(ABC):
 
     def config(self, **kwargs):
         for k, v in kwargs.items():
-            if k in ('x', 'y', 'width', 'height'):
+            if k in ("x", "y", "width", "height"):
                 setattr(self.rect, k, v)
             elif hasattr(self, k):
                 setattr(self, k, v)
@@ -62,9 +62,9 @@ class Label:
     def __init__(self, x, y, width, height, text="", **kwargs):
         self.rect = Rect(x, y, width, height)
         self.text = text
-        self.color = kwargs.get('color', (240, 240, 240))
-        self.text_color = kwargs.get('text_color', (0, 0, 0))
-        self.align = kwargs.get('align', 'left')  # left/center/right
+        self.color = kwargs.get("color", (240, 240, 240))
+        self.text_color = kwargs.get("text_color", (0, 0, 0))
+        self.align = kwargs.get("align", "left")  # left/center/right
         self.visible = True
 
     def render(self):
@@ -76,24 +76,24 @@ class Label:
 
         # 背景
         cmds.append({
-            'type': 'rect',
-            'rect': self.rect,  # 直接传Rect对象
-            'color': self.color
+            "type": "rect",
+            "rect": self.rect,  # 直接传Rect对象
+            "color": self.color,
         })
 
         # 文字位置计算
         text_x = self.rect.x + 5  # 默认 left
-        if self.align == 'center':
+        if self.align == "center":
             text_x = self.rect.x + (self.rect.w - len(self.text) * 8) // 2
-        elif self.align == 'right':
+        elif self.align == "right":
             text_x = self.rect.right - len(self.text) * 8 - 5
 
         cmds.append({
-            'type': 'text',
-            'text': self.text,
-            'x': text_x,
-            'y': self.rect.y + (self.rect.h - 12) // 2,
-            'color': self.text_color
+            "type": "text",
+            "text": self.text,
+            "x": text_x,
+            "y": self.rect.y + (self.rect.h - 12) // 2,
+            "color": self.text_color,
         })
 
         return cmds
@@ -103,7 +103,7 @@ class Label:
 
     def config(self, **kwargs):
         for k, v in kwargs.items():
-            if k in ('x', 'y', 'width', 'height'):
+            if k in ("x", "y", "width", "height"):
                 setattr(self.rect, k, v)
             elif hasattr(self, k):
                 setattr(self, k, v)
@@ -119,12 +119,12 @@ class Button:
     def __init__(self, x, y, width, height, text="", **kwargs):
         self.rect = Rect(x, y, width, height)
         self.text = text
-        self.color = kwargs.get('color', (200, 200, 200))
-        self.hover_color = kwargs.get('hover_color', (220, 220, 220))
-        self.press_color = kwargs.get('press_color', (160, 160, 160))
-        self.text_color = kwargs.get('text_color', (0, 0, 0))
-        self.border = kwargs.get('border', True)
-        self.radius = kwargs.get('radius', 3)
+        self.color = kwargs.get("color", (200, 200, 200))
+        self.hover_color = kwargs.get("hover_color", (220, 220, 220))
+        self.press_color = kwargs.get("press_color", (160, 160, 160))
+        self.text_color = kwargs.get("text_color", (0, 0, 0))
+        self.border = kwargs.get("border", True)
+        self.radius = kwargs.get("radius", 3)
         self.visible = True
 
         # 状态
@@ -148,30 +148,30 @@ class Button:
 
         # 背景
         cmds.append({
-            'type': 'rect',
-            'rect': self.rect,
-            'color': bg,
-            'radius': self.radius
+            "type": "rect",
+            "rect": self.rect,
+            "color": bg,
+            "radius": self.radius,
         })
 
         # 边框
         if self.border:
             cmds.append({
-                'type': 'outline',
-                'rect': self.rect,
-                'color': (100, 100, 100),
-                'radius': self.radius
+                "type": "outline",
+                "rect": self.rect,
+                "color": (100, 100, 100),
+                "radius": self.radius,
             })
 
         # 文字（居中）
         text_x = self.rect.x + (self.rect.w - len(self.text) * 8) // 2
         text_y = self.rect.y + (self.rect.h - 12) // 2
         cmds.append({
-            'type': 'text',
-            'text': self.text,
-            'x': text_x,
-            'y': text_y,
-            'color': self.text_color
+            "type": "text",
+            "text": self.text,
+            "x": text_x,
+            "y": text_y,
+            "color": self.text_color,
         })
 
         return cmds
@@ -183,7 +183,7 @@ class Button:
     def config(self, **kwargs):
         """设置组件参数"""
         for k, v in kwargs.items():
-            if k in ('x', 'y', 'width', 'height'):
+            if k in ("x", "y", "width", "height"):
                 setattr(self.rect, k, v)
             elif hasattr(self, k):
                 setattr(self, k, v)
@@ -211,11 +211,11 @@ class Bar:
     def __init__(self, x, y, width, height, value=1.0, **kwargs):
         self.rect = Rect(x, y, width, height)
         self.value = max(0.0, min(1.0, value))  # 0-1
-        self.bg_color = kwargs.get('bg_color', (60, 60, 60))
-        self.fill_color = kwargs.get('fill_color', (255, 50, 50))
-        self.text_color = kwargs.get('text_color', (255, 255, 255))
-        self.show_text = kwargs.get('show_text', True)
-        self.orientation = kwargs.get('orientation', 'horizontal')
+        self.bg_color = kwargs.get("bg_color", (60, 60, 60))
+        self.fill_color = kwargs.get("fill_color", (255, 50, 50))
+        self.text_color = kwargs.get("text_color", (255, 255, 255))
+        self.show_text = kwargs.get("show_text", True)
+        self.orientation = kwargs.get("orientation", "horizontal")
         self.visible = True
 
     def render(self):
@@ -227,18 +227,18 @@ class Bar:
 
         # 背景
         cmds.append({
-            'type': 'rect',
-            'rect': self.rect,
-            'color': self.bg_color
+            "type": "rect",
+            "rect": self.rect,
+            "color": self.bg_color,
         })
 
         # 填充部分
-        if self.orientation == 'horizontal':
+        if self.orientation == "horizontal":
             fill_rect = Rect(
                 self.rect.x,
                 self.rect.y,
                 int(self.rect.w * self.value),
-                self.rect.h
+                self.rect.h,
             )
         else:  # 垂直
             fill_h = int(self.rect.h * self.value)
@@ -246,13 +246,13 @@ class Bar:
                 self.rect.x,
                 self.rect.y + self.rect.h - fill_h,
                 self.rect.w,
-                fill_h
+                fill_h,
             )
 
         cmds.append({
-            'type': 'rect',
-            'rect': fill_rect,
-            'color': self.fill_color
+            "type": "rect",
+            "rect": fill_rect,
+            "color": self.fill_color,
         })
 
         # 显示百分比
@@ -261,11 +261,11 @@ class Bar:
             text_x = self.rect.x + (self.rect.w - len(text) * 8) // 2
             text_y = self.rect.y + (self.rect.h - 12) // 2
             cmds.append({
-                'type': 'text',
-                'text': text,
-                'x': text_x,
-                'y': text_y,
-                'color': self.text_color
+                "type": "text",
+                "text": text,
+                "x": text_x,
+                "y": text_y,
+                "color": self.text_color,
             })
 
         return cmds
@@ -277,9 +277,9 @@ class Bar:
     def config(self, **kwargs):
         """设置组件参数"""
         for k, v in kwargs.items():
-            if k == 'value':
+            if k == "value":
                 self.value = max(0.0, min(1.0, v))
-            elif k in ('x', 'y', 'width', 'height'):
+            elif k in ("x", "y", "width", "height"):
                 setattr(self.rect, k, v)
             elif hasattr(self, k):
                 setattr(self, k, v)
@@ -299,14 +299,14 @@ class Entry:
     def __init__(self, x, y, width, height, text="", **kwargs):
         self.rect = Rect(x, y, width, height)
         self.text = text
-        self.placeholder = kwargs.get('placeholder', "")
-        self.color = kwargs.get('color', (255, 255, 255))
-        self.text_color = kwargs.get('text_color', (0, 0, 0))
+        self.placeholder = kwargs.get("placeholder", "")
+        self.color = kwargs.get("color", (255, 255, 255))
+        self.text_color = kwargs.get("text_color", (0, 0, 0))
         self.placeholder_color = kwargs.get(
-            'placeholder_color', (150, 150, 150))
-        self.border = kwargs.get('border', True)
-        self.radius = kwargs.get('radius', 3)
-        self.cursor_blink_tim = kwargs.get('cursor_blink_tim', 1000)
+            "placeholder_color", (150, 150, 150))
+        self.border = kwargs.get("border", True)
+        self.radius = kwargs.get("radius", 3)
+        self.cursor_blink_tim = kwargs.get("cursor_blink_tim", 1000)
         self.visible = True
         self.capslock = False
         # 状态
@@ -327,21 +327,21 @@ class Entry:
 
         # 背景
         cmds.append({
-            'type': 'rect',
-            'rect': self.rect,
-            'color': self.color,
-            'radius': self.radius
+            "type": "rect",
+            "rect": self.rect,
+            "color": self.color,
+            "radius": self.radius,
         })
 
         # 边框
         if self.border:
             border_color = (100, 100, 200) if self.focused else (100, 100, 100)
             cmds.append({
-                'type': 'outline',
-                'rect': self.rect,
-                'color': border_color,
-                'radius': self.radius,
-                'width': 2 if self.focused else 1
+                "type": "outline",
+                "rect": self.rect,
+                "color": border_color,
+                "radius": self.radius,
+                "width": 2 if self.focused else 1,
             })
 
         # 显示的文本
@@ -367,20 +367,20 @@ class Entry:
         visible_text = visible_text[:max(1, (self.rect.w - padding * 2) // 8)]
 
         cmds.append({
-            'type': 'text',
-            'text': visible_text,
-            'x': text_x,
-            'y': self.rect.y + (self.rect.h - 12) // 2,
-            'color': text_color
+            "type": "text",
+            "text": visible_text,
+            "x": text_x,
+            "y": self.rect.y + (self.rect.h - 12) // 2,
+            "color": text_color,
         })
 
         # 光标（聚焦时显示）
         if self.focused and self._time % (2 * self.cursor_blink_tim) < self.cursor_blink_tim:
             cursor_x = text_x + (self.cursor_pos - visible_start) * 8
             cmds.append({
-                'type': 'rect',
-                'rect': Rect(cursor_x, self.rect.y + 4, 2, self.rect.h - 8),
-                'color': (0, 0, 0)
+                "type": "rect",
+                "rect": Rect(cursor_x, self.rect.y + 4, 2, self.rect.h - 8),
+                "color": (0, 0, 0),
             })
 
         return cmds
@@ -422,37 +422,37 @@ class Entry:
         new_keys = keys - self._last_keys
 
         for key in new_keys:
-            if key == 'left':
+            if key == "left":
                 self.cursor_pos = max(0, self.cursor_pos - 1)
-            elif key == 'right':
+            elif key == "right":
                 self.cursor_pos = min(len(self.text), self.cursor_pos + 1)
-            elif key == 'home':
+            elif key == "home":
                 self.cursor_pos = 0
-            elif key == 'end':
+            elif key == "end":
                 self.cursor_pos = len(self.text)
-            elif key == 'CapsLock':
+            elif key == "CapsLock":
                 self.capslock = not self.capslock
-            elif key == 'backspace':
+            elif key == "backspace":
                 if self.cursor_pos > 0:
                     self.text = self.text[:self.cursor_pos -
                                           1] + self.text[self.cursor_pos:]
                     self.cursor_pos -= 1
-            elif key == 'delete':
+            elif key == "delete":
                 if self.cursor_pos < len(self.text):
                     self.text = self.text[:self.cursor_pos] + \
                         self.text[self.cursor_pos + 1:]
-            elif key == 'enter':
+            elif key == "enter":
                 self.focused = False
                 return True
             elif len(key) == 1:
-                shift = 'shift' in keys
+                shift = "shift" in keys
                 char = key.upper() if (shift ^ self.capslock) else key.lower()
                 self.text = self.text[:self.cursor_pos] + \
                     char + self.text[self.cursor_pos:]
                 self.cursor_pos += 1
-            elif key == 'space':
+            elif key == "space":
                 self.text = self.text[:self.cursor_pos] + \
-                    ' ' + self.text[self.cursor_pos:]
+                    " " + self.text[self.cursor_pos:]
                 self.cursor_pos += 1
 
         self._last_keys = keys.copy()
@@ -465,7 +465,7 @@ class Entry:
     def config(self, **kwargs):
         """设置组件参数"""
         for k, v in kwargs.items():
-            if k in ('x', 'y', 'width', 'height'):
+            if k in ("x", "y", "width", "height"):
                 setattr(self.rect, k, v)
             elif hasattr(self, k):
                 setattr(self, k, v)

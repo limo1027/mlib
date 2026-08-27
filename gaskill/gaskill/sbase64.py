@@ -8,8 +8,8 @@ BASE58_ALPHABET = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
 # Base256使用中文符号（从4E00开始，共256个连续汉字）
 _BASE256_START = 0x4E00
-_BASE256_ALPHABET = ''.join(chr(_BASE256_START + i)
-                            for i in range(256)).encode('utf-8')
+_BASE256_ALPHABET = "".join(chr(_BASE256_START + i)
+                            for i in range(256)).encode("utf-8")
 
 
 # ==================== Base16 ====================
@@ -44,7 +44,7 @@ def b16decode(data: bytes) -> bytes:
 def b32encode(data: bytes) -> bytes:
     """Base32编码"""
     if not data:
-        return b''
+        return b""
 
     result = bytearray()
     bit_buffer = 0
@@ -66,20 +66,20 @@ def b32encode(data: bytes) -> bytes:
         result.append(BASE32_ALPHABET[index])
         # 填充等号
         pad_count = (8 - len(result) % 8) % 8
-        result.extend(b'=' * pad_count)
+        result.extend(b"=" * pad_count)
     else:
         # 刚好对齐时也可能需要填充
         pad_count = (8 - len(result) % 8) % 8
-        result.extend(b'=' * pad_count)
+        result.extend(b"=" * pad_count)
 
     return bytes(result)
 
 
 def b32decode(data: bytes) -> bytes:
     """Base32解码"""
-    data = data.rstrip(b'=')
+    data = data.rstrip(b"=")
     if not data:
-        return b''
+        return b""
 
     dec_map = {c: i for i, c in enumerate(BASE32_ALPHABET)}
 
@@ -106,7 +106,7 @@ def b32decode(data: bytes) -> bytes:
 def b64encode(data: bytes) -> bytes:
     """Base64编码"""
     if not data:
-        return b''
+        return b""
 
     result = bytearray()
     bit_buffer = 0
@@ -127,19 +127,19 @@ def b64encode(data: bytes) -> bytes:
         result.append(BASE64_ALPHABET[index])
         # 填充等号
         pad_count = (4 - len(result) % 4) % 4
-        result.extend(b'=' * pad_count)
+        result.extend(b"=" * pad_count)
     else:
         pad_count = (4 - len(result) % 4) % 4
-        result.extend(b'=' * pad_count)
+        result.extend(b"=" * pad_count)
 
     return bytes(result)
 
 
 def b64decode(data: bytes) -> bytes:
     """Base64解码"""
-    data = data.rstrip(b'=')
+    data = data.rstrip(b"=")
     if not data:
-        return b''
+        return b""
 
     dec_map = {c: i for i, c in enumerate(BASE64_ALPHABET)}
 
@@ -166,12 +166,12 @@ def b64decode(data: bytes) -> bytes:
 def b64urlencode(data: bytes) -> bytes:
     """Base64URL编码(URL安全版本,用 - 和 _ 替代 + 和 /)"""
     result = b64encode(data)
-    return result.replace(b'+', b'-').replace(b'/', b'_')
+    return result.replace(b"+", b"-").replace(b"/", b"_")
 
 
 def b64urldecode(data: bytes) -> bytes:
     """Base64URL解码"""
-    data = data.replace(b'-', b'+').replace(b'_', b'/')
+    data = data.replace(b"-", b"+").replace(b"_", b"/")
     return b64decode(data)
 
 
@@ -180,7 +180,7 @@ def b64urldecode(data: bytes) -> bytes:
 def b58encode(data: bytes) -> bytes:
     """Base58编码"""
     if not data:
-        return b''
+        return b""
 
     # 统计前导零的数量（每个前导零字节对应一个'1'）
     leading_zeros = 0
@@ -205,18 +205,18 @@ def b58encode(data: bytes) -> bytes:
     result.reverse()
 
     # 补回前导零对应的'1'
-    return b'1' * leading_zeros + bytes(result)
+    return b"1" * leading_zeros + bytes(result)
 
 
 def b58decode(data: bytes) -> bytes:
     """Base58解码"""
     if not data:
-        return b''
+        return b""
 
     # 统计前导的'1'数量（每个对应一个零字节）
     leading_ones = 0
     for ch in data:
-        if ch == ord('1'):
+        if ch == ord("1"):
             leading_ones += 1
         else:
             break
@@ -241,7 +241,7 @@ def b58decode(data: bytes) -> bytes:
     result.reverse()
 
     # 补回前导零字节
-    return b'\x00' * leading_ones + bytes(result)
+    return b"\x00" * leading_ones + bytes(result)
 
 
 # ==================== Base256（中文版） ====================
@@ -278,10 +278,10 @@ def b256decode(data: bytes) -> bytes:
 # ==================== 统一接口（类似base64模块风格） ====================
 
 __all__ = [
-    'b16encode', 'b16decode',
-    'b32encode', 'b32decode',
-    'b64encode', 'b64decode',
-    'b64urlencode', 'b64urldecode',
-    'b58encode', 'b58decode',
-    'b256encode', 'b256decode',
+    "b16encode", "b16decode",
+    "b32encode", "b32decode",
+    "b64encode", "b64decode",
+    "b64urlencode", "b64urldecode",
+    "b58encode", "b58decode",
+    "b256encode", "b256decode",
 ]

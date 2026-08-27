@@ -1,4 +1,4 @@
-from .smath import sqrt, cos, sin, pi, EPSILON, Complex
+from .smath import EPSILON, Complex, cos, pi, sin, sqrt
 
 
 class NoSolutionError(Exception):
@@ -9,7 +9,7 @@ def solve_linear(a, b):
     """解一次方程 ax + b = 0"""
     if a == 0:
         if b == 0:
-            return 'infinite'  # 无数解
+            return "infinite"  # 无数解
         else:
             raise NoSolutionError("无解")
     return [(-b) / a]
@@ -83,7 +83,7 @@ def solve_polynomial(coefficients):
     n = len(coefficients) - 1  # 次数
 
     if n == 0:
-        return 'infinite' if _is_zero(coefficients[0]) else []
+        return "infinite" if _is_zero(coefficients[0]) else []
     elif n == 1:
         return solve_linear(coefficients[0], coefficients[1])
     elif n == 2:
