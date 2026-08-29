@@ -5,7 +5,7 @@ import sys
 from setuptools import Command, find_packages, setup
 
 long_description = open("README.md").read()
-VERSION = eval(os.getenv("VERSION", '"3.1.2"'))
+VERSION = eval(os.getenv("VERSION", '"3.2.0"'))
 
 
 def run(cmd, check=True):

@@ -1,4 +1,4 @@
-from gaskill import factorial
+from gaskill import factorial, atan, log_fast
 
 prec = 50
 
@@ -164,81 +164,22 @@ def dec_sin(x):
     if x > pi / 2:
         x = pi - x
 
-    # ---- 第2步：二倍角递归 ----
-    # 不断二分，直到角度足够小
-    # 目标是让 x / 2^n < 10^(-precision/2)
-    n = 0
-    target = Decimal(10) ** (-precision // 2)
-    x_copy = x
-    while x_copy > target:
-        x_copy /= 2
-        n += 1
+    sin_val = x
+    term = x
+    power = x * x
+    k = 1
 
-    # 如果 n 太大（角度本身就很小），限制一下
-    if n > 200:
-        n = 200
-
-    # 计算 sin(小角度) 用泰勒级数
-    # 小角度 = x / 2^n
-    small_angle = x / (Decimal(2) ** n)
-
-    # 泰勒级数：sin(θ) = θ - θ³/6 + θ⁵/120 - θ⁷/5040 + ...
-    sin_val = small_angle
-    term = small_angle
-    power = small_angle * small_angle
-    for k in range(1, precision):
+    # 固定迭代 60 次，而不是依赖精度判据
+    for _ in range(60):
         term *= -power / ((2*k) * (2*k + 1))
         sin_val += term
-        if abs(term) < Decimal(10) ** (-precision - 5):
-            break
+        k += 1
 
-    # ---- 第3步：用二倍角公式回推 ----
-    # sin(2θ) = 2 * sin(θ) * cos(θ) = 2 * sin(θ) * sqrt(1 - sin²(θ))
-    # 这里 AGM 可以用来加速高精度开平方，但 decimal 的 sqrt 已经够快了
-    for _ in range(n):
-        cos_val = (1 - sin_val * sin_val) ** 0.5
-        sin_val = 2 * sin_val * cos_val
-
-    # 恢复符号
-    return sign * sin_val
+    return sin_val * sign
 
 
 def dec_cos(x):
     return dec_sin(x + dec_pi() / 2)
-
-
-def dec_atan(x):
-    sign = 1 if x >= 0 else -1
-    EPS = 10 ** -prec
-    precision = prec + 10
-    x = abs(x)
-
-    # 大 x 时用互补角公式
-    if x > 1:
-        return sign * (dec_pi() / 2 - dec_atan(1 / x))
-
-    t = x / (1 + (1 + x * x) ** 0.5)
-    t2 = t * t
-    term = t
-    result = 0
-    n = 1
-
-    for _ in range(precision):
-        result += term / n
-        term *= -t2
-        n += 2
-        if abs(term / n) < EPS:
-            break
-
-    return sign * 2 * result
-
-
-def asin(x):
-    if x == 1:
-        return dec_pi() / 2
-    if x == -1:
-        return -dec_pi() / 2
-    return dec_atan(x / (1 - x * x) ** 0.5)
 
 
 class Decimal:
@@ -347,6 +288,7 @@ class Decimal:
         return hash((self.value, self.fr_len))
 
     def _simplify(self):
+        self.value = int(self.value)
         if self.fr_len > prec + 1:
             result = round(self, prec)
             self.value = result.value
