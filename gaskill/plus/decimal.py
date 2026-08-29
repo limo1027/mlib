@@ -168,15 +168,14 @@ def dec_sin(x):
     term = x
     power = x * x
     k = 1
-
+    
     # 固定迭代 60 次，而不是依赖精度判据
     for _ in range(60):
         term *= -power / ((2*k) * (2*k + 1))
         sin_val += term
         k += 1
-
+    
     return sin_val * sign
-
 
 def dec_cos(x):
     return dec_sin(x + dec_pi() / 2)
